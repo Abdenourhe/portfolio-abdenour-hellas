@@ -17,13 +17,22 @@ function ProjectPlaceholder({ title }: { title: string }) {
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     fetch("/api/projects")
       .then((res) => res.json())
       .then((data) => {
-        setProjects(data);
+        if (Array.isArray(data)) {
+          setProjects(data);
+        } else {
+          setError(true);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
         setLoading(false);
       });
   }, []);
@@ -36,6 +45,15 @@ export default function ProjectsPage() {
             <div key={i} className="h-64 md:h-72 bg-muted rounded-lg" />
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-12 md:py-16 text-center">
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Projets</h1>
+        <p className="text-muted-foreground">Impossible de charger les projets. Veuillez réessayer plus tard.</p>
       </div>
     );
   }

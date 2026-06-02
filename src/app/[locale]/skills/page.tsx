@@ -26,13 +26,22 @@ const categoryLabels: Record<string, string> = {
 export default function SkillsPage() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     fetch("/api/skills")
       .then((res) => res.json())
       .then((data) => {
-        setSkills(data);
+        if (Array.isArray(data)) {
+          setSkills(data);
+        } else {
+          setError(true);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
         setLoading(false);
       });
   }, []);
@@ -51,6 +60,15 @@ export default function SkillsPage() {
             <div key={i} className="h-20 bg-muted rounded-lg" />
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-12 md:py-16 text-center">
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Compétences</h1>
+        <p className="text-muted-foreground">Impossible de charger les compétences. Veuillez réessayer plus tard.</p>
       </div>
     );
   }

@@ -8,13 +8,22 @@ import { Briefcase } from "lucide-react";
 export default function ExperiencePage() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     fetch("/api/experiences")
       .then((res) => res.json())
       .then((data) => {
-        setExperiences(data);
+        if (Array.isArray(data)) {
+          setExperiences(data);
+        } else {
+          setError(true);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
         setLoading(false);
       });
   }, []);
@@ -27,6 +36,15 @@ export default function ExperiencePage() {
             <div key={i} className="h-28 md:h-32 bg-muted rounded-lg" />
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-12 md:py-16 text-center">
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Expériences Professionnelles</h1>
+        <p className="text-muted-foreground">Impossible de charger les expériences. Veuillez réessayer plus tard.</p>
       </div>
     );
   }
