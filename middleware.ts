@@ -28,16 +28,18 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Protect admin routes
-  if (pathname.startsWith("/admin")) {
+  // Protect admin routes (with or without locale prefix like /fr/admin)
+  if (pathname.includes("/admin")) {
     const token = request.cookies.get("next-auth.session-token")?.value ||
                   request.cookies.get("__Secure-next-auth.session-token")?.value;
     
-    if (!token && pathname !== "/admin/login") {
+    const isLoginPage = pathname.endsWith("/admin/login");
+    
+    if (!token && !isLoginPage) {
       return NextResponse.redirect(new URL("/admin/login", request.url));
     }
     
-    if (token && pathname === "/admin/login") {
+    if (token && isLoginPage) {
       return NextResponse.redirect(new URL("/admin/dashboard", request.url));
     }
 
