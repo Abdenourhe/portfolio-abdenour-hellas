@@ -1,0 +1,77 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "experience": "Expériences",
+    "education": "Formations",
+    "skills": "Compétences",
+    "projects": "Projets",
+    "contact": "Contact",
+    "cv": "CV",
+    "admin": "Admin"
+  },
+  "hero": {
+    "greeting": "Bonjour, je suis",
+    "title": "Ingénieur en Génie Électrique",
+    "subtitle": "Déterminé, sérieux, autonome et conscient du travail qui m'attend, je suis persuadé que je serais un élément moteur au sein de votre structure !",
+    "viewCv": "Voir mon CV",
+    "contactMe": "Me contacter"
+  },
+  "about": {
+    "title": "À propos de moi",
+    "interests": "Centres d'intérêt"
+  },
+  "experience": {
+    "title": "Expériences Professionnelles",
+    "present": "Présent"
+  },
+  "education": {
+    "title": "Formations"
+  },
+  "skills": {
+    "title": "Compétences",
+    "software": "Logiciels",
+    "technical": "Techniques",
+    "language": "Langues",
+    "soft": "Soft Skills"
+  },
+  "projects": {
+    "title": "Projets",
+    "featured": "À la une",
+    "viewProject": "Voir le projet",
+    "sourceCode": "Code source"
+  },
+  "contact": {
+    "title": "Me contacter",
+    "name": "Nom",
+    "email": "Email",
+    "subject": "Sujet",
+    "message": "Message",
+    "send": "Envoyer",
+    "success": "Message envoyé avec succès !",
+    "error": "Une erreur s'est produite. Veuillez réessayer.",
+    "downloadCv": "Télécharger mon CV"
+  },
+  "footer": {
+    "rights": "© 2026 Abdenour Hellas - Tous droits réservés"
+  },
+  "admin": {
+    "login": "Connexion",
+    "dashboard": "Tableau de bord",
+    "profile": "Profil",
+    "experiences": "Expériences",
+    "education": "Formations",
+    "skills": "Compétences",
+    "projects": "Projets",
+    "messages": "Messages",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "create": "Créer",
+    "search": "Rechercher",
+    "actions": "Actions"
+  }
+}

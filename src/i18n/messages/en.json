@@ -1,0 +1,77 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "experience": "Experience",
+    "education": "Education",
+    "skills": "Skills",
+    "projects": "Projects",
+    "contact": "Contact",
+    "cv": "CV",
+    "admin": "Admin"
+  },
+  "hero": {
+    "greeting": "Hello, I am",
+    "title": "Electrical Engineer",
+    "subtitle": "Determined, serious, autonomous and aware of the work ahead of me, I am convinced that I would be a driving force within your organization!",
+    "viewCv": "View my CV",
+    "contactMe": "Contact me"
+  },
+  "about": {
+    "title": "About me",
+    "interests": "Interests"
+  },
+  "experience": {
+    "title": "Professional Experience",
+    "present": "Present"
+  },
+  "education": {
+    "title": "Education"
+  },
+  "skills": {
+    "title": "Skills",
+    "software": "Software",
+    "technical": "Technical",
+    "language": "Languages",
+    "soft": "Soft Skills"
+  },
+  "projects": {
+    "title": "Projects",
+    "featured": "Featured",
+    "viewProject": "View project",
+    "sourceCode": "Source code"
+  },
+  "contact": {
+    "title": "Contact me",
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send",
+    "success": "Message sent successfully!",
+    "error": "An error occurred. Please try again.",
+    "downloadCv": "Download my CV"
+  },
+  "footer": {
+    "rights": "© 2026 Abdenour Hellas - All rights reserved"
+  },
+  "admin": {
+    "login": "Login",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "experiences": "Experiences",
+    "education": "Education",
+    "skills": "Skills",
+    "projects": "Projects",
+    "messages": "Messages",
+    "settings": "Settings",
+    "logout": "Logout",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "search": "Search",
+    "actions": "Actions"
+  }
+}
