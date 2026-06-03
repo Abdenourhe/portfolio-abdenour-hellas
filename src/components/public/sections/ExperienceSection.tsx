@@ -14,13 +14,18 @@ const categoryLabels: Record<string, string> = {
   education: "Éducation",
 };
 
-export default function ExperienceSection() {
+interface ExperienceSectionProps {
+  data?: Experience[];
+}
+
+export default function ExperienceSection({ data }: ExperienceSectionProps) {
   const t = useT();
-  const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [experiences, setExperiences] = useState<Experience[]>(data || []);
+  const [loading, setLoading] = useState(!data);
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    if (data) return;
     fetch("/api/experiences")
       .then((res) => res.json())
       .then((data) => {
@@ -35,7 +40,7 @@ export default function ExperienceSection() {
         setError(true);
         setLoading(false);
       });
-  }, []);
+  }, [data]);
 
   if (loading) {
     return (

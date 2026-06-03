@@ -16,13 +16,18 @@ function ProjectPlaceholder({ title }: { title: string }) {
   );
 }
 
-export default function ProjectsSection() {
+interface ProjectsSectionProps {
+  data?: Project[];
+}
+
+export default function ProjectsSection({ data }: ProjectsSectionProps) {
   const t = useT();
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [projects, setProjects] = useState<Project[]>(data || []);
+  const [loading, setLoading] = useState(!data);
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    if (data) return;
     fetch("/api/projects")
       .then((res) => res.json())
       .then((data) => {
@@ -37,7 +42,7 @@ export default function ProjectsSection() {
         setError(true);
         setLoading(false);
       });
-  }, []);
+  }, [data]);
 
   if (loading) {
     return (

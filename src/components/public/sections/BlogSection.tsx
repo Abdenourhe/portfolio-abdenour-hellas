@@ -9,13 +9,18 @@ import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 import { useLocale } from "@/components/public/useLocale";
 
-export default function BlogSection() {
+interface BlogSectionProps {
+  data?: Article[];
+}
+
+export default function BlogSection({ data }: BlogSectionProps) {
   const t = useT();
   const locale = useLocale();
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [articles, setArticles] = useState<Article[]>(data || []);
+  const [loading, setLoading] = useState(!data);
 
   useEffect(() => {
+    if (data) return;
     fetch("/api/articles")
       .then((res) => res.json())
       .then((data) => {
@@ -23,7 +28,7 @@ export default function BlogSection() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [data]);
 
   if (loading) {
     return (

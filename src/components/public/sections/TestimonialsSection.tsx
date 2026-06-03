@@ -7,12 +7,17 @@ import { Quote, User } from "lucide-react";
 import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 
-export default function TestimonialsSection() {
+interface TestimonialsSectionProps {
+  data?: Testimonial[];
+}
+
+export default function TestimonialsSection({ data }: TestimonialsSectionProps) {
   const t = useT();
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(data || []);
+  const [loading, setLoading] = useState(!data);
 
   useEffect(() => {
+    if (data) return;
     fetch("/api/testimonials")
       .then((res) => res.json())
       .then((data) => {
@@ -20,7 +25,7 @@ export default function TestimonialsSection() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [data]);
 
   if (loading) {
     return (

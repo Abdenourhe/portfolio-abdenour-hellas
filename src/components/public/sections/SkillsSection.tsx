@@ -18,13 +18,18 @@ const categoryLabels: Record<string, string> = {
   soft: "skills.soft",
 };
 
-export default function SkillsSection() {
+interface SkillsSectionProps {
+  data?: Skill[];
+}
+
+export default function SkillsSection({ data }: SkillsSectionProps) {
   const t = useT();
-  const [skills, setSkills] = useState<Skill[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [skills, setSkills] = useState<Skill[]>(data || []);
+  const [loading, setLoading] = useState(!data);
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    if (data) return;
     fetch("/api/skills")
       .then((res) => res.json())
       .then((data) => {
@@ -39,7 +44,7 @@ export default function SkillsSection() {
         setError(true);
         setLoading(false);
       });
-  }, []);
+  }, [data]);
 
   const groupedSkills = skills.reduce((acc, skill) => {
     if (!acc[skill.category]) acc[skill.category] = [];

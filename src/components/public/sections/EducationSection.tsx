@@ -7,13 +7,18 @@ import { GraduationCap, Calendar, MapPin } from "lucide-react";
 import { SkeletonList } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 
-export default function EducationSection() {
+interface EducationSectionProps {
+  data?: Education[];
+}
+
+export default function EducationSection({ data }: EducationSectionProps) {
   const t = useT();
-  const [education, setEducation] = useState<Education[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [education, setEducation] = useState<Education[]>(data || []);
+  const [loading, setLoading] = useState(!data);
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    if (data) return;
     fetch("/api/education")
       .then((res) => res.json())
       .then((data) => {
@@ -28,7 +33,7 @@ export default function EducationSection() {
         setError(true);
         setLoading(false);
       });
-  }, []);
+  }, [data]);
 
   if (loading) {
     return (

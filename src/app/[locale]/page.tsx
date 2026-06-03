@@ -27,13 +27,25 @@ function HomeClient() {
   const cvPath = useLocalizedPath("/cv");
   const contactPath = useLocalizedPath("/contact");
   const [profile, setProfile] = useState<any>(null);
+  const [experiences, setExperiences] = useState<any[]>([]);
+  const [education, setEducation] = useState<any[]>([]);
+  const [skills, setSkills] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [articles, setArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/profile")
+    fetch("/api/homepage")
       .then((r) => r.json())
       .then((data) => {
-        setProfile(data);
+        setProfile(data.profile);
+        setExperiences(data.experiences || []);
+        setEducation(data.education || []);
+        setSkills(data.skills || []);
+        setProjects(data.projects || []);
+        setTestimonials(data.testimonials || []);
+        setArticles(data.articles || []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -173,7 +185,7 @@ function HomeClient() {
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("experience.title")} subtitle={t("experience.subtitle")} />
           <div className="mt-12">
-            <ExperienceSection />
+            <ExperienceSection data={experiences} />
           </div>
         </div>
       </section>
@@ -183,7 +195,7 @@ function HomeClient() {
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("education.title")} subtitle={t("education.subtitle")} />
           <div className="mt-12">
-            <EducationSection />
+            <EducationSection data={education} />
           </div>
         </div>
       </section>
@@ -193,7 +205,7 @@ function HomeClient() {
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("skills.title")} subtitle={t("skills.subtitle")} />
           <div className="mt-12">
-            <SkillsSection />
+            <SkillsSection data={skills} />
           </div>
         </div>
       </section>
@@ -203,7 +215,7 @@ function HomeClient() {
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("projects.title")} subtitle={t("projects.subtitle")} />
           <div className="mt-12">
-            <ProjectsSection />
+            <ProjectsSection data={projects} />
           </div>
         </div>
       </section>
@@ -213,7 +225,7 @@ function HomeClient() {
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("testimonials.title")} subtitle={t("testimonials.subtitle")} />
           <div className="mt-12">
-            <TestimonialsSection />
+            <TestimonialsSection data={testimonials} />
           </div>
         </div>
       </section>
@@ -223,7 +235,7 @@ function HomeClient() {
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("blog.title")} subtitle={t("blog.subtitle")} />
           <div className="mt-12">
-            <BlogSection />
+            <BlogSection data={articles} />
           </div>
         </div>
       </section>
