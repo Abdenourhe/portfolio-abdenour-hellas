@@ -35,36 +35,36 @@ export default function AdminSidebar() {
 
   return (
     <aside className="w-64 bg-card border-r border-border flex flex-col">
-      <div className="p-6 border-b border-border">
-        <Link href="/admin/dashboard" className="text-xl font-bold text-primary">
-          Admin Panel
+      <div className="p-5 border-b border-border">
+        <Link href="/admin/dashboard" className="text-sm font-semibold tracking-tight text-foreground">
+          Admin
         </Link>
       </div>
 
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors ${
               pathname === item.href
-                ? "bg-primary text-white"
-                : "text-foreground hover:bg-muted"
+                ? "bg-muted text-foreground font-medium"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
             }`}
           >
-            <item.icon size={18} />
-            <span className="text-sm font-medium">{item.label}</span>
+            <item.icon size={15} />
+            <span>{item.label}</span>
           </Link>
         ))}
       </nav>
 
-      <div className="p-4 border-t border-border">
+      <div className="p-3 border-t border-border">
         <button
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
-          className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-destructive hover:bg-destructive/10 transition-colors"
+          className="flex items-center gap-2.5 px-3 py-2 w-full rounded-md text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-colors"
         >
-          <LogOut size={18} />
-          <span className="text-sm font-medium">Déconnexion</span>
+          <LogOut size={15} />
+          <span>Déconnexion</span>
         </button>
       </div>
     </aside>
