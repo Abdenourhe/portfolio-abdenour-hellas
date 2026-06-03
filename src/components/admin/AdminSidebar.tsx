@@ -34,9 +34,9 @@ export default function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-card border-r border-border flex flex-col">
-      <div className="p-5 border-b border-border">
-        <Link href="/admin/dashboard" className="text-sm font-semibold tracking-tight text-foreground">
+    <aside className="w-64 bg-primary text-primary-foreground flex flex-col">
+      <div className="p-5 border-b border-primary-foreground/10">
+        <Link href="/admin/dashboard" className="text-sm font-semibold tracking-tight text-primary-foreground">
           Admin
         </Link>
       </div>
@@ -48,8 +48,8 @@ export default function AdminSidebar() {
             href={item.href}
             className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors ${
               pathname === item.href
-                ? "bg-muted text-foreground font-medium"
-                : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                ? "bg-primary-foreground/10 text-primary-foreground font-medium"
+                : "text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/5"
             }`}
           >
             <item.icon size={15} />
@@ -58,10 +58,10 @@ export default function AdminSidebar() {
         ))}
       </nav>
 
-      <div className="p-3 border-t border-border">
+      <div className="p-3 border-t border-primary-foreground/10">
         <button
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
-          className="flex items-center gap-2.5 px-3 py-2 w-full rounded-md text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-colors"
+          className="flex items-center gap-2.5 px-3 py-2 w-full rounded-md text-sm text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/5 transition-colors"
         >
           <LogOut size={15} />
           <span>Déconnexion</span>

@@ -57,20 +57,20 @@ export default function TestimonialsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: index * 0.05 }}
-            className="p-6 rounded-xl border border-border bg-card hover:border-foreground/20 transition-colors flex flex-col"
+            className="p-6 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors flex flex-col"
           >
-            <Quote className="w-5 h-5 text-muted-foreground/30 mb-4 flex-shrink-0" />
+            <Quote className="w-5 h-5 text-secondary/60 mb-4 flex-shrink-0" />
             <p className="text-sm text-muted-foreground leading-relaxed flex-1">{t.content}</p>
             <div className="flex items-center gap-3 mt-5 pt-4 border-t border-border/60">
               {t.imageUrl ? (
                 <img src={t.imageUrl} alt={t.name} className="w-8 h-8 rounded-full object-cover" />
               ) : (
-                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                  <User className="w-3.5 h-3.5 text-muted-foreground" />
+                <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center">
+                  <User className="w-3.5 h-3.5 text-primary/60" />
                 </div>
               )}
               <div>
-                <p className="text-sm font-medium text-foreground">{t.name}</p>
+                <p className="text-sm font-medium text-primary">{t.name}</p>
                 <p className="text-xs text-muted-foreground">{t.role} · {t.company}</p>
               </div>
             </div>

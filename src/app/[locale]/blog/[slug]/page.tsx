@@ -44,8 +44,8 @@ export default function ArticlePage() {
   if (!article) {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28 text-center max-w-3xl">
-        <h1 className="text-xl font-semibold mb-3">Article non trouvé</h1>
-        <Link href="/fr/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+        <h1 className="text-xl font-semibold text-primary mb-3">Article non trouvé</h1>
+        <Link href="/fr/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">
           Retour au blog
         </Link>
       </div>
@@ -61,7 +61,7 @@ export default function ArticlePage() {
       >
         <Link
           href="/fr/blog"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
         >
           <ArrowLeft size={14} />
           Retour au blog
@@ -72,7 +72,7 @@ export default function ArticlePage() {
           {new Date(article.createdAt).toLocaleDateString("fr-CA", { year: "numeric", month: "long", day: "numeric" })}
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground mb-6">
+        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-primary mb-6">
           {article.title}
         </h1>
 
@@ -84,7 +84,7 @@ export default function ArticlePage() {
           />
         ) : (
           <div className="w-full h-56 md:h-72 bg-muted rounded-xl mb-8 flex items-center justify-center">
-            <FileText className="w-10 h-10 text-muted-foreground/30" />
+            <FileText className="w-10 h-10 text-primary/20" />
           </div>
         )}
 

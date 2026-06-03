@@ -61,13 +61,13 @@ export default function EducationPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.4, delay: index * 0.05 }}
-            className="flex gap-4 p-5 rounded-xl border border-border bg-card hover:border-foreground/20 transition-colors"
+            className="flex gap-4 p-5 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors"
           >
-            <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-muted flex items-center justify-center mt-0.5">
-              <GraduationCap className="w-4 h-4 text-muted-foreground" />
+            <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-primary/5 flex items-center justify-center mt-0.5">
+              <GraduationCap className="w-4 h-4 text-primary/70" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-semibold text-foreground">{edu.degree}</h3>
+              <h3 className="text-sm font-semibold text-primary">{edu.degree}</h3>
               <p className="text-sm text-muted-foreground">{edu.school}</p>
               <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-2 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1">

@@ -10,8 +10,8 @@ import { Skeleton } from "@/components/public/Skeleton";
 function ProjectPlaceholder({ title }: { title: string }) {
   return (
     <div className="w-full h-44 md:h-52 bg-muted flex flex-col items-center justify-center border-b border-border">
-      <FolderGit className="w-10 h-10 text-muted-foreground/30 mb-2" />
-      <span className="text-xs text-muted-foreground/50 text-center px-4">{title}</span>
+      <FolderGit className="w-10 h-10 text-primary/20 mb-2" />
+      <span className="text-xs text-primary/40 text-center px-4">{title}</span>
     </div>
   );
 }
@@ -83,7 +83,7 @@ export default function ProjectsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.4, delay: index * 0.05 }}
-            className="group rounded-xl border border-border bg-card overflow-hidden hover:border-foreground/20 transition-colors"
+            className="group rounded-xl border border-border bg-card overflow-hidden hover:border-primary/40 transition-colors"
           >
             {project.imageUrl ? (
               <div className="w-full h-44 md:h-52 overflow-hidden">
@@ -98,11 +98,11 @@ export default function ProjectsPage() {
             )}
             <div className="p-5">
               <div className="flex items-start justify-between mb-2">
-                <h3 className="text-base font-semibold text-foreground group-hover:text-muted-foreground transition-colors">
+                <h3 className="text-base font-semibold text-primary group-hover:text-primary/80 transition-colors">
                   {project.title}
                 </h3>
                 {project.featured && (
-                  <Star className="w-3.5 h-3.5 text-muted-foreground fill-muted-foreground flex-shrink-0 ml-2 mt-0.5" />
+                  <Star className="w-3.5 h-3.5 text-secondary fill-secondary flex-shrink-0 ml-2 mt-0.5" />
                 )}
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-4">
@@ -112,13 +112,13 @@ export default function ProjectsPage() {
                 {project.technologies.slice(0, 4).map((tech) => (
                   <span
                     key={tech}
-                    className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-muted text-muted-foreground"
+                    className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-primary/5 text-primary/80"
                   >
                     {tech}
                   </span>
                 ))}
                 {project.technologies.length > 4 && (
-                  <span className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-muted text-muted-foreground">
+                  <span className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-primary/5 text-primary/80">
                     +{project.technologies.length - 4}
                   </span>
                 )}
@@ -129,7 +129,7 @@ export default function ProjectsPage() {
                     href={project.demoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-foreground hover:text-muted-foreground transition-colors"
+                    className="inline-flex items-center gap-1 text-xs text-primary hover:text-secondary transition-colors"
                   >
                     <ExternalLink size={12} />
                     Voir le projet
@@ -140,7 +140,7 @@ export default function ProjectsPage() {
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
                   >
                     <Code size={12} />
                     Code source

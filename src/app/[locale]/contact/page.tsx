@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Globe, Code, Mail, Phone, MapPin, Send, Download, CheckCircle, XCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Download, CheckCircle, XCircle } from "lucide-react";
 import { z } from "zod";
 import SocialIcons from "@/components/public/SocialIcons";
 import SectionHeader from "@/components/public/SectionHeader";
@@ -74,35 +74,35 @@ export default function ContactPage() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-base font-semibold text-foreground mb-5">Informations</h2>
+          <h2 className="text-base font-semibold text-primary mb-5">Informations</h2>
           <div className="space-y-2">
             <a
               href="mailto:Abdenour.Hellas@uqat.ca"
-              className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card hover:border-foreground/20 transition-colors group"
+              className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card hover:border-primary/30 transition-colors group"
             >
-              <Mail className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
+              <Mail className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors flex-shrink-0" />
               <span className="text-sm text-foreground break-all">Abdenour.Hellas@uqat.ca</span>
             </a>
             <a
               href="tel:418-350-5686"
-              className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card hover:border-foreground/20 transition-colors group"
+              className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card hover:border-primary/30 transition-colors group"
             >
-              <Phone className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
+              <Phone className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors flex-shrink-0" />
               <span className="text-sm text-foreground">418-350-5686</span>
             </a>
             <div className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card">
-              <MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+              <MapPin className="w-4 h-4 text-primary/60 flex-shrink-0" />
               <span className="text-sm text-muted-foreground">3490 Rue Principale, Baker-Brook, NB</span>
             </div>
           </div>
 
-          <h2 className="text-base font-semibold text-foreground mt-8 mb-4">Réseaux sociaux</h2>
+          <h2 className="text-base font-semibold text-primary mt-8 mb-4">Réseaux sociaux</h2>
           <SocialIcons />
 
           <a
             href="/uploads/cv.pdf"
             onClick={handleDownloadCV}
-            className="mt-8 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-foreground border border-border rounded-lg hover:bg-muted transition-colors"
+            className="mt-8 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary border border-primary/20 rounded-lg hover:bg-primary/5 transition-colors"
           >
             <Download size={14} />
             Télécharger mon CV
@@ -115,7 +115,7 @@ export default function ContactPage() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <h2 className="text-base font-semibold text-foreground mb-5">Envoyer un message</h2>
+          <h2 className="text-base font-semibold text-primary mb-5">Envoyer un message</h2>
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
               <input
@@ -124,7 +124,7 @@ export default function ContactPage() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm transition-colors placeholder:text-muted-foreground/60 ${
-                  errors.name ? "border-destructive" : "border-border hover:border-foreground/20 focus:border-foreground focus:outline-none"
+                  errors.name ? "border-destructive" : "border-border hover:border-primary/30 focus:border-primary focus:outline-none"
                 }`}
               />
               {errors.name && <p className="text-destructive text-xs mt-1">{errors.name}</p>}
@@ -136,7 +136,7 @@ export default function ContactPage() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm transition-colors placeholder:text-muted-foreground/60 ${
-                  errors.email ? "border-destructive" : "border-border hover:border-foreground/20 focus:border-foreground focus:outline-none"
+                  errors.email ? "border-destructive" : "border-border hover:border-primary/30 focus:border-primary focus:outline-none"
                 }`}
               />
               {errors.email && <p className="text-destructive text-xs mt-1">{errors.email}</p>}
@@ -148,7 +148,7 @@ export default function ContactPage() {
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                 className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm transition-colors placeholder:text-muted-foreground/60 ${
-                  errors.subject ? "border-destructive" : "border-border hover:border-foreground/20 focus:border-foreground focus:outline-none"
+                  errors.subject ? "border-destructive" : "border-border hover:border-primary/30 focus:border-primary focus:outline-none"
                 }`}
               />
               {errors.subject && <p className="text-destructive text-xs mt-1">{errors.subject}</p>}
@@ -160,7 +160,7 @@ export default function ContactPage() {
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                 className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm resize-none transition-colors placeholder:text-muted-foreground/60 ${
-                  errors.content ? "border-destructive" : "border-border hover:border-foreground/20 focus:border-foreground focus:outline-none"
+                  errors.content ? "border-destructive" : "border-border hover:border-primary/30 focus:border-primary focus:outline-none"
                 }`}
               />
               {errors.content && <p className="text-destructive text-xs mt-1">{errors.content}</p>}
@@ -168,7 +168,7 @@ export default function ContactPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-foreground text-background rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors disabled:opacity-50"
+              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
               <Send size={14} />
               {submitting ? "Envoi..." : "Envoyer"}
@@ -178,7 +178,7 @@ export default function ContactPage() {
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 p-3 rounded-lg bg-emerald-500/10 text-emerald-600 text-sm"
+                className="flex items-center gap-2 p-3 rounded-lg bg-emerald-500/10 text-emerald-700 text-sm"
               >
                 <CheckCircle size={14} />
                 Message envoyé avec succès.

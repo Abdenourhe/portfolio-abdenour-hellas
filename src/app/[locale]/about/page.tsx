@@ -64,7 +64,7 @@ export default function AboutPage() {
             transition={{ duration: 0.5 }}
             className="flex-shrink-0 mx-auto md:mx-0"
           >
-            <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden ring-1 ring-border bg-muted">
+            <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden ring-2 ring-primary/20 bg-muted">
               {profile?.photoUrl ? (
                 <img
                   src={profile.photoUrl}
@@ -73,7 +73,7 @@ export default function AboutPage() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-4xl font-semibold text-muted-foreground">
+                  <span className="text-4xl font-semibold text-primary/40">
                     {profile?.fullName?.split(" ").map((n: string) => n[0]).join("") || "AH"}
                   </span>
                 </div>
@@ -88,29 +88,29 @@ export default function AboutPage() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="flex-1 text-center md:text-left"
           >
-            <h2 className="text-xl font-semibold text-foreground">
+            <h2 className="text-xl font-semibold text-primary">
               {profile?.fullName || "Abdenour Hellas"}
             </h2>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-sm text-secondary mt-1 font-medium">
               {profile?.title || "Ingénieur en Génie Électrique"}
             </p>
 
             <div className="mt-5 flex flex-wrap gap-4 justify-center md:justify-start text-sm text-muted-foreground">
               {profile?.email && (
                 <span className="inline-flex items-center gap-1.5">
-                  <Mail size={13} />
+                  <Mail size={13} className="text-primary/60" />
                   {profile.email}
                 </span>
               )}
               {profile?.phone && (
                 <span className="inline-flex items-center gap-1.5">
-                  <Phone size={13} />
+                  <Phone size={13} className="text-primary/60" />
                   {profile.phone}
                 </span>
               )}
               {profile?.location && (
                 <span className="inline-flex items-center gap-1.5">
-                  <MapPin size={13} />
+                  <MapPin size={13} className="text-primary/60" />
                   {profile.location}
                 </span>
               )}
@@ -142,10 +142,10 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: index * 0.05 }}
-              className="group p-5 rounded-xl border border-border bg-card text-center hover:border-foreground/20 transition-colors"
+              className="group p-5 rounded-xl border border-border bg-card text-center hover:border-primary/30 transition-colors"
             >
-              <interest.icon className="w-5 h-5 mx-auto mb-2.5 text-muted-foreground group-hover:text-foreground transition-colors" />
-              <p className="text-sm font-medium text-foreground">{interest.name}</p>
+              <interest.icon className="w-5 h-5 mx-auto mb-2.5 text-primary/50 group-hover:text-primary transition-colors" />
+              <p className="text-sm font-medium text-primary">{interest.name}</p>
             </motion.div>
           ))}
         </div>

@@ -11,13 +11,6 @@ const iconMap: Record<string, React.ElementType> = {
   FileText, Cpu, Box, BarChart3, Zap, Settings, Network, Wrench, Radar, Globe, Users, UserCheck, UsersRound, ShieldCheck,
 };
 
-const categoryColors: Record<string, string> = {
-  logiciel: "bg-slate-500",
-  technique: "bg-stone-500",
-  langue: "bg-neutral-500",
-  soft: "bg-zinc-500",
-};
-
 const categoryLabels: Record<string, string> = {
   logiciel: "Logiciels",
   technique: "Techniques",
@@ -88,8 +81,8 @@ export default function SkillsPage() {
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-base font-semibold text-foreground mb-5 flex items-center gap-2">
-              <span className={`w-2 h-2 rounded-full ${categoryColors[category] || "bg-muted-foreground"}`} />
+            <h2 className="text-base font-semibold text-primary mb-5 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-secondary" />
               {categoryLabels[category] || category}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -102,12 +95,12 @@ export default function SkillsPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.3, delay: index * 0.03 }}
-                    className="p-4 rounded-xl border border-border bg-card hover:border-foreground/20 transition-colors"
+                    className="p-4 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors"
                   >
                     <div className="flex items-center gap-2.5 mb-3">
-                      {IconComponent && <IconComponent className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
+                      {IconComponent && <IconComponent className="w-4 h-4 text-primary/60 flex-shrink-0" />}
                       <span className="text-sm font-medium text-foreground flex-1 truncate">{skill.name}</span>
-                      <span className="text-xs text-muted-foreground tabular-nums">{skill.level}%</span>
+                      <span className="text-xs text-secondary font-medium tabular-nums">{skill.level}%</span>
                     </div>
                     <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                       <motion.div
@@ -115,7 +108,7 @@ export default function SkillsPage() {
                         whileInView={{ width: `${skill.level}%` }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                        className={`h-full rounded-full ${categoryColors[category] || "bg-muted-foreground"}`}
+                        className="h-full rounded-full bg-primary"
                       />
                     </div>
                   </motion.div>

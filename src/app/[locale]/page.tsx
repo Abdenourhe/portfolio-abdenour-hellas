@@ -68,7 +68,7 @@ function HomeClient() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="relative flex-shrink-0"
           >
-            <div className="w-44 h-44 md:w-56 md:h-56 rounded-full overflow-hidden ring-1 ring-border bg-muted">
+            <div className="w-44 h-44 md:w-56 md:h-56 rounded-full overflow-hidden ring-2 ring-primary/20 bg-muted">
               {profile?.photoUrl ? (
                 <img
                   src={profile.photoUrl}
@@ -77,7 +77,7 @@ function HomeClient() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-5xl font-semibold text-muted-foreground">
+                  <span className="text-5xl font-semibold text-primary/40">
                     {profile?.fullName?.split(" ").map((n: string) => n[0]).join("") || "AH"}
                   </span>
                 </div>
@@ -91,10 +91,10 @@ function HomeClient() {
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="text-center lg:text-left max-w-xl"
           >
-            <p className="text-sm text-muted-foreground tracking-wide uppercase mb-3">
+            <p className="text-sm text-primary/70 tracking-wide uppercase mb-3">
               Ingénieur en Génie Électrique
             </p>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-foreground leading-[1.1]">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-primary leading-[1.1]">
               {profile?.fullName || "Abdenour Hellas"}
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto lg:mx-0">
@@ -104,7 +104,7 @@ function HomeClient() {
             <div className="mt-8 flex flex-wrap gap-3 justify-center lg:justify-start">
               <Link
                 href="/fr/cv"
-                className="group inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors"
+                className="group inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
               >
                 <FileText size={15} />
                 Voir mon CV
@@ -112,7 +112,7 @@ function HomeClient() {
               </Link>
               <Link
                 href="/fr/contact"
-                className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground rounded-lg text-sm font-medium hover:bg-muted transition-colors"
+                className="inline-flex items-center gap-2 px-5 py-2.5 border border-primary/20 text-primary rounded-lg text-sm font-medium hover:bg-primary/5 transition-colors"
               >
                 <Send size={15} />
                 Me contacter
@@ -120,7 +120,7 @@ function HomeClient() {
               {profile?.cvUrl && (
                 <button
                   onClick={handleDownloadCV}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-muted-foreground rounded-lg text-sm font-medium hover:text-foreground hover:bg-muted transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 text-muted-foreground rounded-lg text-sm font-medium hover:text-primary hover:bg-primary/5 transition-colors"
                 >
                   <Download size={15} />
                   Télécharger

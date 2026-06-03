@@ -57,7 +57,7 @@ export default function BlogPage() {
             transition={{ duration: 0.4, delay: index * 0.05 }}
           >
             <Link href={`/fr/blog/${article.slug}`} className="block h-full group">
-              <div className="h-full rounded-xl border border-border bg-card overflow-hidden hover:border-foreground/20 transition-colors">
+              <div className="h-full rounded-xl border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors">
                 {article.imageUrl ? (
                   <div className="w-full h-40 overflow-hidden">
                     <img
@@ -68,7 +68,7 @@ export default function BlogPage() {
                   </div>
                 ) : (
                   <div className="w-full h-40 bg-muted flex items-center justify-center">
-                    <FileText className="w-8 h-8 text-muted-foreground/30" />
+                    <FileText className="w-8 h-8 text-primary/20" />
                   </div>
                 )}
                 <div className="p-5">
@@ -76,11 +76,11 @@ export default function BlogPage() {
                     <Calendar size={11} />
                     {new Date(article.createdAt).toLocaleDateString("fr-CA", { year: "numeric", month: "long", day: "numeric" })}
                   </div>
-                  <h3 className="text-base font-semibold text-foreground group-hover:text-muted-foreground transition-colors mb-2">
+                  <h3 className="text-base font-semibold text-primary group-hover:text-primary/80 transition-colors mb-2">
                     {article.title}
                   </h3>
                   <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{article.excerpt}</p>
-                  <span className="inline-flex items-center gap-1 text-xs text-foreground font-medium">
+                  <span className="inline-flex items-center gap-1 text-xs text-secondary font-medium">
                     Lire <ArrowRight size={12} />
                   </span>
                 </div>

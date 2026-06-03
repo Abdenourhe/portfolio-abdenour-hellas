@@ -27,7 +27,7 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold tracking-tight mb-8">Tableau de bord</h1>
+      <h1 className="text-xl font-semibold tracking-tight text-primary mb-8">Tableau de bord</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
         {cards.map((card, index) => (
@@ -36,12 +36,12 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
-            className="p-5 rounded-xl border border-border bg-card"
+            className="p-5 rounded-xl border border-border bg-accent"
           >
             <div className="flex items-center justify-between mb-3">
-              <card.icon size={15} className="text-muted-foreground" />
+              <card.icon size={15} className="text-primary/60" />
             </div>
-            <p className="text-2xl font-semibold tracking-tight">
+            <p className="text-2xl font-semibold tracking-tight text-primary">
               {loading ? "—" : card.value}
             </p>
             <p className="text-xs text-muted-foreground mt-0.5">{card.label}</p>
@@ -49,8 +49,8 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      <div className="mt-6 p-5 rounded-xl border border-border bg-card">
-        <h2 className="text-sm font-medium text-foreground mb-1">Bienvenue</h2>
+      <div className="mt-6 p-5 rounded-xl border border-border bg-accent">
+        <h2 className="text-sm font-medium text-primary mb-1">Bienvenue</h2>
         <p className="text-sm text-muted-foreground">
           Utilisez la barre latérale pour gérer votre portfolio.
         </p>
