@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
-import { FileText, Send, Download } from "lucide-react";
+import { motion } from "framer-motion";
+import { FileText, Send, Download, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import SocialIcons from "@/components/public/SocialIcons";
+import { Skeleton } from "@/components/public/Skeleton";
 
 export default function HomePage() {
   return <HomeClient />;
@@ -12,32 +13,17 @@ export default function HomePage() {
 
 function HomeClient() {
   const [profile, setProfile] = useState<any>(null);
-  const [text, setText] = useState("");
-  const fullText = profile?.title || "Ingénieur en Génie Électrique";
-  const reducedMotion = useReducedMotion();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/profile")
       .then((r) => r.json())
-      .then((data) => setProfile(data));
+      .then((data) => {
+        setProfile(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
-
-  useEffect(() => {
-    if (reducedMotion) {
-      setText(fullText);
-      return;
-    }
-    let index = 0;
-    const timer = setInterval(() => {
-      if (index <= fullText.length) {
-        setText(fullText.slice(0, index));
-        index++;
-      } else {
-        clearInterval(timer);
-      }
-    }, 80);
-    return () => clearInterval(timer);
-  }, [fullText, reducedMotion]);
 
   const handleDownloadCV = async () => {
     await fetch("/api/stats", {
@@ -50,87 +36,106 @@ function HomeClient() {
     }
   };
 
-  return (
-    <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center relative overflow-hidden px-4 py-12 md:py-0">
-      <div className="container mx-auto">
-        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-          <motion.div
-            initial={reducedMotion ? {} : { opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="relative flex-shrink-0"
-          >
-            <div className="w-40 h-40 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-full bg-gradient-to-br from-primary via-secondary to-accent p-1">
-              <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
-                {profile?.photoUrl ? (
-                  <img
-                    src={profile.photoUrl}
-                    alt={profile.fullName}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-muted flex items-center justify-center">
-                    <span className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary">AH</span>
-                  </div>
-                )}
+  if (loading) {
+    return (
+      <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-20">
+        <div className="container mx-auto">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+            <Skeleton className="w-48 h-48 md:w-56 md:h-56 rounded-full flex-shrink-0" />
+            <div className="text-center lg:text-left space-y-4 max-w-xl w-full">
+              <Skeleton className="h-4 w-24 mx-auto lg:mx-0" />
+              <Skeleton className="h-12 w-3/4 mx-auto lg:mx-0" />
+              <Skeleton className="h-6 w-1/2 mx-auto lg:mx-0" />
+              <Skeleton className="h-20 w-full" />
+              <div className="flex gap-3 justify-center lg:justify-start pt-2">
+                <Skeleton className="h-10 w-32 rounded-lg" />
+                <Skeleton className="h-10 w-32 rounded-lg" />
               </div>
             </div>
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 blur-2xl -z-10 animate-pulse" />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-20 lg:py-0">
+      <div className="container mx-auto">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="relative flex-shrink-0"
+          >
+            <div className="w-44 h-44 md:w-56 md:h-56 rounded-full overflow-hidden ring-1 ring-border bg-muted">
+              {profile?.photoUrl ? (
+                <img
+                  src={profile.photoUrl}
+                  alt={profile.fullName}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="text-5xl font-semibold text-muted-foreground">
+                    {profile?.fullName?.split(" ").map((n: string) => n[0]).join("") || "AH"}
+                  </span>
+                </div>
+              )}
+            </div>
           </motion.div>
 
           <motion.div
-            initial={reducedMotion ? {} : { opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="text-center lg:text-left max-w-xl"
           >
-            <p className="text-muted-foreground text-sm md:text-base mb-2">Bonjour, je suis</p>
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4">
-              <span className="text-foreground">{profile?.fullName?.split(" ")[0] || "Abdenour"} </span>
-              <span className="text-primary">{profile?.fullName?.split(" ")[1] || "Hellas"}</span>
-            </h1>
-            <div className="text-lg md:text-xl lg:text-2xl text-muted-foreground mb-4 md:mb-6 min-h-[1.75rem]">
-              <span className="inline-block">{text}</span>
-              <motion.span
-                animate={{ opacity: [1, 0] }}
-                transition={{ duration: 0.8, repeat: Infinity }}
-                className="inline-block w-0.5 h-5 md:h-6 bg-primary ml-1 align-middle"
-              />
-            </div>
-            <p className="text-sm md:text-base text-muted-foreground max-w-lg mx-auto lg:mx-0 mb-6 md:mb-8 leading-relaxed">
-              {profile?.bio || "Déterminé, sérieux, autonome et conscient du travail qui m'attend, je suis persuadé que je serais un élément moteur au sein de votre structure !"}
+            <p className="text-sm text-muted-foreground tracking-wide uppercase mb-3">
+              Ingénieur en Génie Électrique
             </p>
-            <div className="flex flex-wrap gap-3 justify-center lg:justify-start mb-6 md:mb-8">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-foreground leading-[1.1]">
+              {profile?.fullName || "Abdenour Hellas"}
+            </h1>
+            <p className="mt-5 text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto lg:mx-0">
+              {profile?.bio || "Déterminé, sérieux, autonome et conscient du travail qui m'attend, je suis persuadé que je serais un élément moteur au sein de votre structure."}
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3 justify-center lg:justify-start">
               <Link
                 href="/fr/cv"
-                className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-lg text-sm md:text-base"
+                className="group inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors"
               >
-                <FileText size={16} />
+                <FileText size={15} />
                 Voir mon CV
+                <ArrowRight size={14} className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
               </Link>
               <Link
                 href="/fr/contact"
-                className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-all hover:scale-105 text-sm md:text-base"
+                className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground rounded-lg text-sm font-medium hover:bg-muted transition-colors"
               >
-                <Send size={16} />
+                <Send size={15} />
                 Me contacter
               </Link>
               {profile?.cvUrl && (
                 <button
                   onClick={handleDownloadCV}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-all hover:scale-105 hover:shadow-lg text-sm md:text-base"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 text-muted-foreground rounded-lg text-sm font-medium hover:text-foreground hover:bg-muted transition-colors"
                 >
-                  <Download size={16} />
-                  Télécharger CV
+                  <Download size={15} />
+                  Télécharger
                 </button>
               )}
             </div>
-            <SocialIcons
-              linkedin={profile?.linkedin}
-              github={profile?.github}
-              twitter={profile?.twitter}
-              facebook={profile?.facebook}
-            />
+
+            <div className="mt-8 flex justify-center lg:justify-start">
+              <SocialIcons
+                linkedin={profile?.linkedin}
+                github={profile?.github}
+                twitter={profile?.twitter}
+                facebook={profile?.facebook}
+              />
+            </div>
           </motion.div>
         </div>
       </div>

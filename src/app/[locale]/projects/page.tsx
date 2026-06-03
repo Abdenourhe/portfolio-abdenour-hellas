@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Project } from "@/types";
 import { ExternalLink, Code, Star, FolderGit } from "lucide-react";
+import SectionHeader from "@/components/public/SectionHeader";
+import { Skeleton } from "@/components/public/Skeleton";
 
 function ProjectPlaceholder({ title }: { title: string }) {
   return (
-    <div className="w-full h-40 md:h-48 bg-gradient-to-br from-muted to-muted/50 flex flex-col items-center justify-center rounded-t-xl border-b border-border">
-      <FolderGit className="w-12 h-12 md:w-16 md:h-16 text-muted-foreground/40 mb-2" />
-      <span className="text-xs md:text-sm text-muted-foreground/60 text-center px-4">{title}</span>
+    <div className="w-full h-44 md:h-52 bg-muted flex flex-col items-center justify-center border-b border-border">
+      <FolderGit className="w-10 h-10 text-muted-foreground/30 mb-2" />
+      <span className="text-xs text-muted-foreground/50 text-center px-4">{title}</span>
     </div>
   );
 }
@@ -18,7 +20,6 @@ export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     fetch("/api/projects")
@@ -39,10 +40,22 @@ export default function ProjectsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-12 md:py-16">
-        <div className="animate-pulse grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
+      <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
+        <SectionHeader title="Projets" subtitle="Une sélection de mes réalisations techniques." />
+        <div className="max-w-4xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-64 md:h-72 bg-muted rounded-lg" />
+            <div key={i} className="rounded-xl border border-border bg-card overflow-hidden">
+              <Skeleton className="h-44 md:h-52 w-full" />
+              <div className="p-5 space-y-3">
+                <Skeleton className="h-5 w-2/3" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-4/5" />
+                <div className="flex gap-2 pt-1">
+                  <Skeleton className="h-6 w-16 rounded-full" />
+                  <Skeleton className="h-6 w-16 rounded-full" />
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -51,93 +64,93 @@ export default function ProjectsPage() {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-12 md:py-16 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">Projets</h1>
-        <p className="text-muted-foreground">Impossible de charger les projets. Veuillez réessayer plus tard.</p>
+      <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28 text-center">
+        <SectionHeader title="Projets" subtitle="" />
+        <p className="mt-8 text-muted-foreground">Impossible de charger les projets. Veuillez réessayer plus tard.</p>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 md:py-16">
-      <motion.div
-        initial={reducedMotion ? {} : { opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1 className="text-3xl md:text-4xl font-bold mb-8 md:mb-12 text-center">Projets</h1>
+    <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
+      <SectionHeader title="Projets" subtitle="Une sélection de mes réalisations techniques." />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
-          {projects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              initial={reducedMotion ? {} : { opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-              whileHover={{ y: -5 }}
-              className="group relative rounded-xl bg-card border border-border overflow-hidden hover:border-primary transition-all hover:shadow-xl"
-            >
-              {project.imageUrl ? (
-                <div className="w-full h-40 md:h-48 overflow-hidden">
-                  <img
-                    src={project.imageUrl}
-                    alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                </div>
-              ) : (
-                <ProjectPlaceholder title={project.title} />
-              )}
-              <div className="p-4 md:p-6">
-                <div className="flex items-start justify-between mb-2 md:mb-3">
-                  <h3 className="text-lg md:text-xl font-semibold group-hover:text-primary transition-colors">
-                    {project.title}
-                  </h3>
-                  {project.featured && (
-                    <Star className="w-4 h-4 md:w-5 md:h-5 text-secondary fill-secondary flex-shrink-0 ml-2" />
-                  )}
-                </div>
-                <p className="text-sm md:text-base text-muted-foreground mb-3 md:mb-4 line-clamp-3">{project.description}</p>
-                <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4">
-                  {project.technologies.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-2 py-0.5 text-xs rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex gap-3">
-                  {project.demoUrl && (
-                    <a
-                      href={project.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-                    >
-                      <ExternalLink size={14} />
-                      Voir le projet
-                    </a>
-                  )}
-                  {project.githubUrl && (
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <Code size={14} />
-                      Code source
-                    </a>
-                  )}
-                </div>
+      <div className="max-w-4xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {projects.map((project, index) => (
+          <motion.div
+            key={project.id}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.4, delay: index * 0.05 }}
+            className="group rounded-xl border border-border bg-card overflow-hidden hover:border-foreground/20 transition-colors"
+          >
+            {project.imageUrl ? (
+              <div className="w-full h-44 md:h-52 overflow-hidden">
+                <img
+                  src={project.imageUrl}
+                  alt={project.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                />
               </div>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
+            ) : (
+              <ProjectPlaceholder title={project.title} />
+            )}
+            <div className="p-5">
+              <div className="flex items-start justify-between mb-2">
+                <h3 className="text-base font-semibold text-foreground group-hover:text-muted-foreground transition-colors">
+                  {project.title}
+                </h3>
+                {project.featured && (
+                  <Star className="w-3.5 h-3.5 text-muted-foreground fill-muted-foreground flex-shrink-0 ml-2 mt-0.5" />
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-4">
+                {project.description}
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {project.technologies.slice(0, 4).map((tech) => (
+                  <span
+                    key={tech}
+                    className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-muted text-muted-foreground"
+                  >
+                    {tech}
+                  </span>
+                ))}
+                {project.technologies.length > 4 && (
+                  <span className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-muted text-muted-foreground">
+                    +{project.technologies.length - 4}
+                  </span>
+                )}
+              </div>
+              <div className="flex gap-4">
+                {project.demoUrl && (
+                  <a
+                    href={project.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-foreground hover:text-muted-foreground transition-colors"
+                  >
+                    <ExternalLink size={12} />
+                    Voir le projet
+                  </a>
+                )}
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Code size={12} />
+                    Code source
+                  </a>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 }

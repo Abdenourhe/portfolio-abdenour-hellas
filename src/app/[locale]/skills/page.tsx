@@ -1,19 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Skill } from "@/types";
 import { FileText, Cpu, Box, BarChart3, Zap, Settings, Network, Wrench, Radar, Globe, Users, UserCheck, UsersRound, ShieldCheck } from "lucide-react";
+import SectionHeader from "@/components/public/SectionHeader";
+import { SkeletonCard } from "@/components/public/Skeleton";
 
 const iconMap: Record<string, React.ElementType> = {
   FileText, Cpu, Box, BarChart3, Zap, Settings, Network, Wrench, Radar, Globe, Users, UserCheck, UsersRound, ShieldCheck,
 };
 
 const categoryColors: Record<string, string> = {
-  logiciel: "bg-blue-500",
-  technique: "bg-orange-500",
-  langue: "bg-green-500",
-  soft: "bg-purple-500",
+  logiciel: "bg-slate-500",
+  technique: "bg-stone-500",
+  langue: "bg-neutral-500",
+  soft: "bg-zinc-500",
 };
 
 const categoryLabels: Record<string, string> = {
@@ -27,7 +29,6 @@ export default function SkillsPage() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     fetch("/api/skills")
@@ -54,10 +55,11 @@ export default function SkillsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-12 md:py-16">
-        <div className="animate-pulse grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-20 bg-muted rounded-lg" />
+      <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
+        <SectionHeader title="Compétences" subtitle="Les outils et technologies que je maîtrise." />
+        <div className="max-w-4xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <SkeletonCard key={i} />
           ))}
         </div>
       </div>
@@ -66,70 +68,63 @@ export default function SkillsPage() {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-12 md:py-16 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">Compétences</h1>
-        <p className="text-muted-foreground">Impossible de charger les compétences. Veuillez réessayer plus tard.</p>
+      <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28 text-center">
+        <SectionHeader title="Compétences" subtitle="" />
+        <p className="mt-8 text-muted-foreground">Impossible de charger les compétences. Veuillez réessayer plus tard.</p>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 md:py-16">
-      <motion.div
-        initial={reducedMotion ? {} : { opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1 className="text-3xl md:text-4xl font-bold mb-8 md:mb-12 text-center">Compétences</h1>
+    <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
+      <SectionHeader title="Compétences" subtitle="Les outils et technologies que je maîtrise." />
 
-        <div className="max-w-4xl mx-auto space-y-10 md:space-y-12">
-          {Object.entries(groupedSkills).map(([category, categorySkills], catIndex) => (
-            <motion.div
-              key={category}
-              initial={reducedMotion ? {} : { opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.4, delay: catIndex * 0.1 }}
-            >
-              <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 flex items-center gap-2">
-                <span className={`w-3 h-3 rounded-full ${categoryColors[category] || "bg-primary"}`} />
-                {categoryLabels[category] || category}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                {categorySkills.map((skill, index) => {
-                  const IconComponent = skill.icon ? iconMap[skill.icon] : null;
-                  return (
-                    <motion.div
-                      key={skill.id}
-                      initial={reducedMotion ? {} : { opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.3, delay: index * 0.03 }}
-                      whileHover={{ scale: 1.02 }}
-                      className="p-3 md:p-4 rounded-xl bg-card border border-border hover:border-primary transition-colors"
-                    >
-                      <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
-                        {IconComponent && <IconComponent className="w-4 h-4 md:w-5 md:h-5 text-primary flex-shrink-0" />}
-                        <span className="font-medium text-sm md:text-base truncate">{skill.name}</span>
-                        <span className="ml-auto text-xs md:text-sm text-muted-foreground flex-shrink-0">{skill.level}%</span>
-                      </div>
-                      <div className="h-2 bg-muted rounded-full overflow-hidden">
-                        <motion.div
-                          initial={reducedMotion ? {} : { width: 0 }}
-                          whileInView={{ width: `${skill.level}%` }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-                          className={`h-full rounded-full ${categoryColors[category] || "bg-primary"}`}
-                        />
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
+      <div className="max-w-4xl mx-auto mt-12 space-y-14">
+        {Object.entries(groupedSkills).map(([category, categorySkills]) => (
+          <motion.div
+            key={category}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-base font-semibold text-foreground mb-5 flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${categoryColors[category] || "bg-muted-foreground"}`} />
+              {categoryLabels[category] || category}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {categorySkills.map((skill, index) => {
+                const IconComponent = skill.icon ? iconMap[skill.icon] : null;
+                return (
+                  <motion.div
+                    key={skill.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: index * 0.03 }}
+                    className="p-4 rounded-xl border border-border bg-card hover:border-foreground/20 transition-colors"
+                  >
+                    <div className="flex items-center gap-2.5 mb-3">
+                      {IconComponent && <IconComponent className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
+                      <span className="text-sm font-medium text-foreground flex-1 truncate">{skill.name}</span>
+                      <span className="text-xs text-muted-foreground tabular-nums">{skill.level}%</span>
+                    </div>
+                    <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        whileInView={{ width: `${skill.level}%` }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                        className={`h-full rounded-full ${categoryColors[category] || "bg-muted-foreground"}`}
+                      />
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 }

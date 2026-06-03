@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { Trophy, Bike, Waves, Plane } from "lucide-react";
+import { motion } from "framer-motion";
+import { Trophy, Bike, Waves, Plane, MapPin, Mail, Phone } from "lucide-react";
 import SocialIcons from "@/components/public/SocialIcons";
+import SectionHeader from "@/components/public/SectionHeader";
+import { Skeleton } from "@/components/public/Skeleton";
 
 const interests = [
   { name: "Football", icon: Trophy },
@@ -14,82 +16,140 @@ const interests = [
 
 export default function AboutPage() {
   const [profile, setProfile] = useState<any>(null);
-  const reducedMotion = useReducedMotion();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/profile")
       .then((r) => r.json())
-      .then((data) => setProfile(data));
+      .then((data) => {
+        setProfile(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
+        <div className="max-w-2xl mx-auto text-center mb-16">
+          <Skeleton className="h-8 w-48 mx-auto mb-4" />
+          <Skeleton className="h-4 w-64 mx-auto" />
+        </div>
+        <div className="max-w-3xl mx-auto flex flex-col md:flex-row gap-8 items-center">
+          <Skeleton className="w-40 h-40 rounded-full flex-shrink-0" />
+          <div className="space-y-3 w-full">
+            <Skeleton className="h-6 w-48" />
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-4 w-2/3" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="container mx-auto px-4 py-12 md:py-16">
-      <motion.div
-        initial={reducedMotion ? {} : { opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1 className="text-3xl md:text-4xl font-bold mb-8 md:mb-12 text-center">À propos de moi</h1>
+    <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
+      <SectionHeader
+        title="À propos"
+        subtitle="Passionné par l'innovation technique et la résolution de problèmes complexes."
+      />
 
-        <div className="max-w-3xl mx-auto mb-12 md:mb-16">
-          <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center">
-            <motion.div
-              initial={reducedMotion ? {} : { opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="w-36 h-36 md:w-48 md:h-48 rounded-full bg-gradient-to-br from-primary via-secondary to-accent p-1 flex-shrink-0"
-            >
-              <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
-                {profile?.photoUrl ? (
-                  <img src={profile.photoUrl} alt={profile.fullName} className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-4xl md:text-5xl font-bold text-primary">AH</span>
-                )}
-              </div>
-            </motion.div>
-            <div className="text-center md:text-left">
-              <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4">{profile?.fullName || "Abdenour Hellas"}</h2>
-              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                {profile?.bio || "Déterminé, sérieux, autonome et conscient du travail qui m'attend, je suis persuadé que je serais un élément moteur au sein de votre structure !"}
-              </p>
-              <div className="mt-4 space-y-1.5 md:space-y-2">
-                <p className="text-xs md:text-sm"><span className="font-medium">Email:</span> {profile?.email || "Abdenour.Hellas@uqat.ca"}</p>
-                <p className="text-xs md:text-sm"><span className="font-medium">Téléphone:</span> {profile?.phone || "418-350-5686"}</p>
-                <p className="text-xs md:text-sm"><span className="font-medium">Adresse:</span> {profile?.location || "3490 Rue Principale, Baker-Brook, NB E7A 1Z6"}</p>
-              </div>
-              <div className="mt-4 flex justify-center md:justify-start">
-                <SocialIcons
-                  linkedin={profile?.linkedin}
-                  github={profile?.github}
-                  twitter={profile?.twitter}
-                  facebook={profile?.facebook}
+      <div className="max-w-3xl mx-auto mt-16">
+        <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="flex-shrink-0 mx-auto md:mx-0"
+          >
+            <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden ring-1 ring-border bg-muted">
+              {profile?.photoUrl ? (
+                <img
+                  src={profile.photoUrl}
+                  alt={profile.fullName}
+                  className="w-full h-full object-cover"
                 />
-              </div>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="text-4xl font-semibold text-muted-foreground">
+                    {profile?.fullName?.split(" ").map((n: string) => n[0]).join("") || "AH"}
+                  </span>
+                </div>
+              )}
             </div>
-          </div>
-        </div>
+          </motion.div>
 
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-center">Centres d&apos;intérêt</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-            {interests.map((interest, index) => (
-              <motion.div
-                key={interest.name}
-                initial={reducedMotion ? {} : { opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                className="p-4 md:p-6 rounded-xl bg-card border border-border text-center hover:border-primary transition-colors cursor-default"
-              >
-                <interest.icon className="w-6 h-6 md:w-8 md:h-8 mx-auto mb-2 md:mb-3 text-primary" />
-                <p className="font-medium text-sm md:text-base">{interest.name}</p>
-              </motion.div>
-            ))}
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="flex-1 text-center md:text-left"
+          >
+            <h2 className="text-xl font-semibold text-foreground">
+              {profile?.fullName || "Abdenour Hellas"}
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              {profile?.title || "Ingénieur en Génie Électrique"}
+            </p>
+
+            <div className="mt-5 flex flex-wrap gap-4 justify-center md:justify-start text-sm text-muted-foreground">
+              {profile?.email && (
+                <span className="inline-flex items-center gap-1.5">
+                  <Mail size={13} />
+                  {profile.email}
+                </span>
+              )}
+              {profile?.phone && (
+                <span className="inline-flex items-center gap-1.5">
+                  <Phone size={13} />
+                  {profile.phone}
+                </span>
+              )}
+              {profile?.location && (
+                <span className="inline-flex items-center gap-1.5">
+                  <MapPin size={13} />
+                  {profile.location}
+                </span>
+              )}
+            </div>
+
+            <p className="mt-5 text-sm md:text-base text-muted-foreground leading-relaxed">
+              {profile?.bio || "Déterminé, sérieux, autonome et conscient du travail qui m'attend, je suis persuadé que je serais un élément moteur au sein de votre structure."}
+            </p>
+
+            <div className="mt-6 flex justify-center md:justify-start">
+              <SocialIcons
+                linkedin={profile?.linkedin}
+                github={profile?.github}
+                twitter={profile?.twitter}
+                facebook={profile?.facebook}
+              />
+            </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
+
+      <div className="max-w-3xl mx-auto mt-20">
+        <SectionHeader title="Centres d'intérêt" subtitle="" />
+        <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3">
+          {interests.map((interest, index) => (
+            <motion.div
+              key={interest.name}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: index * 0.05 }}
+              className="group p-5 rounded-xl border border-border bg-card text-center hover:border-foreground/20 transition-colors"
+            >
+              <interest.icon className="w-5 h-5 mx-auto mb-2.5 text-muted-foreground group-hover:text-foreground transition-colors" />
+              <p className="text-sm font-medium text-foreground">{interest.name}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
