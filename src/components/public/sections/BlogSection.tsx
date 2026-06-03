@@ -8,6 +8,7 @@ import { Calendar, ArrowRight, FileText } from "lucide-react";
 import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 import { useLocale } from "@/components/public/useLocale";
+import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
 
 interface BlogSectionProps {
   data?: Article[];
@@ -35,7 +36,7 @@ export default function BlogSection({ data, compact = false, limit }: BlogSectio
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {[1, 2, 3].map((i) => (
           <div key={i} className="rounded-xl border border-border bg-card overflow-hidden">
             <Skeleton className="h-40 w-full" />
@@ -52,27 +53,25 @@ export default function BlogSection({ data, compact = false, limit }: BlogSectio
   }
 
   return (
-    <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {displayArticles.map((article, index) => (
-        <motion.div
-          key={article.id}
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.4, delay: index * 0.05 }}
-        >
+    <AnimatedSection stagger={0.1} className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {displayArticles.map((article) => (
+        <motion.div key={article.id} variants={fadeUpItem}>
           <Link href={`/${locale}/blog/${article.slug}`} className="block h-full group">
-            <div className="h-full rounded-xl border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors">
+            <motion.div
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="h-full rounded-xl border border-border bg-card overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all"
+            >
               {article.imageUrl ? (
-                <div className="w-full h-40 overflow-hidden">
+                <div className="w-full h-44 overflow-hidden">
                   <img
                     src={article.imageUrl}
                     alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                   />
                 </div>
               ) : (
-                <div className="w-full h-40 bg-muted flex items-center justify-center">
+                <div className="w-full h-44 bg-muted flex items-center justify-center">
                   <FileText className="w-8 h-8 text-primary/20" />
                 </div>
               )}
@@ -89,10 +88,10 @@ export default function BlogSection({ data, compact = false, limit }: BlogSectio
                   {t("blog.read")} <ArrowRight size={12} />
                 </span>
               </div>
-            </div>
+            </motion.div>
           </Link>
         </motion.div>
       ))}
-    </div>
+    </AnimatedSection>
   );
 }

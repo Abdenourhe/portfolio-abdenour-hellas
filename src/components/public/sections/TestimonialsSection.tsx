@@ -6,6 +6,7 @@ import { Testimonial } from "@/types";
 import { Quote, User } from "lucide-react";
 import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
+import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
 
 interface TestimonialsSectionProps {
   data?: Testimonial[];
@@ -32,7 +33,7 @@ export default function TestimonialsSection({ data, compact = false, limit }: Te
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {[1, 2, 3].map((i) => (
           <div key={i} className="p-6 rounded-xl border border-border bg-card space-y-4">
             <Skeleton className="h-4 w-full" />
@@ -52,24 +53,23 @@ export default function TestimonialsSection({ data, compact = false, limit }: Te
   }
 
   return (
-    <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {displayTestimonials.map((item, index) => (
+    <AnimatedSection stagger={0.1} className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {displayTestimonials.map((item) => (
         <motion.div
           key={item.id}
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.4, delay: index * 0.05 }}
-          className={`rounded-xl border border-border bg-card hover:border-primary/30 transition-colors flex flex-col ${compact ? "p-5" : "p-6"}`}
+          variants={fadeUpItem}
+          whileHover={{ y: -4 }}
+          transition={{ duration: 0.2 }}
+          className={`rounded-xl border border-border bg-card hover:shadow-lg hover:border-primary/20 transition-all flex flex-col ${compact ? "p-5" : "p-6"}`}
         >
           <Quote className="w-5 h-5 text-secondary/60 mb-4 flex-shrink-0" />
           <p className="text-sm text-muted-foreground leading-relaxed flex-1">{item.content}</p>
           <div className="flex items-center gap-3 mt-5 pt-4 border-t border-border/60">
             {item.imageUrl ? (
-              <img src={item.imageUrl} alt={item.name} className="w-8 h-8 rounded-full object-cover" />
+              <img src={item.imageUrl} alt={item.name} className="w-9 h-9 rounded-full object-cover" />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center">
-                <User className="w-3.5 h-3.5 text-primary/60" />
+              <div className="w-9 h-9 rounded-full bg-primary/5 flex items-center justify-center">
+                <User className="w-4 h-4 text-primary/60" />
               </div>
             )}
             <div>
@@ -79,6 +79,6 @@ export default function TestimonialsSection({ data, compact = false, limit }: Te
           </div>
         </motion.div>
       ))}
-    </div>
+    </AnimatedSection>
   );
 }

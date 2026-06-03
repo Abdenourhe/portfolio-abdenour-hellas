@@ -6,6 +6,7 @@ import { Project } from "@/types";
 import { ExternalLink, Code, Star, FolderGit } from "lucide-react";
 import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
+import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
 
 function ProjectPlaceholder({ title }: { title: string }) {
   return (
@@ -49,7 +50,7 @@ export default function ProjectsSection({ data, compact = false, limit }: Projec
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="rounded-xl border border-border bg-card overflow-hidden">
             <Skeleton className="h-44 md:h-52 w-full" />
@@ -75,22 +76,21 @@ export default function ProjectsSection({ data, compact = false, limit }: Projec
   }
 
   return (
-    <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
-      {displayProjects.map((project, index) => (
+    <AnimatedSection stagger={0.1} className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5">
+      {displayProjects.map((project) => (
         <motion.div
           key={project.id}
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.4, delay: index * 0.05 }}
-          className="group rounded-xl border border-border bg-card overflow-hidden hover:border-primary/40 transition-colors"
+          variants={fadeUpItem}
+          whileHover={{ y: -4 }}
+          transition={{ duration: 0.2 }}
+          className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all"
         >
           {project.imageUrl ? (
             <div className="w-full h-44 md:h-52 overflow-hidden">
               <img
                 src={project.imageUrl}
                 alt={project.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
               />
             </div>
           ) : (
@@ -150,6 +150,6 @@ export default function ProjectsSection({ data, compact = false, limit }: Projec
           </div>
         </motion.div>
       ))}
-    </div>
+    </AnimatedSection>
   );
 }

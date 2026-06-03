@@ -6,6 +6,7 @@ import { Education } from "@/types";
 import { GraduationCap, Calendar, MapPin } from "lucide-react";
 import { SkeletonList } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
+import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
 
 interface EducationSectionProps {
   data?: Education[];
@@ -39,8 +40,12 @@ export default function EducationSection({ data, compact = false, limit }: Educa
 
   if (loading) {
     return (
-      <div className="max-w-3xl mx-auto">
-        <SkeletonList count={4} />
+      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="rounded-xl border border-border bg-card p-5 space-y-3">
+            <SkeletonList count={1} />
+          </div>
+        ))}
       </div>
     );
   }
@@ -53,25 +58,24 @@ export default function EducationSection({ data, compact = false, limit }: Educa
 
   const displayEducation = limit ? education.slice(0, limit) : education;
 
-  if (compact) {
-    return (
-      <div className="max-w-3xl mx-auto space-y-3">
-        {displayEducation.map((edu, index) => (
-          <motion.div
-            key={edu.id}
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{ duration: 0.4, delay: index * 0.05 }}
-            className="flex gap-4 p-4 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors"
-          >
+  return (
+    <AnimatedSection stagger={0.1} className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+      {displayEducation.map((edu) => (
+        <motion.div
+          key={edu.id}
+          variants={fadeUpItem}
+          whileHover={{ y: -4 }}
+          transition={{ duration: 0.2 }}
+          className={`rounded-xl border border-border bg-card hover:shadow-lg hover:border-primary/20 transition-all ${compact ? "p-4" : "p-5"}`}
+        >
+          <div className="flex items-start gap-3">
             <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-primary/5 flex items-center justify-center mt-0.5">
               <GraduationCap className="w-4 h-4 text-primary/70" />
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="text-sm font-semibold text-primary">{edu.degree}</h3>
-              <p className="text-xs text-muted-foreground">{edu.school}</p>
-              <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 text-[10px] text-muted-foreground">
+              <p className="text-xs text-muted-foreground mt-0.5">{edu.school}</p>
+              <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-2 text-[11px] text-muted-foreground">
                 <span className="inline-flex items-center gap-1">
                   <Calendar size={10} />
                   {new Date(edu.startDate).toLocaleDateString("fr-CA", { year: "numeric", month: "short" })} —{" "}
@@ -87,53 +91,14 @@ export default function EducationSection({ data, compact = false, limit }: Educa
                 </span>
               </div>
               {edu.description && (
-                <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{edu.description}</p>
+                <p className={`text-muted-foreground mt-2 ${compact ? "text-xs line-clamp-2" : "text-xs leading-relaxed"}`}>
+                  {edu.description}
+                </p>
               )}
             </div>
-          </motion.div>
-        ))}
-      </div>
-    );
-  }
-
-  return (
-    <div className="max-w-3xl mx-auto space-y-3">
-      {displayEducation.map((edu, index) => (
-        <motion.div
-          key={edu.id}
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.4, delay: index * 0.05 }}
-          className="flex gap-4 p-5 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors"
-        >
-          <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-primary/5 flex items-center justify-center mt-0.5">
-            <GraduationCap className="w-4 h-4 text-primary/70" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-primary">{edu.degree}</h3>
-            <p className="text-sm text-muted-foreground">{edu.school}</p>
-            <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-2 text-xs text-muted-foreground">
-              <span className="inline-flex items-center gap-1">
-                <Calendar size={10} />
-                {new Date(edu.startDate).toLocaleDateString("fr-CA", { year: "numeric", month: "short" })} —{" "}
-                {edu.current
-                  ? t("experience.present")
-                  : edu.endDate
-                  ? new Date(edu.endDate).toLocaleDateString("fr-CA", { year: "numeric", month: "short" })
-                  : ""}
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <MapPin size={10} />
-                {edu.location}
-              </span>
-            </div>
-            {edu.description && (
-              <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{edu.description}</p>
-            )}
           </div>
         </motion.div>
       ))}
-    </div>
+    </AnimatedSection>
   );
 }
