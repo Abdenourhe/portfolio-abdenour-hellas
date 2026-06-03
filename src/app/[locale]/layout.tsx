@@ -75,9 +75,13 @@ export default async function LocaleLayout({
     <ThemeProvider>
       <I18nProvider messages={messages}>
         <div lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className="min-h-screen flex flex-col">
-          <Header locale={locale as Locale} messages={messages} />
+          <div className="print:hidden">
+            <Header locale={locale as Locale} messages={messages} />
+          </div>
           <main className="flex-1">{children}</main>
-          <Footer locale={locale} messages={messages} />
+          <div className="print:hidden">
+            <Footer locale={locale} messages={messages} />
+          </div>
         </div>
       </I18nProvider>
     </ThemeProvider>
