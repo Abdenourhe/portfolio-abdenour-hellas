@@ -3,8 +3,11 @@
 import { motion } from "framer-motion";
 import { Download, Printer } from "lucide-react";
 import SectionHeader from "@/components/public/SectionHeader";
+import { useT } from "@/components/public/I18nProvider";
 
 export default function CVPage() {
+  const t = useT();
+
   const handleDownload = async () => {
     await fetch("/api/stats", {
       method: "POST",
@@ -16,7 +19,7 @@ export default function CVPage() {
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-      <SectionHeader title="Curriculum Vitae" subtitle="Mon parcours académique et professionnel." />
+      <SectionHeader title={t("cv.title")} subtitle={t("cv.subtitle")} />
 
       <div className="max-w-3xl mx-auto mt-10">
         <div className="flex flex-wrap justify-center gap-2 mb-8">
@@ -25,14 +28,14 @@ export default function CVPage() {
             className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
           >
             <Download size={14} />
-            Télécharger PDF
+            {t("cv.download")}
           </button>
           <button
             onClick={() => window.print()}
             className="inline-flex items-center gap-2 px-4 py-2 border border-primary/20 text-primary rounded-lg text-sm font-medium hover:bg-primary/5 transition-colors"
           >
             <Printer size={14} />
-            Imprimer
+            {t("cv.print")}
           </button>
         </div>
 
@@ -44,7 +47,7 @@ export default function CVPage() {
         >
           <div className="text-center mb-8 pb-6 border-b border-border">
             <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-primary">Abdenour Hellas</h2>
-            <p className="text-base text-secondary mt-1 font-medium">Ingénieur en Génie Électrique</p>
+            <p className="text-base text-secondary mt-1 font-medium">{t("hero.title")}</p>
             <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 mt-3 text-xs text-muted-foreground">
               <span>Abdenour.Hellas@uqat.ca</span>
               <span>·</span>
@@ -55,15 +58,14 @@ export default function CVPage() {
           </div>
 
           <div className="mb-8">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-primary/70 mb-3">Profil</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-primary/70 mb-3">{t("cv.profile")}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Déterminé, sérieux, autonome et conscient du travail qui m&apos;attend,
-              je suis persuadé que je serais un élément moteur au sein de votre structure.
+              {t("hero.subtitle")}
             </p>
           </div>
 
           <div className="mb-8">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-primary/70 mb-3">Formation</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-primary/70 mb-3">{t("cv.education")}</h3>
             <div className="space-y-4">
               <div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5">
@@ -92,7 +94,7 @@ export default function CVPage() {
           </div>
 
           <div className="mb-8">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-primary/70 mb-3">Expériences</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-primary/70 mb-3">{t("cv.experience")}</h3>
             <div className="space-y-4">
               <div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5">
@@ -113,7 +115,7 @@ export default function CVPage() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-primary/70 mb-3">Compétences</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-primary/70 mb-3">{t("cv.skills")}</h3>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-muted-foreground">
               <span>Microsoft Office</span>
               <span>Proteus 8</span>

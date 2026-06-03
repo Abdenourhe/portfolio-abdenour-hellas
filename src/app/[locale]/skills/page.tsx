@@ -6,19 +6,21 @@ import { Skill } from "@/types";
 import { FileText, Cpu, Box, BarChart3, Zap, Settings, Network, Wrench, Radar, Globe, Users, UserCheck, UsersRound, ShieldCheck } from "lucide-react";
 import SectionHeader from "@/components/public/SectionHeader";
 import { SkeletonCard } from "@/components/public/Skeleton";
+import { useT } from "@/components/public/I18nProvider";
 
 const iconMap: Record<string, React.ElementType> = {
   FileText, Cpu, Box, BarChart3, Zap, Settings, Network, Wrench, Radar, Globe, Users, UserCheck, UsersRound, ShieldCheck,
 };
 
 const categoryLabels: Record<string, string> = {
-  logiciel: "Logiciels",
-  technique: "Techniques",
-  langue: "Langues",
-  soft: "Soft Skills",
+  logiciel: "skills.software",
+  technique: "skills.technical",
+  langue: "skills.language",
+  soft: "skills.soft",
 };
 
 export default function SkillsPage() {
+  const t = useT();
   const [skills, setSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -49,7 +51,7 @@ export default function SkillsPage() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-        <SectionHeader title="Compétences" subtitle="Les outils et technologies que je maîtrise." />
+        <SectionHeader title={t("skills.title")} subtitle={t("skills.subtitle")} />
         <div className="max-w-4xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 gap-4">
           {[1, 2, 3, 4].map((i) => (
             <SkeletonCard key={i} />
@@ -62,7 +64,7 @@ export default function SkillsPage() {
   if (error) {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28 text-center">
-        <SectionHeader title="Compétences" subtitle="" />
+        <SectionHeader title={t("skills.title")} subtitle="" />
         <p className="mt-8 text-muted-foreground">Impossible de charger les compétences. Veuillez réessayer plus tard.</p>
       </div>
     );
@@ -70,7 +72,7 @@ export default function SkillsPage() {
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-      <SectionHeader title="Compétences" subtitle="Les outils et technologies que je maîtrise." />
+      <SectionHeader title={t("skills.title")} subtitle={t("skills.subtitle")} />
 
       <div className="max-w-4xl mx-auto mt-12 space-y-14">
         {Object.entries(groupedSkills).map(([category, categorySkills]) => (
@@ -83,7 +85,7 @@ export default function SkillsPage() {
           >
             <h2 className="text-base font-semibold text-primary mb-5 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-secondary" />
-              {categoryLabels[category] || category}
+              {t(categoryLabels[category] || category)}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {categorySkills.map((skill, index) => {

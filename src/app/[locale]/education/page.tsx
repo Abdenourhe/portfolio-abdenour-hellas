@@ -6,8 +6,10 @@ import { Education } from "@/types";
 import { GraduationCap, Calendar, MapPin } from "lucide-react";
 import SectionHeader from "@/components/public/SectionHeader";
 import { SkeletonList } from "@/components/public/Skeleton";
+import { useT } from "@/components/public/I18nProvider";
 
 export default function EducationPage() {
+  const t = useT();
   const [education, setEducation] = useState<Education[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -32,7 +34,7 @@ export default function EducationPage() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-        <SectionHeader title="Formation" subtitle="Mon parcours académique et mes diplômes." />
+        <SectionHeader title={t("education.title")} subtitle={t("education.subtitle")} />
         <div className="max-w-3xl mx-auto mt-12">
           <SkeletonList count={4} />
         </div>
@@ -43,7 +45,7 @@ export default function EducationPage() {
   if (error) {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28 text-center">
-        <SectionHeader title="Formation" subtitle="" />
+        <SectionHeader title={t("education.title")} subtitle="" />
         <p className="mt-8 text-muted-foreground">Impossible de charger les formations. Veuillez réessayer plus tard.</p>
       </div>
     );
@@ -51,7 +53,7 @@ export default function EducationPage() {
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-      <SectionHeader title="Formation" subtitle="Mon parcours académique et mes diplômes." />
+      <SectionHeader title={t("education.title")} subtitle={t("education.subtitle")} />
 
       <div className="max-w-3xl mx-auto mt-12 space-y-3">
         {education.map((edu, index) => (
@@ -74,7 +76,7 @@ export default function EducationPage() {
                   <Calendar size={10} />
                   {new Date(edu.startDate).toLocaleDateString("fr-CA", { year: "numeric", month: "short" })} —{" "}
                   {edu.current
-                    ? "Présent"
+                    ? t("experience.present")
                     : edu.endDate
                     ? new Date(edu.endDate).toLocaleDateString("fr-CA", { year: "numeric", month: "short" })
                     : ""}

@@ -6,6 +6,7 @@ import { Mail, Phone, MapPin, Send, Download, CheckCircle, XCircle } from "lucid
 import { z } from "zod";
 import SocialIcons from "@/components/public/SocialIcons";
 import SectionHeader from "@/components/public/SectionHeader";
+import { useT } from "@/components/public/I18nProvider";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Nom trop court"),
@@ -15,6 +16,7 @@ const contactSchema = z.object({
 });
 
 export default function ContactPage() {
+  const t = useT();
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", content: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
@@ -65,7 +67,7 @@ export default function ContactPage() {
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-      <SectionHeader title="Contact" subtitle="Disponible pour de nouvelles opportunités et collaborations." />
+      <SectionHeader title={t("contact.title")} subtitle={t("contact.subtitle")} />
 
       <div className="max-w-4xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
         <motion.div
@@ -74,7 +76,7 @@ export default function ContactPage() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-base font-semibold text-primary mb-5">Informations</h2>
+          <h2 className="text-base font-semibold text-primary mb-5">{t("contact.info")}</h2>
           <div className="space-y-2">
             <a
               href="mailto:Abdenour.Hellas@uqat.ca"
@@ -96,7 +98,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <h2 className="text-base font-semibold text-primary mt-8 mb-4">Réseaux sociaux</h2>
+          <h2 className="text-base font-semibold text-primary mt-8 mb-4">{t("contact.social")}</h2>
           <SocialIcons />
 
           <a
@@ -105,7 +107,7 @@ export default function ContactPage() {
             className="mt-8 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary border border-primary/20 rounded-lg hover:bg-primary/5 transition-colors"
           >
             <Download size={14} />
-            Télécharger mon CV
+            {t("contact.downloadCv")}
           </a>
         </motion.div>
 
@@ -115,12 +117,12 @@ export default function ContactPage() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <h2 className="text-base font-semibold text-primary mb-5">Envoyer un message</h2>
+          <h2 className="text-base font-semibold text-primary mb-5">{t("contact.sendMessage")}</h2>
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
               <input
                 type="text"
-                placeholder="Nom"
+                placeholder={t("contact.name")}
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm transition-colors placeholder:text-muted-foreground/60 ${
@@ -132,7 +134,7 @@ export default function ContactPage() {
             <div>
               <input
                 type="email"
-                placeholder="Email"
+                placeholder={t("contact.email")}
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm transition-colors placeholder:text-muted-foreground/60 ${
@@ -144,7 +146,7 @@ export default function ContactPage() {
             <div>
               <input
                 type="text"
-                placeholder="Sujet"
+                placeholder={t("contact.subject")}
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                 className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm transition-colors placeholder:text-muted-foreground/60 ${
@@ -155,7 +157,7 @@ export default function ContactPage() {
             </div>
             <div>
               <textarea
-                placeholder="Message"
+                placeholder={t("contact.message")}
                 rows={5}
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
@@ -171,7 +173,7 @@ export default function ContactPage() {
               className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
               <Send size={14} />
-              {submitting ? "Envoi..." : "Envoyer"}
+              {submitting ? t("contact.sending") : t("contact.send")}
             </button>
 
             {status === "success" && (
@@ -181,7 +183,7 @@ export default function ContactPage() {
                 className="flex items-center gap-2 p-3 rounded-lg bg-emerald-500/10 text-emerald-700 text-sm"
               >
                 <CheckCircle size={14} />
-                Message envoyé avec succès.
+                {t("contact.success")}
               </motion.div>
             )}
             {status === "error" && (
@@ -191,7 +193,7 @@ export default function ContactPage() {
                 className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 text-destructive text-sm"
               >
                 <XCircle size={14} />
-                Une erreur s&apos;est produite. Veuillez réessayer.
+                {t("contact.error")}
               </motion.div>
             )}
           </form>

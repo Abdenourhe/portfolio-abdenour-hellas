@@ -15,7 +15,7 @@ export default function Footer({ locale, messages }: { locale: string; messages:
               Abdenour Hellas
             </p>
             <p className="text-xs text-white/60 mt-1">
-              {messages.footer?.copyright?.replace("{year}", year.toString()) || `© ${year} Abdenour Hellas`}
+              {messages.footer?.rights?.replace("{year}", year.toString()) || `© ${year} Abdenour Hellas`}
             </p>
           </div>
 

@@ -7,8 +7,12 @@ import { Article } from "@/types";
 import { Calendar, ArrowRight, FileText } from "lucide-react";
 import SectionHeader from "@/components/public/SectionHeader";
 import { Skeleton } from "@/components/public/Skeleton";
+import { useT } from "@/components/public/I18nProvider";
+import { useLocale } from "@/components/public/useLocale";
 
 export default function BlogPage() {
+  const t = useT();
+  const locale = useLocale();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,7 +29,7 @@ export default function BlogPage() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-        <SectionHeader title="Blog" subtitle="Articles et réflexions sur l'ingénierie." />
+        <SectionHeader title={t("blog.title")} subtitle={t("blog.subtitle")} />
         <div className="max-w-5xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="rounded-xl border border-border bg-card overflow-hidden">
@@ -45,7 +49,7 @@ export default function BlogPage() {
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-      <SectionHeader title="Blog" subtitle="Articles et réflexions sur l'ingénierie." />
+      <SectionHeader title={t("blog.title")} subtitle={t("blog.subtitle")} />
 
       <div className="max-w-5xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {articles.map((article, index) => (
@@ -56,7 +60,7 @@ export default function BlogPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: index * 0.05 }}
           >
-            <Link href={`/fr/blog/${article.slug}`} className="block h-full group">
+            <Link href={`/${locale}/blog/${article.slug}`} className="block h-full group">
               <div className="h-full rounded-xl border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors">
                 {article.imageUrl ? (
                   <div className="w-full h-40 overflow-hidden">
@@ -74,14 +78,14 @@ export default function BlogPage() {
                 <div className="p-5">
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
                     <Calendar size={11} />
-                    {new Date(article.createdAt).toLocaleDateString("fr-CA", { year: "numeric", month: "long", day: "numeric" })}
+                    {new Date(article.createdAt).toLocaleDateString(locale === "fr" ? "fr-CA" : locale === "ar" ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric" })}
                   </div>
                   <h3 className="text-base font-semibold text-primary group-hover:text-primary/80 transition-colors mb-2">
                     {article.title}
                   </h3>
                   <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{article.excerpt}</p>
                   <span className="inline-flex items-center gap-1 text-xs text-secondary font-medium">
-                    Lire <ArrowRight size={12} />
+                    {t("blog.read")} <ArrowRight size={12} />
                   </span>
                 </div>
               </div>

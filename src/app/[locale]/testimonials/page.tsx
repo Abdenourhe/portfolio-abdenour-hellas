@@ -6,8 +6,10 @@ import { Testimonial } from "@/types";
 import { Quote, User } from "lucide-react";
 import SectionHeader from "@/components/public/SectionHeader";
 import { Skeleton } from "@/components/public/Skeleton";
+import { useT } from "@/components/public/I18nProvider";
 
 export default function TestimonialsPage() {
+  const t = useT();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -24,7 +26,7 @@ export default function TestimonialsPage() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-        <SectionHeader title="Témoignages" subtitle="Ce que disent mes collaborateurs." />
+        <SectionHeader title={t("testimonials.title")} subtitle={t("testimonials.subtitle")} />
         <div className="max-w-5xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="p-6 rounded-xl border border-border bg-card space-y-4">
@@ -47,12 +49,12 @@ export default function TestimonialsPage() {
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-      <SectionHeader title="Témoignages" subtitle="Ce que disent mes collaborateurs." />
+      <SectionHeader title={t("testimonials.title")} subtitle={t("testimonials.subtitle")} />
 
       <div className="max-w-5xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {testimonials.map((t, index) => (
+        {testimonials.map((item, index) => (
           <motion.div
-            key={t.id}
+            key={item.id}
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -60,18 +62,18 @@ export default function TestimonialsPage() {
             className="p-6 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors flex flex-col"
           >
             <Quote className="w-5 h-5 text-secondary/60 mb-4 flex-shrink-0" />
-            <p className="text-sm text-muted-foreground leading-relaxed flex-1">{t.content}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed flex-1">{item.content}</p>
             <div className="flex items-center gap-3 mt-5 pt-4 border-t border-border/60">
-              {t.imageUrl ? (
-                <img src={t.imageUrl} alt={t.name} className="w-8 h-8 rounded-full object-cover" />
+              {item.imageUrl ? (
+                <img src={item.imageUrl} alt={item.name} className="w-8 h-8 rounded-full object-cover" />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center">
                   <User className="w-3.5 h-3.5 text-primary/60" />
                 </div>
               )}
               <div>
-                <p className="text-sm font-medium text-primary">{t.name}</p>
-                <p className="text-xs text-muted-foreground">{t.role} · {t.company}</p>
+                <p className="text-sm font-medium text-primary">{item.name}</p>
+                <p className="text-xs text-muted-foreground">{item.role} · {item.company}</p>
               </div>
             </div>
           </motion.div>

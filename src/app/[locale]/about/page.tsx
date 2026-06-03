@@ -6,6 +6,7 @@ import { Trophy, Bike, Waves, Plane, MapPin, Mail, Phone } from "lucide-react";
 import SocialIcons from "@/components/public/SocialIcons";
 import SectionHeader from "@/components/public/SectionHeader";
 import { Skeleton } from "@/components/public/Skeleton";
+import { useT } from "@/components/public/I18nProvider";
 
 const interests = [
   { name: "Football", icon: Trophy },
@@ -15,6 +16,7 @@ const interests = [
 ];
 
 export default function AboutPage() {
+  const t = useT();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -50,10 +52,7 @@ export default function AboutPage() {
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-      <SectionHeader
-        title="À propos"
-        subtitle="Passionné par l'innovation technique et la résolution de problèmes complexes."
-      />
+      <SectionHeader title={t("about.title")} subtitle={t("about.subtitle")} />
 
       <div className="max-w-3xl mx-auto mt-16">
         <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start">
@@ -92,7 +91,7 @@ export default function AboutPage() {
               {profile?.fullName || "Abdenour Hellas"}
             </h2>
             <p className="text-sm text-secondary mt-1 font-medium">
-              {profile?.title || "Ingénieur en Génie Électrique"}
+              {profile?.title || t("hero.title")}
             </p>
 
             <div className="mt-5 flex flex-wrap gap-4 justify-center md:justify-start text-sm text-muted-foreground">
@@ -117,7 +116,7 @@ export default function AboutPage() {
             </div>
 
             <p className="mt-5 text-sm md:text-base text-muted-foreground leading-relaxed">
-              {profile?.bio || "Déterminé, sérieux, autonome et conscient du travail qui m'attend, je suis persuadé que je serais un élément moteur au sein de votre structure."}
+              {profile?.bio || t("hero.subtitle")}
             </p>
 
             <div className="mt-6 flex justify-center md:justify-start">
@@ -133,7 +132,7 @@ export default function AboutPage() {
       </div>
 
       <div className="max-w-3xl mx-auto mt-20">
-        <SectionHeader title="Centres d'intérêt" subtitle="" />
+        <SectionHeader title={t("about.interests")} subtitle="" />
         <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3">
           {interests.map((interest, index) => (
             <motion.div

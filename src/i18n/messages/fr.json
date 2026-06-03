@@ -20,18 +20,22 @@
     "contactMe": "Me contacter"
   },
   "about": {
-    "title": "À propos de moi",
+    "title": "À propos",
+    "subtitle": "Passionné par l'innovation technique et la résolution de problèmes complexes.",
     "interests": "Centres d'intérêt"
   },
   "experience": {
-    "title": "Expériences Professionnelles",
+    "title": "Expériences",
+    "subtitle": "Mon parcours professionnel et mes missions.",
     "present": "Présent"
   },
   "education": {
-    "title": "Formations"
+    "title": "Formation",
+    "subtitle": "Mon parcours académique et mes diplômes."
   },
   "skills": {
     "title": "Compétences",
+    "subtitle": "Les outils et technologies que je maîtrise.",
     "software": "Logiciels",
     "technical": "Techniques",
     "language": "Langues",
@@ -39,23 +43,50 @@
   },
   "projects": {
     "title": "Projets",
+    "subtitle": "Une sélection de mes réalisations techniques.",
     "featured": "À la une",
     "viewProject": "Voir le projet",
     "sourceCode": "Code source"
   },
+  "testimonials": {
+    "title": "Témoignages",
+    "subtitle": "Ce que disent mes collaborateurs."
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Articles et réflexions sur l'ingénierie.",
+    "read": "Lire",
+    "back": "Retour au blog",
+    "notFound": "Article non trouvé"
+  },
+  "cv": {
+    "title": "Curriculum Vitae",
+    "subtitle": "Mon parcours académique et professionnel.",
+    "download": "Télécharger PDF",
+    "print": "Imprimer",
+    "profile": "Profil",
+    "education": "Formation",
+    "experience": "Expériences",
+    "skills": "Compétences"
+  },
   "contact": {
-    "title": "Me contacter",
+    "title": "Contact",
+    "subtitle": "Disponible pour de nouvelles opportunités et collaborations.",
+    "info": "Informations",
+    "social": "Réseaux sociaux",
+    "sendMessage": "Envoyer un message",
     "name": "Nom",
     "email": "Email",
     "subject": "Sujet",
     "message": "Message",
     "send": "Envoyer",
-    "success": "Message envoyé avec succès !",
+    "sending": "Envoi...",
+    "success": "Message envoyé avec succès.",
     "error": "Une erreur s'est produite. Veuillez réessayer.",
     "downloadCv": "Télécharger mon CV"
   },
   "footer": {
-    "rights": "© 2026 Abdenour Hellas - Tous droits réservés"
+    "rights": "© {year} Abdenour Hellas - Tous droits réservés"
   },
   "admin": {
     "login": "Connexion",

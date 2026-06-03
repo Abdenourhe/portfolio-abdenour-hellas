@@ -6,6 +6,7 @@ import { Project } from "@/types";
 import { ExternalLink, Code, Star, FolderGit } from "lucide-react";
 import SectionHeader from "@/components/public/SectionHeader";
 import { Skeleton } from "@/components/public/Skeleton";
+import { useT } from "@/components/public/I18nProvider";
 
 function ProjectPlaceholder({ title }: { title: string }) {
   return (
@@ -17,6 +18,7 @@ function ProjectPlaceholder({ title }: { title: string }) {
 }
 
 export default function ProjectsPage() {
+  const t = useT();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -41,7 +43,7 @@ export default function ProjectsPage() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-        <SectionHeader title="Projets" subtitle="Une sélection de mes réalisations techniques." />
+        <SectionHeader title={t("projects.title")} subtitle={t("projects.subtitle")} />
         <div className="max-w-4xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 gap-4">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="rounded-xl border border-border bg-card overflow-hidden">
@@ -65,7 +67,7 @@ export default function ProjectsPage() {
   if (error) {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28 text-center">
-        <SectionHeader title="Projets" subtitle="" />
+        <SectionHeader title={t("projects.title")} subtitle="" />
         <p className="mt-8 text-muted-foreground">Impossible de charger les projets. Veuillez réessayer plus tard.</p>
       </div>
     );
@@ -73,7 +75,7 @@ export default function ProjectsPage() {
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-      <SectionHeader title="Projets" subtitle="Une sélection de mes réalisations techniques." />
+      <SectionHeader title={t("projects.title")} subtitle={t("projects.subtitle")} />
 
       <div className="max-w-4xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 gap-4">
         {projects.map((project, index) => (
@@ -132,7 +134,7 @@ export default function ProjectsPage() {
                     className="inline-flex items-center gap-1 text-xs text-primary hover:text-secondary transition-colors"
                   >
                     <ExternalLink size={12} />
-                    Voir le projet
+                    {t("projects.viewProject")}
                   </a>
                 )}
                 {project.githubUrl && (
@@ -143,7 +145,7 @@ export default function ProjectsPage() {
                     className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
                   >
                     <Code size={12} />
-                    Code source
+                    {t("projects.sourceCode")}
                   </a>
                 )}
               </div>

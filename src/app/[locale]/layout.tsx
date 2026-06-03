@@ -4,6 +4,7 @@ import { isValidLocale, Locale } from "@/i18n/config";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 import { ThemeProvider } from "@/components/public/ThemeProvider";
+import { I18nProvider } from "@/components/public/I18nProvider";
 
 export function generateStaticParams() {
   return [{ locale: "fr" }, { locale: "en" }, { locale: "ar" }];
@@ -72,11 +73,13 @@ export default async function LocaleLayout({
 
   return (
     <ThemeProvider>
-      <div lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className="min-h-screen flex flex-col">
-        <Header locale={locale as Locale} messages={messages} />
-        <main className="flex-1">{children}</main>
-        <Footer locale={locale} messages={messages} />
-      </div>
+      <I18nProvider messages={messages}>
+        <div lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className="min-h-screen flex flex-col">
+          <Header locale={locale as Locale} messages={messages} />
+          <main className="flex-1">{children}</main>
+          <Footer locale={locale} messages={messages} />
+        </div>
+      </I18nProvider>
     </ThemeProvider>
   );
 }

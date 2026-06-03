@@ -7,8 +7,12 @@ import Link from "next/link";
 import { Article } from "@/types";
 import { Calendar, ArrowLeft, FileText } from "lucide-react";
 import { Skeleton } from "@/components/public/Skeleton";
+import { useT } from "@/components/public/I18nProvider";
+import { useLocale } from "@/components/public/useLocale";
 
 export default function ArticlePage() {
+  const t = useT();
+  const locale = useLocale();
   const params = useParams();
   const slug = params.slug as string;
   const [article, setArticle] = useState<Article | null>(null);
@@ -44,9 +48,9 @@ export default function ArticlePage() {
   if (!article) {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28 text-center max-w-3xl">
-        <h1 className="text-xl font-semibold text-primary mb-3">Article non trouvé</h1>
-        <Link href="/fr/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-          Retour au blog
+        <h1 className="text-xl font-semibold text-primary mb-3">{t("blog.notFound")}</h1>
+        <Link href={`/${locale}/blog`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+          {t("blog.back")}
         </Link>
       </div>
     );
@@ -60,16 +64,16 @@ export default function ArticlePage() {
         transition={{ duration: 0.4 }}
       >
         <Link
-          href="/fr/blog"
+          href={`/${locale}/blog`}
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
         >
           <ArrowLeft size={14} />
-          Retour au blog
+          {t("blog.back")}
         </Link>
 
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3">
           <Calendar size={11} />
-          {new Date(article.createdAt).toLocaleDateString("fr-CA", { year: "numeric", month: "long", day: "numeric" })}
+          {new Date(article.createdAt).toLocaleDateString(locale === "fr" ? "fr-CA" : locale === "ar" ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric" })}
         </div>
 
         <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-primary mb-6">

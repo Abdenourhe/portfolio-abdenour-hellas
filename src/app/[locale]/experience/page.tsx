@@ -6,6 +6,7 @@ import { Experience } from "@/types";
 import { Briefcase } from "lucide-react";
 import SectionHeader from "@/components/public/SectionHeader";
 import { SkeletonList } from "@/components/public/Skeleton";
+import { useT } from "@/components/public/I18nProvider";
 
 const categoryLabels: Record<string, string> = {
   tech: "Technique",
@@ -14,6 +15,7 @@ const categoryLabels: Record<string, string> = {
 };
 
 export default function ExperiencePage() {
+  const t = useT();
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -38,7 +40,7 @@ export default function ExperiencePage() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-        <SectionHeader title="Expériences" subtitle="Mon parcours professionnel et mes missions." />
+        <SectionHeader title={t("experience.title")} subtitle={t("experience.subtitle")} />
         <div className="max-w-3xl mx-auto mt-12">
           <SkeletonList count={4} />
         </div>
@@ -49,7 +51,7 @@ export default function ExperiencePage() {
   if (error) {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28 text-center">
-        <SectionHeader title="Expériences" subtitle="" />
+        <SectionHeader title={t("experience.title")} subtitle="" />
         <p className="mt-8 text-muted-foreground">Impossible de charger les expériences. Veuillez réessayer plus tard.</p>
       </div>
     );
@@ -57,7 +59,7 @@ export default function ExperiencePage() {
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
-      <SectionHeader title="Expériences" subtitle="Mon parcours professionnel et mes missions." />
+      <SectionHeader title={t("experience.title")} subtitle={t("experience.subtitle")} />
 
       <div className="max-w-3xl mx-auto mt-12 relative">
         <div className="absolute left-4 md:left-0 md:right-0 md:mx-auto top-0 bottom-0 w-px bg-primary/20" />
@@ -80,7 +82,7 @@ export default function ExperiencePage() {
                     <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/5 px-2 py-0.5 rounded-md">
                       <Briefcase size={11} />
                       {new Date(exp.startDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" })} —{" "}
-                      {exp.current ? "Présent" : exp.endDate ? new Date(exp.endDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" }) : ""}
+                      {exp.current ? t("experience.present") : exp.endDate ? new Date(exp.endDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" }) : ""}
                     </span>
                     {exp.category && (
                       <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-secondary/10 text-secondary font-medium">

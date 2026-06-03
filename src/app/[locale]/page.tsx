@@ -6,12 +6,17 @@ import { FileText, Send, Download, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import SocialIcons from "@/components/public/SocialIcons";
 import { Skeleton } from "@/components/public/Skeleton";
+import { useT } from "@/components/public/I18nProvider";
+import { useLocalizedPath } from "@/components/public/useLocale";
 
 export default function HomePage() {
   return <HomeClient />;
 }
 
 function HomeClient() {
+  const t = useT();
+  const cvPath = useLocalizedPath("/cv");
+  const contactPath = useLocalizedPath("/contact");
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -92,30 +97,30 @@ function HomeClient() {
             className="text-center lg:text-left max-w-xl"
           >
             <p className="text-sm text-primary/70 tracking-wide uppercase mb-3">
-              Ingénieur en Génie Électrique
+              {t("hero.title")}
             </p>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-primary leading-[1.1]">
               {profile?.fullName || "Abdenour Hellas"}
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto lg:mx-0">
-              {profile?.bio || "Déterminé, sérieux, autonome et conscient du travail qui m'attend, je suis persuadé que je serais un élément moteur au sein de votre structure."}
+              {profile?.bio || t("hero.subtitle")}
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3 justify-center lg:justify-start">
               <Link
-                href="/fr/cv"
+                href={cvPath}
                 className="group inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
               >
                 <FileText size={15} />
-                Voir mon CV
+                {t("hero.viewCv")}
                 <ArrowRight size={14} className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
               </Link>
               <Link
-                href="/fr/contact"
+                href={contactPath}
                 className="inline-flex items-center gap-2 px-5 py-2.5 border border-primary/20 text-primary rounded-lg text-sm font-medium hover:bg-primary/5 transition-colors"
               >
                 <Send size={15} />
-                Me contacter
+                {t("hero.contactMe")}
               </Link>
               {profile?.cvUrl && (
                 <button
@@ -123,7 +128,7 @@ function HomeClient() {
                   className="inline-flex items-center gap-2 px-5 py-2.5 text-muted-foreground rounded-lg text-sm font-medium hover:text-primary hover:bg-primary/5 transition-colors"
                 >
                   <Download size={15} />
-                  Télécharger
+                  {t("contact.downloadCv")}
                 </button>
               )}
             </div>
