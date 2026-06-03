@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send, Download, CheckCircle, XCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Download, CheckCircle, XCircle, FileText } from "lucide-react";
 import { z } from "zod";
 import SocialIcons from "@/components/public/SocialIcons";
 import SectionHeader from "@/components/public/SectionHeader";
 import { useT } from "@/components/public/I18nProvider";
+import { useLocale, useLocalizedPath } from "@/components/public/useLocale";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Nom trop court"),
@@ -17,6 +18,8 @@ const contactSchema = z.object({
 
 export default function ContactPage() {
   const t = useT();
+  const locale = useLocale();
+  const cvPath = useLocalizedPath("/cv");
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", content: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
@@ -102,11 +105,11 @@ export default function ContactPage() {
           <SocialIcons />
 
           <a
-            href="/uploads/cv.pdf"
+            href={cvPath}
             onClick={handleDownloadCV}
             className="mt-8 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary border border-primary/20 rounded-lg hover:bg-primary/5 transition-colors"
           >
-            <Download size={14} />
+            <FileText size={14} />
             {t("contact.downloadCv")}
           </a>
         </motion.div>
