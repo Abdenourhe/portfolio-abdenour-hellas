@@ -69,12 +69,6 @@ function HomeClient() {
   const locale = useLocale();
   const cvPath = useLocalizedPath("/cv");
   const contactPath = useLocalizedPath("/contact");
-  const experiencePath = useLocalizedPath("/experience");
-  const educationPath = useLocalizedPath("/education");
-  const skillsPath = useLocalizedPath("/skills");
-  const projectsPath = useLocalizedPath("/projects");
-  const testimonialsPath = useLocalizedPath("/testimonials");
-  const blogPath = useLocalizedPath("/blog");
 
   const [profile, setProfile] = useState<any>(null);
   const [experiences, setExperiences] = useState<any[]>([]);
@@ -358,11 +352,6 @@ function HomeClient() {
           <div className="mt-12">
             <ExperienceSection data={experiences} compact limit={4} />
           </div>
-          <div className="mt-8 text-center">
-            <Link href={experiencePath} prefetch={false} className="inline-flex items-center gap-1.5 text-sm text-secondary font-medium hover:text-primary transition-colors">
-              {t("experience.title")} <ArrowRight size={14} />
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -372,11 +361,6 @@ function HomeClient() {
           <SectionHeader title={t("education.title")} subtitle={t("education.subtitle")} />
           <div className="mt-12">
             <EducationSection data={education} compact limit={4} />
-          </div>
-          <div className="mt-8 text-center">
-            <Link href={educationPath} prefetch={false} className="inline-flex items-center gap-1.5 text-sm text-secondary font-medium hover:text-primary transition-colors">
-              {t("education.title")} <ArrowRight size={14} />
-            </Link>
           </div>
         </div>
       </section>
@@ -388,11 +372,6 @@ function HomeClient() {
           <div className="mt-12">
             <SkillsSection data={skills} compact limit={6} />
           </div>
-          <div className="mt-8 text-center">
-            <Link href={skillsPath} prefetch={false} className="inline-flex items-center gap-1.5 text-sm text-secondary font-medium hover:text-primary transition-colors">
-              {t("skills.title")} <ArrowRight size={14} />
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -402,11 +381,6 @@ function HomeClient() {
           <SectionHeader title={t("projects.title")} subtitle={t("projects.subtitle")} />
           <div className="mt-12">
             <ProjectsSection data={projects} compact limit={4} />
-          </div>
-          <div className="mt-8 text-center">
-            <Link href={projectsPath} prefetch={false} className="inline-flex items-center gap-1.5 text-sm text-secondary font-medium hover:text-primary transition-colors">
-              {t("projects.title")} <ArrowRight size={14} />
-            </Link>
           </div>
         </div>
       </section>
@@ -418,11 +392,6 @@ function HomeClient() {
           <div className="mt-12">
             <TestimonialsSection data={testimonials} compact limit={3} />
           </div>
-          <div className="mt-8 text-center">
-            <Link href={testimonialsPath} prefetch={false} className="inline-flex items-center gap-1.5 text-sm text-secondary font-medium hover:text-primary transition-colors">
-              {t("testimonials.title")} <ArrowRight size={14} />
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -432,11 +401,6 @@ function HomeClient() {
           <SectionHeader title={t("blog.title")} subtitle={t("blog.subtitle")} />
           <div className="mt-12">
             <BlogSection data={articles} compact limit={3} />
-          </div>
-          <div className="mt-8 text-center">
-            <Link href={blogPath} prefetch={false} className="inline-flex items-center gap-1.5 text-sm text-secondary font-medium hover:text-primary transition-colors">
-              {t("blog.title")} <ArrowRight size={14} />
-            </Link>
           </div>
         </div>
       </section>

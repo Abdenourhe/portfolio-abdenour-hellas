@@ -63,7 +63,7 @@ export default function TestimonialsSection({ data, compact = false, limit }: Te
           className={`rounded-xl border border-border bg-card hover:shadow-lg hover:border-primary/20 transition-all flex flex-col ${compact ? "p-5" : "p-6"}`}
         >
           <Quote className="w-5 h-5 text-secondary/60 mb-4 flex-shrink-0" />
-          <p className="text-sm text-muted-foreground leading-relaxed flex-1">{item.content}</p>
+          <p className="text-base text-muted-foreground leading-relaxed flex-1">{item.content}</p>
           <div className="flex items-center gap-3 mt-5 pt-4 border-t border-border/60">
             {item.imageUrl ? (
               <img src={item.imageUrl} alt={item.name} className="w-9 h-9 rounded-full object-cover" />
@@ -73,8 +73,8 @@ export default function TestimonialsSection({ data, compact = false, limit }: Te
               </div>
             )}
             <div>
-              <p className="text-sm font-medium text-primary">{item.name}</p>
-              <p className="text-xs text-muted-foreground">{item.role} · {item.company}</p>
+              <p className="text-base font-medium text-primary">{item.name}</p>
+              <p className="text-sm text-muted-foreground">{item.role} · {item.company}</p>
             </div>
           </div>
         </motion.div>

@@ -76,15 +76,15 @@ export default function BlogSection({ data, compact = false, limit }: BlogSectio
                 </div>
               )}
               <div className={compact ? "p-4" : "p-5"}>
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
+                <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-2">
                   <Calendar size={11} />
                   {new Date(article.createdAt).toLocaleDateString(locale === "fr" ? "fr-CA" : locale === "ar" ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric" })}
                 </div>
-                <h3 className="text-base font-semibold text-primary group-hover:text-primary/80 transition-colors mb-2">
+                <h3 className="text-lg font-semibold text-primary group-hover:text-primary/80 transition-colors mb-2">
                   {article.title}
                 </h3>
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{article.excerpt}</p>
-                <span className="inline-flex items-center gap-1 text-xs text-secondary font-medium">
+                <p className="text-base text-muted-foreground line-clamp-2 mb-3">{article.excerpt}</p>
+                <span className="inline-flex items-center gap-1 text-sm text-secondary font-medium">
                   {t("blog.read")} <ArrowRight size={12} />
                 </span>
               </div>

@@ -16,7 +16,7 @@ export default function SectionHeader({ title, subtitle, centered = true }: Sect
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground"
+        className="text-3xl md:text-4xl font-semibold tracking-tight text-foreground"
       >
         {title}
       </motion.h2>
@@ -26,7 +26,7 @@ export default function SectionHeader({ title, subtitle, centered = true }: Sect
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="mt-2 text-muted-foreground text-sm md:text-base max-w-xl mx-auto leading-relaxed"
+          className="mt-2 text-muted-foreground text-base md:text-lg max-w-xl mx-auto leading-relaxed"
         >
           {subtitle}
         </motion.p>

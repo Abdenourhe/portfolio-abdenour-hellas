@@ -81,20 +81,20 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
             className={`rounded-xl border border-border bg-card hover:shadow-lg hover:border-primary/20 transition-all ${compact ? "p-4" : "p-5"}`}
           >
             <div className="flex flex-wrap items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/5 px-2 py-0.5 rounded-md">
+              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary bg-primary/5 px-2 py-0.5 rounded-md">
                 <Briefcase size={11} />
                 {new Date(exp.startDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" })} —{" "}
                 {exp.current ? t("experience.present") : exp.endDate ? new Date(exp.endDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" }) : ""}
               </span>
               {exp.category && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-secondary/10 text-secondary font-medium">
+                <span className="text-xs px-1.5 py-0.5 rounded-md bg-secondary/10 text-secondary font-medium">
                   {categoryLabels[exp.category] || exp.category}
                 </span>
               )}
             </div>
-            <h3 className="text-base font-semibold text-primary">{exp.title}</h3>
-            <p className="text-sm text-muted-foreground">{exp.company} · {exp.location}</p>
-            <p className={`text-muted-foreground leading-relaxed mt-2 ${compact ? "text-xs line-clamp-2" : "text-sm"}`}>
+            <h3 className="text-lg font-semibold text-primary">{exp.title}</h3>
+            <p className="text-base text-muted-foreground">{exp.company} · {exp.location}</p>
+            <p className={`text-muted-foreground leading-relaxed mt-2 ${compact ? "text-sm line-clamp-2" : "text-base"}`}>
               {exp.description}
             </p>
           </motion.div>

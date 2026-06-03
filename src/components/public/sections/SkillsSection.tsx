@@ -77,7 +77,7 @@ export default function SkillsSection({ data, compact = false, limit }: SkillsSe
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.5 }}
-              className="text-sm font-semibold text-primary mb-5 flex items-center gap-2"
+              className="text-base font-semibold text-primary mb-5 flex items-center gap-2"
             >
               <span className="w-2 h-2 rounded-full bg-secondary" />
               {t(categoryLabels[category] || category)}
@@ -86,10 +86,10 @@ export default function SkillsSection({ data, compact = false, limit }: SkillsSe
               {displaySkills.map((skill) => (
                 <motion.div key={skill.id} variants={fadeUpItem}>
                   <div className="flex justify-between items-center mb-1.5">
-                    <span className="text-sm font-medium text-foreground">{skill.name}</span>
-                    <span className="text-xs text-secondary font-medium tabular-nums">{skill.level}%</span>
+                    <span className="text-base font-medium text-foreground">{skill.name}</span>
+                    <span className="text-sm text-secondary font-medium tabular-nums">{skill.level}%</span>
                   </div>
-                  <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       whileInView={{ width: `${skill.level}%` }}

@@ -98,27 +98,27 @@ export default function ProjectsSection({ data, compact = false, limit }: Projec
           )}
           <div className={compact ? "p-4" : "p-5"}>
             <div className="flex items-start justify-between mb-2">
-              <h3 className="text-base font-semibold text-primary group-hover:text-primary/80 transition-colors">
+              <h3 className="text-lg font-semibold text-primary group-hover:text-primary/80 transition-colors">
                 {project.title}
               </h3>
               {project.featured && (
                 <Star className="w-3.5 h-3.5 text-secondary fill-secondary flex-shrink-0 ml-2 mt-0.5" />
               )}
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-4">
+            <p className="text-base text-muted-foreground leading-relaxed line-clamp-3 mb-4">
               {project.description}
             </p>
             <div className="flex flex-wrap gap-1.5 mb-4">
               {project.technologies.slice(0, 4).map((tech) => (
                 <span
                   key={tech}
-                  className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-primary/5 text-primary/80"
+                  className="px-2 py-0.5 text-xs font-medium rounded-md bg-primary/5 text-primary/80"
                 >
                   {tech}
                 </span>
               ))}
               {project.technologies.length > 4 && (
-                <span className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-primary/5 text-primary/80">
+                <span className="px-2 py-0.5 text-xs font-medium rounded-md bg-primary/5 text-primary/80">
                   +{project.technologies.length - 4}
                 </span>
               )}
@@ -129,7 +129,7 @@ export default function ProjectsSection({ data, compact = false, limit }: Projec
                   href={project.demoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-primary hover:text-secondary transition-colors"
+                  className="inline-flex items-center gap-1 text-sm text-primary hover:text-secondary transition-colors"
                 >
                   <ExternalLink size={12} />
                   {t("projects.viewProject")}
@@ -140,7 +140,7 @@ export default function ProjectsSection({ data, compact = false, limit }: Projec
                   href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
+                  className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   <Code size={12} />
                   {t("projects.sourceCode")}

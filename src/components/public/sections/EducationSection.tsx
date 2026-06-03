@@ -73,9 +73,9 @@ export default function EducationSection({ data, compact = false, limit }: Educa
               <GraduationCap className="w-4 h-4 text-primary/70" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-semibold text-primary">{edu.degree}</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">{edu.school}</p>
-              <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-2 text-[11px] text-muted-foreground">
+              <h3 className="text-base font-semibold text-primary">{edu.degree}</h3>
+              <p className="text-sm text-muted-foreground mt-0.5">{edu.school}</p>
+              <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-2 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1">
                   <Calendar size={10} />
                   {new Date(edu.startDate).toLocaleDateString("fr-CA", { year: "numeric", month: "short" })} —{" "}
@@ -91,7 +91,7 @@ export default function EducationSection({ data, compact = false, limit }: Educa
                 </span>
               </div>
               {edu.description && (
-                <p className={`text-muted-foreground mt-2 ${compact ? "text-xs line-clamp-2" : "text-xs leading-relaxed"}`}>
+                <p className={`text-muted-foreground mt-2 ${compact ? "text-sm line-clamp-2" : "text-sm leading-relaxed"}`}>
                   {edu.description}
                 </p>
               )}
