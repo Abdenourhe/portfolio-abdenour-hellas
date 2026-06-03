@@ -1,4 +1,7 @@
 {
+  "common": {
+    "error": "Unable to load data. Please try again later."
+  },
   "nav": {
     "home": "Home",
     "about": "About",

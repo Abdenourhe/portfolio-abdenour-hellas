@@ -7,7 +7,14 @@ import { useEffect, useState } from "react";
 import SocialIcons from "@/components/public/SocialIcons";
 import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
-import { useLocalizedPath } from "@/components/public/useLocale";
+import { useLocale, useLocalizedPath } from "@/components/public/useLocale";
+import SectionHeader from "@/components/public/SectionHeader";
+import ExperienceSection from "@/components/public/sections/ExperienceSection";
+import EducationSection from "@/components/public/sections/EducationSection";
+import SkillsSection from "@/components/public/sections/SkillsSection";
+import ProjectsSection from "@/components/public/sections/ProjectsSection";
+import TestimonialsSection from "@/components/public/sections/TestimonialsSection";
+import BlogSection from "@/components/public/sections/BlogSection";
 
 export default function HomePage() {
   return <HomeClient />;
@@ -15,6 +22,7 @@ export default function HomePage() {
 
 function HomeClient() {
   const t = useT();
+  const locale = useLocale();
   const cvPath = useLocalizedPath("/cv");
   const contactPath = useLocalizedPath("/contact");
   const [profile, setProfile] = useState<any>(null);
@@ -41,6 +49,13 @@ function HomeClient() {
     }
   };
 
+  const getBio = () => {
+    if (!profile) return t("hero.subtitle");
+    if (locale === "ar" && profile.bioAr) return profile.bioAr;
+    if (locale === "en" && profile.bioEn) return profile.bioEn;
+    return profile.bio || t("hero.subtitle");
+  };
+
   if (loading) {
     return (
       <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-20">
@@ -64,86 +79,151 @@ function HomeClient() {
   }
 
   return (
-    <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 lg:py-0">
-      <div className="container mx-auto max-w-5xl">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="relative flex-shrink-0"
-          >
-            <div className="w-40 h-40 md:w-52 md:h-52 rounded-full overflow-hidden ring-1 ring-primary/10 bg-muted">
-              {profile?.photoUrl ? (
-                <img
-                  src={profile.photoUrl}
-                  alt={profile.fullName}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-5xl font-semibold text-primary/30 tracking-tight">
-                    {profile?.fullName?.split(" ").map((n: string) => n[0]).join("") || "AH"}
-                  </span>
-                </div>
-              )}
-            </div>
-          </motion.div>
+    <div className="flex flex-col">
+      {/* Hero */}
+      <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 lg:py-0">
+        <div className="container mx-auto max-w-5xl">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="relative flex-shrink-0"
+            >
+              <div className="w-40 h-40 md:w-52 md:h-52 rounded-full overflow-hidden ring-1 ring-primary/10 bg-muted">
+                {profile?.photoUrl ? (
+                  <img
+                    src={profile.photoUrl}
+                    alt={profile.fullName}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-5xl font-semibold text-primary/30 tracking-tight">
+                      {profile?.fullName?.split(" ").map((n: string) => n[0]).join("") || "AH"}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="text-center lg:text-left max-w-xl"
-          >
-            <p className="text-xs font-medium text-primary/60 tracking-[0.15em] uppercase mb-4">
-              {t("hero.title")}
-            </p>
-            <h1 className="text-[clamp(2.5rem,6vw,4.5rem)] font-semibold tracking-tight text-primary leading-[1.05]">
-              {profile?.fullName || "Abdenour Hellas"}
-            </h1>
-            <p className="mt-6 text-base text-muted-foreground leading-relaxed max-w-md mx-auto lg:mx-0">
-              {profile?.bio || t("hero.subtitle")}
-            </p>
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="text-center lg:text-left max-w-xl"
+            >
+              <p className="text-xs font-medium text-primary/60 tracking-[0.15em] uppercase mb-4">
+                {t("hero.title")}
+              </p>
+              <h1 className="text-[clamp(2.5rem,6vw,4.5rem)] font-semibold tracking-tight text-primary leading-[1.05]">
+                {profile?.fullName || "Abdenour Hellas"}
+              </h1>
+              <p className="mt-6 text-base text-muted-foreground leading-relaxed max-w-md mx-auto lg:mx-0">
+                {getBio()}
+              </p>
 
-            <div className="mt-8 flex flex-wrap gap-3 justify-center lg:justify-start">
-              <Link
-                href={cvPath}
-                className="group inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
-              >
-                <FileText size={15} />
-                {t("hero.viewCv")}
-                <ArrowRight size={14} className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-              </Link>
-              <Link
-                href={contactPath}
-                className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground rounded-lg text-sm font-medium hover:border-primary/30 hover:bg-primary/[0.02] transition-colors"
-              >
-                <Send size={15} />
-                {t("hero.contactMe")}
-              </Link>
-              {profile?.cvUrl && (
-                <button
-                  onClick={handleDownloadCV}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-muted-foreground rounded-lg text-sm font-medium hover:text-primary transition-colors"
+              <div className="mt-8 flex flex-wrap gap-3 justify-center lg:justify-start">
+                <Link
+                  href={cvPath}
+                  className="group inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
                 >
-                  <Download size={15} />
-                  {t("contact.downloadCv")}
-                </button>
-              )}
-            </div>
+                  <FileText size={15} />
+                  {t("hero.viewCv")}
+                  <ArrowRight size={14} className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
+                </Link>
+                <Link
+                  href={contactPath}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground rounded-lg text-sm font-medium hover:border-primary/30 hover:bg-primary/[0.02] transition-colors"
+                >
+                  <Send size={15} />
+                  {t("hero.contactMe")}
+                </Link>
+                {profile?.cvUrl && (
+                  <button
+                    onClick={handleDownloadCV}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 text-muted-foreground rounded-lg text-sm font-medium hover:text-primary transition-colors"
+                  >
+                    <Download size={15} />
+                    {t("contact.downloadCv")}
+                  </button>
+                )}
+              </div>
 
-            <div className="mt-8 flex justify-center lg:justify-start">
-              <SocialIcons
-                linkedin={profile?.linkedin}
-                github={profile?.github}
-                twitter={profile?.twitter}
-                facebook={profile?.facebook}
-              />
-            </div>
-          </motion.div>
+              <div className="mt-8 flex justify-center lg:justify-start">
+                <SocialIcons
+                  linkedin={profile?.linkedin}
+                  github={profile?.github}
+                  twitter={profile?.twitter}
+                  facebook={profile?.facebook}
+                  instagram={profile?.instagram}
+                  whatsapp={profile?.whatsapp}
+                />
+              </div>
+            </motion.div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Experience */}
+      <section className="py-16 lg:py-24 border-t border-border">
+        <div className="container mx-auto max-w-5xl px-4">
+          <SectionHeader title={t("experience.title")} subtitle={t("experience.subtitle")} />
+          <div className="mt-12">
+            <ExperienceSection />
+          </div>
+        </div>
+      </section>
+
+      {/* Education */}
+      <section className="py-16 lg:py-24 border-t border-border">
+        <div className="container mx-auto max-w-5xl px-4">
+          <SectionHeader title={t("education.title")} subtitle={t("education.subtitle")} />
+          <div className="mt-12">
+            <EducationSection />
+          </div>
+        </div>
+      </section>
+
+      {/* Skills */}
+      <section className="py-16 lg:py-24 border-t border-border">
+        <div className="container mx-auto max-w-5xl px-4">
+          <SectionHeader title={t("skills.title")} subtitle={t("skills.subtitle")} />
+          <div className="mt-12">
+            <SkillsSection />
+          </div>
+        </div>
+      </section>
+
+      {/* Projects */}
+      <section className="py-16 lg:py-24 border-t border-border">
+        <div className="container mx-auto max-w-5xl px-4">
+          <SectionHeader title={t("projects.title")} subtitle={t("projects.subtitle")} />
+          <div className="mt-12">
+            <ProjectsSection />
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16 lg:py-24 border-t border-border">
+        <div className="container mx-auto max-w-5xl px-4">
+          <SectionHeader title={t("testimonials.title")} subtitle={t("testimonials.subtitle")} />
+          <div className="mt-12">
+            <TestimonialsSection />
+          </div>
+        </div>
+      </section>
+
+      {/* Blog */}
+      <section className="py-16 lg:py-24 border-t border-border">
+        <div className="container mx-auto max-w-5xl px-4">
+          <SectionHeader title={t("blog.title")} subtitle={t("blog.subtitle")} />
+          <div className="mt-12">
+            <BlogSection />
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

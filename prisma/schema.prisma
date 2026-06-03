@@ -40,6 +40,8 @@ model Profile {
   github       String?
   twitter      String?
   facebook     String?
+  instagram    String?
+  whatsapp     String?
   updatedAt    DateTime @updatedAt
 }
 

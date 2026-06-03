@@ -10,6 +10,7 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Project | null>(null);
   const [form, setForm] = useState<Partial<Project>>({});
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -37,6 +38,7 @@ export default function ProjectsPage() {
 
     setEditing(null);
     setForm({});
+    setAdding(false);
     fetchProjects();
   };
 
@@ -74,7 +76,7 @@ export default function ProjectsPage() {
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold">Projets</h1>
         <button
-          onClick={() => { setEditing(null); setForm({}); }}
+          onClick={() => { setEditing(null); setForm({}); setAdding(true); }}
           className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
         >
           <Plus size={18} />
@@ -82,7 +84,7 @@ export default function ProjectsPage() {
         </button>
       </div>
 
-      {(editing || form.title !== undefined) && (
+      {(editing || adding) && (
         <form onSubmit={handleSubmit} className="mb-8 p-6 rounded-xl bg-card border border-border space-y-4">
           <h2 className="text-lg font-semibold">{editing ? "Modifier" : "Nouveau projet"}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -139,7 +141,7 @@ export default function ProjectsPage() {
             </button>
             <button
               type="button"
-              onClick={() => { setEditing(null); setForm({}); }}
+              onClick={() => { setEditing(null); setForm({}); setAdding(false); }}
               className="px-4 py-2 border border-border rounded-lg hover:bg-muted"
             >
               Annuler

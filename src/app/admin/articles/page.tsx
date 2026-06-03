@@ -9,6 +9,7 @@ export default function ArticlesPage() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<any>(null);
   const [form, setForm] = useState<any>({});
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
     fetchArticles();
@@ -36,6 +37,7 @@ export default function ArticlesPage() {
 
     setEditing(null);
     setForm({});
+    setAdding(false);
     fetchArticles();
   };
 
@@ -68,7 +70,7 @@ export default function ArticlesPage() {
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold">Articles</h1>
         <button
-          onClick={() => { setEditing(null); setForm({ published: true }); }}
+          onClick={() => { setEditing(null); setForm({ published: true }); setAdding(true); }}
           className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
         >
           <Plus size={18} />
@@ -76,7 +78,7 @@ export default function ArticlesPage() {
         </button>
       </div>
 
-      {(editing || form.title !== undefined) && (
+      {(editing || adding) && (
         <form onSubmit={handleSubmit} className="mb-8 p-6 rounded-xl bg-card border border-border space-y-4">
           <h2 className="text-lg font-semibold">{editing ? "Modifier" : "Nouvel article"}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -92,7 +94,7 @@ export default function ArticlesPage() {
           <textarea placeholder="Contenu" rows={6} value={form.content || ""} onChange={(e) => setForm({ ...form, content: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
           <div className="flex gap-2">
             <button type="submit" className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">{editing ? "Mettre à jour" : "Créer"}</button>
-            <button type="button" onClick={() => { setEditing(null); setForm({}); }} className="px-4 py-2 border border-border rounded-lg hover:bg-muted">Annuler</button>
+            <button type="button" onClick={() => { setEditing(null); setForm({}); setAdding(false); }} className="px-4 py-2 border border-border rounded-lg hover:bg-muted">Annuler</button>
           </div>
         </form>
       )}

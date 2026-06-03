@@ -7,6 +7,7 @@ import SocialIcons from "@/components/public/SocialIcons";
 import SectionHeader from "@/components/public/SectionHeader";
 import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
+import { useLocale } from "@/components/public/useLocale";
 
 const interests = [
   { name: "Football", icon: Trophy },
@@ -17,6 +18,7 @@ const interests = [
 
 export default function AboutPage() {
   const t = useT();
+  const locale = useLocale();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -116,7 +118,7 @@ export default function AboutPage() {
             </div>
 
             <p className="mt-5 text-sm md:text-base text-muted-foreground leading-relaxed">
-              {profile?.bio || t("hero.subtitle")}
+              {locale === "ar" && profile?.bioAr ? profile.bioAr : locale === "en" && profile?.bioEn ? profile.bioEn : profile?.bio || t("hero.subtitle")}
             </p>
 
             <div className="mt-6 flex justify-center md:justify-start">
@@ -125,6 +127,8 @@ export default function AboutPage() {
                 github={profile?.github}
                 twitter={profile?.twitter}
                 facebook={profile?.facebook}
+                instagram={profile?.instagram}
+                whatsapp={profile?.whatsapp}
               />
             </div>
           </motion.div>
