@@ -181,61 +181,61 @@ function HomeClient() {
       <HomeNav />
 
       {/* Experience */}
-      <section id="experience" className="py-16 lg:py-24 border-t border-border">
+      <section id="experience" className="py-10 lg:py-16 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("experience.title")} subtitle={t("experience.subtitle")} />
           <div className="mt-12">
-            <ExperienceSection data={experiences} />
+            <ExperienceSection data={experiences} compact limit={4} />
           </div>
         </div>
       </section>
 
       {/* Education */}
-      <section id="education" className="py-16 lg:py-24 border-t border-border">
+      <section id="education" className="py-10 lg:py-16 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("education.title")} subtitle={t("education.subtitle")} />
           <div className="mt-12">
-            <EducationSection data={education} />
+            <EducationSection data={education} compact limit={3} />
           </div>
         </div>
       </section>
 
       {/* Skills */}
-      <section id="skills" className="py-16 lg:py-24 border-t border-border">
+      <section id="skills" className="py-10 lg:py-16 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("skills.title")} subtitle={t("skills.subtitle")} />
           <div className="mt-12">
-            <SkillsSection data={skills} />
+            <SkillsSection data={skills} compact limit={6} />
           </div>
         </div>
       </section>
 
       {/* Projects */}
-      <section id="projects" className="py-16 lg:py-24 border-t border-border">
+      <section id="projects" className="py-10 lg:py-16 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("projects.title")} subtitle={t("projects.subtitle")} />
           <div className="mt-12">
-            <ProjectsSection data={projects} />
+            <ProjectsSection data={projects} compact limit={4} />
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-16 lg:py-24 border-t border-border">
+      <section id="testimonials" className="py-10 lg:py-16 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("testimonials.title")} subtitle={t("testimonials.subtitle")} />
           <div className="mt-12">
-            <TestimonialsSection data={testimonials} />
+            <TestimonialsSection data={testimonials} compact limit={3} />
           </div>
         </div>
       </section>
 
       {/* Blog */}
-      <section id="blog" className="py-16 lg:py-24 border-t border-border">
+      <section id="blog" className="py-10 lg:py-16 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("blog.title")} subtitle={t("blog.subtitle")} />
           <div className="mt-12">
-            <BlogSection data={articles} />
+            <BlogSection data={articles} compact limit={3} />
           </div>
         </div>
       </section>

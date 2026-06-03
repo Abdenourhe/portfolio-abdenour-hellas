@@ -18,11 +18,14 @@ function ProjectPlaceholder({ title }: { title: string }) {
 
 interface ProjectsSectionProps {
   data?: Project[];
+  compact?: boolean;
+  limit?: number;
 }
 
-export default function ProjectsSection({ data }: ProjectsSectionProps) {
+export default function ProjectsSection({ data, compact = false, limit }: ProjectsSectionProps) {
   const t = useT();
   const [projects, setProjects] = useState<Project[]>(data || []);
+  const displayProjects = limit ? projects.slice(0, limit) : projects;
   const [loading, setLoading] = useState(!data);
   const [error, setError] = useState(false);
 
@@ -73,7 +76,7 @@ export default function ProjectsSection({ data }: ProjectsSectionProps) {
 
   return (
     <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
-      {projects.map((project, index) => (
+      {displayProjects.map((project, index) => (
         <motion.div
           key={project.id}
           initial={{ opacity: 0, y: 16 }}
@@ -93,7 +96,7 @@ export default function ProjectsSection({ data }: ProjectsSectionProps) {
           ) : (
             <ProjectPlaceholder title={project.title} />
           )}
-          <div className="p-5">
+          <div className={compact ? "p-4" : "p-5"}>
             <div className="flex items-start justify-between mb-2">
               <h3 className="text-base font-semibold text-primary group-hover:text-primary/80 transition-colors">
                 {project.title}

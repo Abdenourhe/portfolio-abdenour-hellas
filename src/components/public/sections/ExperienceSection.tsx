@@ -16,9 +16,11 @@ const categoryLabels: Record<string, string> = {
 
 interface ExperienceSectionProps {
   data?: Experience[];
+  compact?: boolean;
+  limit?: number;
 }
 
-export default function ExperienceSection({ data }: ExperienceSectionProps) {
+export default function ExperienceSection({ data, compact = false, limit }: ExperienceSectionProps) {
   const t = useT();
   const [experiences, setExperiences] = useState<Experience[]>(data || []);
   const [loading, setLoading] = useState(!data);
@@ -60,7 +62,7 @@ export default function ExperienceSection({ data }: ExperienceSectionProps) {
     <div className="max-w-3xl mx-auto relative">
       <div className="absolute left-4 md:left-0 md:right-0 md:mx-auto top-0 bottom-0 w-px bg-primary/20" />
 
-      {experiences.map((exp, index) => (
+      {(limit ? experiences.slice(0, limit) : experiences).map((exp, index) => (
         <motion.div
           key={exp.id}
           initial={{ opacity: 0, y: 16 }}
@@ -73,7 +75,7 @@ export default function ExperienceSection({ data }: ExperienceSectionProps) {
 
           <div className="md:grid md:grid-cols-[1fr_auto_1fr] md:gap-8">
             <div className={`${index % 2 === 0 ? "md:text-right md:pr-8" : "md:col-start-3 md:pl-8"}`}>
-              <div className="p-5 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors">
+              <div className={`rounded-xl border border-border bg-card hover:border-primary/30 transition-colors ${compact ? "p-4" : "p-5"}`}>
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/5 px-2 py-0.5 rounded-md">
                     <Briefcase size={11} />

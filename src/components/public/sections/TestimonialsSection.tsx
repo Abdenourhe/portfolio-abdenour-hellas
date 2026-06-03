@@ -9,11 +9,14 @@ import { useT } from "@/components/public/I18nProvider";
 
 interface TestimonialsSectionProps {
   data?: Testimonial[];
+  compact?: boolean;
+  limit?: number;
 }
 
-export default function TestimonialsSection({ data }: TestimonialsSectionProps) {
+export default function TestimonialsSection({ data, compact = false, limit }: TestimonialsSectionProps) {
   const t = useT();
   const [testimonials, setTestimonials] = useState<Testimonial[]>(data || []);
+  const displayTestimonials = limit ? testimonials.slice(0, limit) : testimonials;
   const [loading, setLoading] = useState(!data);
 
   useEffect(() => {
@@ -50,14 +53,14 @@ export default function TestimonialsSection({ data }: TestimonialsSectionProps) 
 
   return (
     <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {testimonials.map((item, index) => (
+      {displayTestimonials.map((item, index) => (
         <motion.div
           key={item.id}
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.4, delay: index * 0.05 }}
-          className="p-6 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors flex flex-col"
+          className={`rounded-xl border border-border bg-card hover:border-primary/30 transition-colors flex flex-col ${compact ? "p-5" : "p-6"}`}
         >
           <Quote className="w-5 h-5 text-secondary/60 mb-4 flex-shrink-0" />
           <p className="text-sm text-muted-foreground leading-relaxed flex-1">{item.content}</p>

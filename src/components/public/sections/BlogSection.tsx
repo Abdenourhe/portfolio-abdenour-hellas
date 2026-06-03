@@ -11,12 +11,15 @@ import { useLocale } from "@/components/public/useLocale";
 
 interface BlogSectionProps {
   data?: Article[];
+  compact?: boolean;
+  limit?: number;
 }
 
-export default function BlogSection({ data }: BlogSectionProps) {
+export default function BlogSection({ data, compact = false, limit }: BlogSectionProps) {
   const t = useT();
   const locale = useLocale();
   const [articles, setArticles] = useState<Article[]>(data || []);
+  const displayArticles = limit ? articles.slice(0, limit) : articles;
   const [loading, setLoading] = useState(!data);
 
   useEffect(() => {
@@ -50,7 +53,7 @@ export default function BlogSection({ data }: BlogSectionProps) {
 
   return (
     <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {articles.map((article, index) => (
+      {displayArticles.map((article, index) => (
         <motion.div
           key={article.id}
           initial={{ opacity: 0, y: 12 }}
@@ -73,7 +76,7 @@ export default function BlogSection({ data }: BlogSectionProps) {
                   <FileText className="w-8 h-8 text-primary/20" />
                 </div>
               )}
-              <div className="p-5">
+              <div className={compact ? "p-4" : "p-5"}>
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
                   <Calendar size={11} />
                   {new Date(article.createdAt).toLocaleDateString(locale === "fr" ? "fr-CA" : locale === "ar" ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric" })}

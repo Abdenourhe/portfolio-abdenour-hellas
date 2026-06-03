@@ -9,9 +9,11 @@ import { useT } from "@/components/public/I18nProvider";
 
 interface EducationSectionProps {
   data?: Education[];
+  compact?: boolean;
+  limit?: number;
 }
 
-export default function EducationSection({ data }: EducationSectionProps) {
+export default function EducationSection({ data, compact = false, limit }: EducationSectionProps) {
   const t = useT();
   const [education, setEducation] = useState<Education[]>(data || []);
   const [loading, setLoading] = useState(!data);
@@ -51,14 +53,14 @@ export default function EducationSection({ data }: EducationSectionProps) {
 
   return (
     <div className="max-w-3xl mx-auto space-y-3">
-      {education.map((edu, index) => (
+      {(limit ? education.slice(0, limit) : education).map((edu, index) => (
         <motion.div
           key={edu.id}
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.4, delay: index * 0.05 }}
-          className="flex gap-4 p-5 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors"
+          className={`flex gap-4 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors ${compact ? "p-4" : "p-5"}`}
         >
           <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-primary/5 flex items-center justify-center mt-0.5">
             <GraduationCap className="w-4 h-4 text-primary/70" />

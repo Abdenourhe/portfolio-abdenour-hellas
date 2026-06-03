@@ -20,9 +20,11 @@ const categoryLabels: Record<string, string> = {
 
 interface SkillsSectionProps {
   data?: Skill[];
+  compact?: boolean;
+  limit?: number;
 }
 
-export default function SkillsSection({ data }: SkillsSectionProps) {
+export default function SkillsSection({ data, compact = false, limit }: SkillsSectionProps) {
   const t = useT();
   const [skills, setSkills] = useState<Skill[]>(data || []);
   const [loading, setLoading] = useState(!data);
@@ -82,8 +84,10 @@ export default function SkillsSection({ data }: SkillsSectionProps) {
             <span className="w-2 h-2 rounded-full bg-secondary" />
             {t(categoryLabels[category] || category)}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {categorySkills.map((skill, index) => {
+          <div className={`grid grid-cols-1 md:grid-cols-2 gap-3 ${compact ? "md:grid-cols-3 gap-2" : ""}`}>
+            {(() => {
+              const displaySkills = limit ? categorySkills.slice(0, limit) : categorySkills;
+              return displaySkills.map((skill, index) => {
               const IconComponent = skill.icon ? iconMap[skill.icon] : null;
               return (
                 <motion.div
@@ -92,7 +96,7 @@ export default function SkillsSection({ data }: SkillsSectionProps) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.15 }}
                   transition={{ duration: 0.3, delay: index * 0.03 }}
-                  className="p-4 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors"
+                  className={`rounded-xl border border-border bg-card hover:border-primary/30 transition-colors ${compact ? "p-3" : "p-4"}`}
                 >
                   <div className="flex items-center gap-2.5 mb-3">
                     {IconComponent && <IconComponent className="w-4 h-4 text-primary/60 flex-shrink-0" />}
@@ -110,7 +114,8 @@ export default function SkillsSection({ data }: SkillsSectionProps) {
                   </div>
                 </motion.div>
               );
-            })}
+            });
+            })()}
           </div>
         </motion.div>
       ))}
