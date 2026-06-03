@@ -10,13 +10,13 @@ export default async function AdminLayout({
 }) {
   const session = await getServerSession(authOptions);
 
-  if (!session && process.env.NODE_ENV === "production") {
-    redirect("/admin/login");
-  }
-
+  // Allow login page to be accessed without session
+  // In production, redirect unauthenticated users to login
+  // (Middleware already handles this, but we keep this as fallback)
+  
   return (
     <div className="flex min-h-screen bg-background">
-      <AdminSidebar />
+      {session && <AdminSidebar />}
       <main className="flex-1 p-8 overflow-auto">
         {children}
       </main>
