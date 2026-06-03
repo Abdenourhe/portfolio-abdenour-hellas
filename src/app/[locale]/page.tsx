@@ -9,7 +9,6 @@ import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 import { useLocale, useLocalizedPath } from "@/components/public/useLocale";
 import SectionHeader from "@/components/public/SectionHeader";
-import HomeNav from "@/components/public/HomeNav";
 import ExperienceSection from "@/components/public/sections/ExperienceSection";
 import EducationSection from "@/components/public/sections/EducationSection";
 import SkillsSection from "@/components/public/sections/SkillsSection";
@@ -343,14 +342,12 @@ function HomeClient() {
         </div>
       </section>
 
-      <HomeNav />
-
       {/* Experience */}
       <section id="experience" className="py-16 lg:py-24">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("experience.title")} subtitle={t("experience.subtitle")} />
           <div className="mt-12">
-            <ExperienceSection data={experiences} compact limit={4} />
+            <ExperienceSection data={experiences} />
           </div>
         </div>
       </section>
@@ -360,7 +357,7 @@ function HomeClient() {
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("education.title")} subtitle={t("education.subtitle")} />
           <div className="mt-12">
-            <EducationSection data={education} compact limit={4} />
+            <EducationSection data={education} />
           </div>
         </div>
       </section>
@@ -370,7 +367,7 @@ function HomeClient() {
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("skills.title")} subtitle={t("skills.subtitle")} />
           <div className="mt-12">
-            <SkillsSection data={skills} compact limit={6} />
+            <SkillsSection data={skills} />
           </div>
         </div>
       </section>
@@ -380,7 +377,7 @@ function HomeClient() {
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("projects.title")} subtitle={t("projects.subtitle")} />
           <div className="mt-12">
-            <ProjectsSection data={projects} compact limit={4} />
+            <ProjectsSection data={projects} />
           </div>
         </div>
       </section>
@@ -390,7 +387,7 @@ function HomeClient() {
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("testimonials.title")} subtitle={t("testimonials.subtitle")} />
           <div className="mt-12">
-            <TestimonialsSection data={testimonials} compact limit={3} />
+            <TestimonialsSection data={testimonials} />
           </div>
         </div>
       </section>
@@ -400,7 +397,7 @@ function HomeClient() {
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("blog.title")} subtitle={t("blog.subtitle")} />
           <div className="mt-12">
-            <BlogSection data={articles} compact limit={3} />
+            <BlogSection data={articles} />
           </div>
         </div>
       </section>
