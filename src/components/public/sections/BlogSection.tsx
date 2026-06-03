@@ -25,7 +25,7 @@ export default function BlogSection({ data, compact = false, limit }: BlogSectio
 
   useEffect(() => {
     if (data) return;
-    fetch("/api/articles")
+    fetch("/api/articles?published=true")
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) setArticles(data);

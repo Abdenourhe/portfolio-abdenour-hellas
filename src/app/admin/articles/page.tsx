@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, Pencil, Trash2, Eye, EyeOff } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye } from "lucide-react";
 
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<any[]>([]);
@@ -114,11 +114,24 @@ export default function ArticlesPage() {
               <p className="text-sm text-muted-foreground">/{a.slug}</p>
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={() => togglePublished(a)} className="p-2 rounded-lg hover:bg-muted transition-colors">
-                {a.published ? <Eye size={16} /> : <EyeOff size={16} />}
+              <a
+                href={`/fr/blog/${a.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg hover:bg-muted transition-colors"
+                title="Voir l'article"
+              >
+                <Eye size={16} />
+              </a>
+              <button
+                onClick={() => togglePublished(a)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${a.published ? "bg-green-500" : "bg-muted"}`}
+                title={a.published ? "Dépublier" : "Publier"}
+              >
+                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${a.published ? "translate-x-6" : "translate-x-1"}`} />
               </button>
-              <button onClick={() => { setEditing(a); setForm(a); }} className="p-2 rounded-lg hover:bg-muted transition-colors"><Pencil size={16} /></button>
-              <button onClick={() => handleDelete(a.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"><Trash2 size={16} /></button>
+              <button onClick={() => { setEditing(a); setForm(a); }} className="p-2 rounded-lg hover:bg-muted transition-colors" title="Modifier"><Pencil size={16} /></button>
+              <button onClick={() => handleDelete(a.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive transition-colors" title="Supprimer"><Trash2 size={16} /></button>
             </div>
           </div>
         ))}

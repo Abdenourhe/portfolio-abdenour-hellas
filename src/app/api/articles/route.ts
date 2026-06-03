@@ -13,8 +13,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(article);
     }
 
+    const publishedParam = searchParams.get("published");
+    const where: any = {};
+    if (publishedParam !== null) {
+      where.published = publishedParam === "true";
+    }
     const articles = await prisma.article.findMany({
-      where: { published: true },
+      where,
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(articles);
