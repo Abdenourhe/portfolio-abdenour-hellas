@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  // Create admin user
   const adminEmail = process.env.ADMIN_EMAIL || "abdenour.hellas@uqat.ca";
   const adminPassword = process.env.ADMIN_PASSWORD || "Abdenour2026!";
   const hashedPassword = await bcrypt.hash(adminPassword, 10);
@@ -19,7 +18,6 @@ async function main() {
     },
   });
 
-  // Create profile
   await prisma.profile.upsert({
     where: { id: "1" },
     update: {},
@@ -37,10 +35,11 @@ async function main() {
       bioAr: "مصمم وجاد ومستقل وواعٍ بالعمل الذي ينتظرني، أنا مقتنع بأنني سأكون عنصرًا محركًا داخل مؤسستك!",
       linkedin: "https://linkedin.com",
       github: "https://github.com",
+      twitter: "https://twitter.com",
+      facebook: "https://facebook.com",
     },
   });
 
-  // Create experiences
   const experiences = [
     {
       title: "Configurateur Électrique",
@@ -50,6 +49,7 @@ async function main() {
       endDate: new Date("2026-03-08"),
       current: false,
       description: "Configuration et dimensionnement d'installations électriques résidentielles et commerciales.",
+      category: "tech",
       order: 0,
     },
     {
@@ -60,6 +60,7 @@ async function main() {
       endDate: new Date("2025-11-30"),
       current: false,
       description: "Encadrer, former et motiver l'équipe de conseillers en électroménagers pour atteindre les objectifs de vente et de service. Maintenir un contact régulier avec les fournisseurs pour suivre l'état des factures et des paiements. Organiser les factures de manière structurée pour une traçabilité efficace. Gérer les stocks, superviser les inventaires et veiller à la rotation des produits. Assurer un excellent service après-vente.",
+      category: "commerce",
       order: 1,
     },
     {
@@ -70,6 +71,7 @@ async function main() {
       endDate: new Date("2024-04-01"),
       current: false,
       description: "Accueillir les clients et évaluer leurs besoins en électroménagers. Présenter les produits disponibles, leurs caractéristiques et avantages. Effectuer le suivi des commandes et des livraisons.",
+      category: "commerce",
       order: 2,
     },
     {
@@ -80,6 +82,7 @@ async function main() {
       endDate: new Date("2024-05-01"),
       current: false,
       description: "Sélectionner, emballer et préparer les commandes des clients pour le ramassage en magasin ou la livraison. Accueillir les clients, répondre à leurs questions concernant les commandes en ligne, et gérer les retours.",
+      category: "commerce",
       order: 3,
     },
     {
@@ -90,6 +93,7 @@ async function main() {
       endDate: new Date("2023-06-01"),
       current: false,
       description: "Accueillir les clients, enregistrer leurs commandes avec précision et gérer les paiements en caisse ou au service au volant. Préparer les repas selon les normes de qualité et de sécurité alimentaire.",
+      category: "commerce",
       order: 4,
     },
     {
@@ -100,6 +104,7 @@ async function main() {
       endDate: new Date("2022-08-01"),
       current: false,
       description: "Concevoir et enseigner des leçons de physique en accord avec le programme scolaire. Évaluer les progrès des élèves à travers des tests et des devoirs. Maintenir un environnement de travail structuré et accompagner individuellement les élèves.",
+      category: "education",
       order: 5,
     },
     {
@@ -110,6 +115,7 @@ async function main() {
       endDate: new Date("2018-01-01"),
       current: false,
       description: "Soutien aux ingénieurs et techniciens sur le terrain pour superviser les travaux, effectuer des inspections et garantir la qualité des installations. Participation aux formations de sécurité et application des normes environnementales.",
+      category: "tech",
       order: 6,
     },
     {
@@ -120,6 +126,7 @@ async function main() {
       endDate: new Date("2019-05-31"),
       current: false,
       description: "Participer aux opérations de maintenance préventive et corrective des équipements électriques. Aider à l'inspection et au suivi des paramètres de performance des systèmes de production.",
+      category: "tech",
       order: 7,
     },
     {
@@ -130,6 +137,7 @@ async function main() {
       endDate: new Date("2018-01-01"),
       current: false,
       description: "Aider les techniciens dans la maintenance préventive et corrective des machines et équipements industriels. Participer aux tests et contrôles de qualité des produits finis. Aider à la gestion des stocks de pièces de rechange.",
+      category: "tech",
       order: 8,
     },
   ];
@@ -138,7 +146,6 @@ async function main() {
     await prisma.experience.create({ data: exp });
   }
 
-  // Create education
   const educations = [
     {
       degree: "M.D. Génie Électrique",
@@ -224,7 +231,6 @@ async function main() {
     await prisma.education.create({ data: edu });
   }
 
-  // Create skills
   const skills = [
     { name: "Microsoft Office", category: "logiciel", level: 90, icon: "FileText", order: 0 },
     { name: "Proteus 8", category: "logiciel", level: 85, icon: "Cpu", order: 1 },
@@ -248,7 +254,6 @@ async function main() {
     await prisma.skill.create({ data: skill });
   }
 
-  // Create projects
   const projects = [
     {
       title: "TAHFIDZ",
@@ -284,7 +289,6 @@ async function main() {
     await prisma.project.create({ data: project });
   }
 
-  // Create interests
   const interests = [
     { name: "Football", icon: "Trophy", order: 0 },
     { name: "Vélo", icon: "Bike", order: 1 },
@@ -294,6 +298,62 @@ async function main() {
 
   for (const interest of interests) {
     await prisma.interest.create({ data: interest });
+  }
+
+  const testimonials = [
+    {
+      name: "Ahmed Benali",
+      role: "Directeur Technique",
+      company: "ENTP In-Amenas",
+      content: "Abdenour a démontré un excellent sens de l'initiative et une grande autonomie durant son stage. Sa capacité à assimiler rapidement les procédures et à proposer des améliorations a impressionné toute l'équipe.",
+      order: 0,
+    },
+    {
+      name: "Marie-Claire Dubois",
+      role: "Responsable Rayon",
+      company: "RONA Rouyn-Noranda",
+      content: "Un superviseur exceptionnel. Abdenour a su motiver son équipe et atteindre des résultats record en matière de vente et de satisfaction client. Son leadership naturel fait toute la différence.",
+      order: 1,
+    },
+    {
+      name: "Prof. Karim Mansouri",
+      role: "Proviseur",
+      company: "Lycée Sheikh Amoud",
+      content: "Enseignant passionné et pédagogue. Abdenour a su transmettre sa passion pour la physique à ses élèves et obtenir des résultats remarquables aux examens. Un atout pour n'importe quelle équipe.",
+      order: 2,
+    },
+  ];
+
+  for (const t of testimonials) {
+    await prisma.testimonial.create({ data: t });
+  }
+
+  const articles = [
+    {
+      title: "Conception d'un Système Radar Avancé",
+      slug: "radar-avance-uqat",
+      excerpt: "Retour d'expérience sur la conception et la réalisation d'un radar avancé dans le cadre de mon Master à l'UQAT.",
+      content: "Dans le cadre de mon projet de fin d'études à l'UQAT, j'ai conçu et réalisé un système radar avancé capable de détecter et de suivre des objets en mouvement...",
+      published: true,
+    },
+    {
+      title: "Les Défis de l'Électromécanique Moderne",
+      slug: "electromecanique-moderne",
+      excerpt: "Analyse des défis actuels et futurs dans le domaine de l'électromécanique industrielle.",
+      content: "L'électromécanique est un domaine en constante évolution qui combine l'ingénierie électrique et mécanique...",
+      published: true,
+    },
+    {
+      title: "Gestion d'École Coranique : TAHFIDZ",
+      slug: "tahfidz-plateforme",
+      excerpt: "Présentation de la plateforme SaaS TAHFIDZ pour la gestion des écoles coraniques.",
+      content: "TAHFIDZ est une plateforme complète que j'ai développée pour répondre aux besoins spécifiques des écoles coraniques...",
+      published: true,
+    },
+  ];
+
+  for (const article of articles) {
+    await prisma.article.create({ data: article });
   }
 
   console.log("Seed completed successfully!");

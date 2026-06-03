@@ -13,6 +13,8 @@ import {
   MessageSquare,
   Settings,
   LogOut,
+  Quote,
+  FileText,
 } from "lucide-react";
 
 const navItems = [
@@ -22,6 +24,8 @@ const navItems = [
   { href: "/admin/education", label: "Formations", icon: GraduationCap },
   { href: "/admin/skills", label: "Compétences", icon: Wrench },
   { href: "/admin/projects", label: "Projets", icon: FolderOpen },
+  { href: "/admin/testimonials", label: "Témoignages", icon: Quote },
+  { href: "/admin/articles", label: "Articles", icon: FileText },
   { href: "/admin/messages", label: "Messages", icon: MessageSquare },
   { href: "/admin/settings", label: "Paramètres", icon: Settings },
 ];
@@ -37,7 +41,7 @@ export default function AdminSidebar() {
         </Link>
       </div>
 
-      <nav className="flex-1 p-4 space-y-1">
+      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => (
           <Link
             key={item.href}

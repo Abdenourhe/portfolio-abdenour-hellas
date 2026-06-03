@@ -16,6 +16,7 @@ export interface Profile {
   linkedin?: string | null;
   github?: string | null;
   twitter?: string | null;
+  facebook?: string | null;
   updatedAt: Date;
 }
 
@@ -32,6 +33,7 @@ export interface Experience {
   description: string;
   descriptionEn?: string | null;
   descriptionAr?: string | null;
+  category: string;
   order: number;
   createdAt: Date;
   updatedAt: Date;
@@ -93,6 +95,31 @@ export interface Interest {
   nameAr?: string | null;
   icon?: string | null;
   order: number;
+}
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  company: string;
+  content: string;
+  imageUrl?: string | null;
+  order: number;
+  createdAt: Date;
+}
+
+export interface Article {
+  id: string;
+  title: string;
+  titleEn?: string | null;
+  titleAr?: string | null;
+  slug: string;
+  excerpt: string;
+  content: string;
+  imageUrl?: string | null;
+  published: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Message {

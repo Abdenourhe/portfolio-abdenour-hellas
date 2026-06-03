@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Globe, Code, Mail, Phone, MapPin, Send, Download } from "lucide-react";
+import { Globe, Code, Mail, Phone, MapPin, Send, Download, CheckCircle, XCircle } from "lucide-react";
 import { z } from "zod";
+import SocialIcons from "@/components/public/SocialIcons";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Nom trop court"),
@@ -90,14 +91,7 @@ export default function ContactPage() {
             </div>
 
             <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6">Réseaux sociaux</h2>
-            <div className="flex gap-3 mb-6 md:mb-8">
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="p-3 md:p-4 rounded-xl bg-card border border-border hover:border-primary transition-colors">
-                <Globe className="w-5 h-5 md:w-6 md:h-6 text-primary" />
-              </a>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="p-3 md:p-4 rounded-xl bg-card border border-border hover:border-primary transition-colors">
-                <Code className="w-5 h-5 md:w-6 md:h-6 text-primary" />
-              </a>
-            </div>
+            <SocialIcons className="mb-6 md:mb-8" />
 
             <a
               href="/uploads/cv.pdf"
@@ -118,7 +112,7 @@ export default function ContactPage() {
                   placeholder="Nom"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg bg-card border border-border focus:border-primary focus:outline-none text-sm md:text-base"
+                  className={`w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg bg-card border focus:outline-none text-sm md:text-base transition-all ${errors.name ? "border-destructive" : "border-border focus:border-primary focus:ring-2 focus:ring-primary/20"}`}
                 />
                 {errors.name && <p className="text-destructive text-xs md:text-sm mt-1">{errors.name}</p>}
               </div>
@@ -128,7 +122,7 @@ export default function ContactPage() {
                   placeholder="Email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg bg-card border border-border focus:border-primary focus:outline-none text-sm md:text-base"
+                  className={`w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg bg-card border focus:outline-none text-sm md:text-base transition-all ${errors.email ? "border-destructive" : "border-border focus:border-primary focus:ring-2 focus:ring-primary/20"}`}
                 />
                 {errors.email && <p className="text-destructive text-xs md:text-sm mt-1">{errors.email}</p>}
               </div>
@@ -138,7 +132,7 @@ export default function ContactPage() {
                   placeholder="Sujet"
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  className="w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg bg-card border border-border focus:border-primary focus:outline-none text-sm md:text-base"
+                  className={`w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg bg-card border focus:outline-none text-sm md:text-base transition-all ${errors.subject ? "border-destructive" : "border-border focus:border-primary focus:ring-2 focus:ring-primary/20"}`}
                 />
                 {errors.subject && <p className="text-destructive text-xs md:text-sm mt-1">{errors.subject}</p>}
               </div>
@@ -148,7 +142,7 @@ export default function ContactPage() {
                   rows={4}
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  className="w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg bg-card border border-border focus:border-primary focus:outline-none resize-none text-sm md:text-base"
+                  className={`w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg bg-card border focus:outline-none resize-none text-sm md:text-base transition-all ${errors.content ? "border-destructive" : "border-border focus:border-primary focus:ring-2 focus:ring-primary/20"}`}
                 />
                 {errors.content && <p className="text-destructive text-xs md:text-sm mt-1">{errors.content}</p>}
               </div>
@@ -160,11 +154,26 @@ export default function ContactPage() {
                 <Send size={16} />
                 {submitting ? "Envoi..." : "Envoyer"}
               </button>
+
               {status === "success" && (
-                <p className="text-accent text-center text-sm md:text-base">Message envoyé avec succès !</p>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-2 p-3 rounded-lg bg-green-500/10 text-green-500 text-sm"
+                >
+                  <CheckCircle size={16} />
+                  Message envoyé avec succès !
+                </motion.div>
               )}
               {status === "error" && (
-                <p className="text-destructive text-center text-sm md:text-base">Une erreur s&apos;est produite. Veuillez réessayer.</p>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 text-destructive text-sm"
+                >
+                  <XCircle size={16} />
+                  Une erreur s&apos;est produite. Veuillez réessayer.
+                </motion.div>
               )}
             </form>
           </div>

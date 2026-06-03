@@ -19,6 +19,8 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
     { href: `/${locale}/experience`, label: messages.nav.experience },
     { href: `/${locale}/skills`, label: messages.nav.skills },
     { href: `/${locale}/projects`, label: messages.nav.projects },
+    { href: `/${locale}/testimonials`, label: messages.nav.testimonials },
+    { href: `/${locale}/blog`, label: messages.nav.blog },
     { href: `/${locale}/contact`, label: messages.nav.contact },
   ];
 
@@ -29,7 +31,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
           AH
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden lg:flex items-center gap-5">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -43,7 +45,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-3">
           <LanguageSwitcher locale={locale} />
           <button
             onClick={toggleTheme}
@@ -55,7 +57,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
         </div>
 
         <button
-          className="md:hidden p-2"
+          className="lg:hidden p-2"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -63,8 +65,8 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-border bg-background">
-          <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
+        <div className="lg:hidden border-t border-border bg-background">
+          <div className="container mx-auto px-4 py-4 flex flex-col gap-3">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -77,7 +79,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
                 {item.label}
               </Link>
             ))}
-            <div className="flex items-center gap-3 pt-2 border-t border-border">
+            <div className="flex items-center gap-3 pt-3 border-t border-border">
               <LanguageSwitcher locale={locale} />
               <button
                 onClick={toggleTheme}

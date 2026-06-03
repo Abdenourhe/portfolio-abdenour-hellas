@@ -105,7 +105,8 @@ export default function SkillsPage() {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.3, delay: index * 0.03 }}
-                      className="p-3 md:p-4 rounded-xl bg-card border border-border"
+                      whileHover={{ scale: 1.02 }}
+                      className="p-3 md:p-4 rounded-xl bg-card border border-border hover:border-primary transition-colors"
                     >
                       <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
                         {IconComponent && <IconComponent className="w-4 h-4 md:w-5 md:h-5 text-primary flex-shrink-0" />}
@@ -117,7 +118,7 @@ export default function SkillsPage() {
                           initial={reducedMotion ? {} : { width: 0 }}
                           whileInView={{ width: `${skill.level}%` }}
                           viewport={{ once: true }}
-                          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                          transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
                           className={`h-full rounded-full ${categoryColors[category] || "bg-primary"}`}
                         />
                       </div>

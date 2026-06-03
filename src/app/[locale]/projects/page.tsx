@@ -75,10 +75,17 @@ export default function ProjectsPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="group relative rounded-xl bg-card border border-border overflow-hidden hover:border-primary transition-all hover:shadow-lg"
+              whileHover={{ y: -5 }}
+              className="group relative rounded-xl bg-card border border-border overflow-hidden hover:border-primary transition-all hover:shadow-xl"
             >
               {project.imageUrl ? (
-                <div className="w-full h-40 md:h-48 bg-cover bg-center" style={{ backgroundImage: `url(${project.imageUrl})` }} />
+                <div className="w-full h-40 md:h-48 overflow-hidden">
+                  <img
+                    src={project.imageUrl}
+                    alt={project.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
               ) : (
                 <ProjectPlaceholder title={project.title} />
               )}
@@ -96,7 +103,7 @@ export default function ProjectsPage() {
                   {project.technologies.map((tech) => (
                     <span
                       key={tech}
-                      className="px-2 py-0.5 text-xs rounded-full bg-primary/10 text-primary"
+                      className="px-2 py-0.5 text-xs rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                     >
                       {tech}
                     </span>
