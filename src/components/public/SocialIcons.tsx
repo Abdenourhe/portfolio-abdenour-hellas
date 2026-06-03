@@ -25,9 +25,10 @@ interface SocialIconsProps {
   facebook?: string | null;
   className?: string;
   iconSize?: number;
+  light?: boolean;
 }
 
-export default function SocialIcons({ linkedin, github, twitter, facebook, className = "", iconSize = 15 }: SocialIconsProps) {
+export default function SocialIcons({ linkedin, github, twitter, facebook, className = "", iconSize = 15, light = false }: SocialIconsProps) {
   const links = [
     { url: linkedin, icon: Globe, label: "LinkedIn" },
     { url: github, icon: Code, label: "GitHub" },
@@ -37,6 +38,10 @@ export default function SocialIcons({ linkedin, github, twitter, facebook, class
 
   if (links.length === 0) return null;
 
+  const linkClass = light
+    ? "p-2 rounded-md text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+    : "p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors";
+
   return (
     <div className={`flex items-center gap-1 ${className}`}>
       {links.map((link) => (
@@ -45,7 +50,7 @@ export default function SocialIcons({ linkedin, github, twitter, facebook, class
           href={link.url!}
           target="_blank"
           rel="noopener noreferrer"
-          className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          className={linkClass}
           aria-label={link.label}
         >
           <link.icon size={iconSize} />
