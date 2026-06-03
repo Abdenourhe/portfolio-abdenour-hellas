@@ -57,7 +57,7 @@ export default function TestimonialsPage() {
             key={item.id}
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.4, delay: index * 0.05 }}
             className="p-6 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors flex flex-col"
           >

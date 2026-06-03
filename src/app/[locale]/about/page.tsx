@@ -59,7 +59,7 @@ export default function AboutPage() {
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.5 }}
             className="flex-shrink-0 mx-auto md:mx-0"
           >
@@ -83,7 +83,7 @@ export default function AboutPage() {
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="flex-1 text-center md:text-left"
           >
@@ -139,7 +139,7 @@ export default function AboutPage() {
               key={interest.name}
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0.15 }}
               transition={{ duration: 0.4, delay: index * 0.05 }}
               className="group p-5 rounded-xl border border-border bg-card text-center hover:border-primary/30 transition-colors"
             >

@@ -57,7 +57,7 @@ export default function BlogPage() {
             key={article.id}
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.4, delay: index * 0.05 }}
           >
             <Link href={`/${locale}/blog/${article.slug}`} className="block h-full group">

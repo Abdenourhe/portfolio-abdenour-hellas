@@ -69,7 +69,7 @@ export default function ExperiencePage() {
             key={exp.id}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.4, delay: index * 0.05 }}
             className="relative pl-12 md:pl-0 pb-10 last:pb-0"
           >

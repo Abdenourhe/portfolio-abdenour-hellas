@@ -73,7 +73,7 @@ export default function ContactPage() {
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-base font-semibold text-primary mb-5">{t("contact.info")}</h2>
@@ -114,7 +114,7 @@ export default function ContactPage() {
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <h2 className="text-base font-semibold text-primary mb-5">{t("contact.sendMessage")}</h2>

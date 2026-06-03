@@ -80,7 +80,7 @@ export default function SkillsPage() {
             key={category}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.5 }}
           >
             <h2 className="text-base font-semibold text-primary mb-5 flex items-center gap-2">
@@ -95,7 +95,7 @@ export default function SkillsPage() {
                     key={skill.id}
                     initial={{ opacity: 0, y: 8 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: true, amount: 0.15 }}
                     transition={{ duration: 0.3, delay: index * 0.03 }}
                     className="p-4 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors"
                   >
@@ -108,7 +108,7 @@ export default function SkillsPage() {
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: `${skill.level}%` }}
-                        viewport={{ once: true }}
+                        viewport={{ once: true, amount: 0.15 }}
                         transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                         className="h-full rounded-full bg-primary"
                       />

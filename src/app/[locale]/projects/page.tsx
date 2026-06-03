@@ -83,7 +83,7 @@ export default function ProjectsPage() {
             key={project.id}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.4, delay: index * 0.05 }}
             className="group rounded-xl border border-border bg-card overflow-hidden hover:border-primary/40 transition-colors"
           >
