@@ -129,6 +129,7 @@ export interface Message {
   subject: string;
   content: string;
   read: boolean;
+  reply?: string;
   createdAt: Date;
 }
 

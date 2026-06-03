@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 import { useLocale, useLocalizedPath } from "@/components/public/useLocale";
 import SectionHeader from "@/components/public/SectionHeader";
+import HomeNav from "@/components/public/HomeNav";
 import ExperienceSection from "@/components/public/sections/ExperienceSection";
 import EducationSection from "@/components/public/sections/EducationSection";
 import SkillsSection from "@/components/public/sections/SkillsSection";
@@ -165,8 +166,10 @@ function HomeClient() {
         </div>
       </section>
 
+      <HomeNav />
+
       {/* Experience */}
-      <section className="py-16 lg:py-24 border-t border-border">
+      <section id="experience" className="py-16 lg:py-24 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("experience.title")} subtitle={t("experience.subtitle")} />
           <div className="mt-12">
@@ -176,7 +179,7 @@ function HomeClient() {
       </section>
 
       {/* Education */}
-      <section className="py-16 lg:py-24 border-t border-border">
+      <section id="education" className="py-16 lg:py-24 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("education.title")} subtitle={t("education.subtitle")} />
           <div className="mt-12">
@@ -186,7 +189,7 @@ function HomeClient() {
       </section>
 
       {/* Skills */}
-      <section className="py-16 lg:py-24 border-t border-border">
+      <section id="skills" className="py-16 lg:py-24 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("skills.title")} subtitle={t("skills.subtitle")} />
           <div className="mt-12">
@@ -196,7 +199,7 @@ function HomeClient() {
       </section>
 
       {/* Projects */}
-      <section className="py-16 lg:py-24 border-t border-border">
+      <section id="projects" className="py-16 lg:py-24 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("projects.title")} subtitle={t("projects.subtitle")} />
           <div className="mt-12">
@@ -206,7 +209,7 @@ function HomeClient() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 lg:py-24 border-t border-border">
+      <section id="testimonials" className="py-16 lg:py-24 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("testimonials.title")} subtitle={t("testimonials.subtitle")} />
           <div className="mt-12">
@@ -216,7 +219,7 @@ function HomeClient() {
       </section>
 
       {/* Blog */}
-      <section className="py-16 lg:py-24 border-t border-border">
+      <section id="blog" className="py-16 lg:py-24 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("blog.title")} subtitle={t("blog.subtitle")} />
           <div className="mt-12">

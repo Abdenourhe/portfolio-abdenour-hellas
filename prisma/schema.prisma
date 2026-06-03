@@ -154,6 +154,7 @@ model Message {
   subject   String
   content   String   @db.Text
   read      Boolean  @default(false)
+  reply     String?  @db.Text
   createdAt DateTime @default(now())
 }
 

@@ -43,10 +43,13 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id, read } = await request.json();
+    const { id, read, reply } = await request.json();
+    const data: any = {};
+    if (read !== undefined) data.read = read;
+    if (reply !== undefined) data.reply = reply;
     const message = await prisma.message.update({
       where: { id },
-      data: { read },
+      data,
     });
     return NextResponse.json(message);
   } catch (error) {
