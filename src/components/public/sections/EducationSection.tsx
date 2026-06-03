@@ -51,16 +51,61 @@ export default function EducationSection({ data, compact = false, limit }: Educa
     );
   }
 
+  const displayEducation = limit ? education.slice(0, limit) : education;
+
+  if (compact) {
+    return (
+      <div className="max-w-3xl mx-auto space-y-3">
+        {displayEducation.map((edu, index) => (
+          <motion.div
+            key={edu.id}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.4, delay: index * 0.05 }}
+            className="flex gap-4 p-4 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors"
+          >
+            <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-primary/5 flex items-center justify-center mt-0.5">
+              <GraduationCap className="w-4 h-4 text-primary/70" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-semibold text-primary">{edu.degree}</h3>
+              <p className="text-xs text-muted-foreground">{edu.school}</p>
+              <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 text-[10px] text-muted-foreground">
+                <span className="inline-flex items-center gap-1">
+                  <Calendar size={10} />
+                  {new Date(edu.startDate).toLocaleDateString("fr-CA", { year: "numeric", month: "short" })} —{" "}
+                  {edu.current
+                    ? t("experience.present")
+                    : edu.endDate
+                    ? new Date(edu.endDate).toLocaleDateString("fr-CA", { year: "numeric", month: "short" })
+                    : ""}
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <MapPin size={10} />
+                  {edu.location}
+                </span>
+              </div>
+              {edu.description && (
+                <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{edu.description}</p>
+              )}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-3xl mx-auto space-y-3">
-      {(limit ? education.slice(0, limit) : education).map((edu, index) => (
+      {displayEducation.map((edu, index) => (
         <motion.div
           key={edu.id}
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.4, delay: index * 0.05 }}
-          className={`flex gap-4 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors ${compact ? "p-4" : "p-5"}`}
+          className="flex gap-4 p-5 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors"
         >
           <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-primary/5 flex items-center justify-center mt-0.5">
             <GraduationCap className="w-4 h-4 text-primary/70" />

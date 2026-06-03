@@ -15,12 +15,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const titles: Record<string, string> = {
     fr: "Abdenour Hellas — Ingénieur en Génie Électrique",
     en: "Abdenour Hellas — Electrical Engineer",
-    ar: "عبد النور هلاس — مهندس كهربائي",
+    ar: "عبد النور حلاس — مهندس كهربائي",
   };
   const descriptions: Record<string, string> = {
     fr: "Portfolio d'Abdenour Hellas, ingénieur en génie électrique spécialisé en automatisation, supervision et systèmes embarqués.",
     en: "Portfolio of Abdenour Hellas, electrical engineer specialized in automation, supervision and embedded systems.",
-    ar: "محفظة عبد النور هلاس، مهندس كهربائي متخصص في الأتمتة والإشراف والأنظمة المدمجة.",
+    ar: "محفظة عبد النور حلاس، مهندس كهربائي متخصص في الأتمتة والإشراف والأنظمة المدمجة.",
   };
 
   return {

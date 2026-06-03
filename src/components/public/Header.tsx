@@ -44,6 +44,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
             <Link
               key={item.href}
               href={item.href}
+              prefetch={false}
               className={`relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
                 isActive(item.href)
                   ? "text-foreground bg-muted"
@@ -82,6 +83,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={false}
                 className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                   isActive(item.href)
                     ? "text-foreground bg-muted"

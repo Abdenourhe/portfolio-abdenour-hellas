@@ -27,6 +27,7 @@ export default function Footer({ locale, messages }: { locale: string; messages:
           <div className="flex items-center gap-4">
             <Link
               href={`/${locale}/cv`}
+              prefetch={false}
               className="text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               CV
@@ -34,6 +35,7 @@ export default function Footer({ locale, messages }: { locale: string; messages:
             <span className="text-border">·</span>
             <Link
               href={`/${locale}/contact`}
+              prefetch={false}
               className="text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               {messages.nav?.contact || "Contact"}
@@ -41,6 +43,7 @@ export default function Footer({ locale, messages }: { locale: string; messages:
             <span className="text-border">·</span>
             <Link
               href="/admin/login"
+              prefetch={false}
               className="text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               Admin

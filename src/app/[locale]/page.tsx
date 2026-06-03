@@ -184,8 +184,13 @@ function HomeClient() {
       <section id="experience" className="py-10 lg:py-16 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("experience.title")} subtitle={t("experience.subtitle")} />
-          <div className="mt-12">
+          <div className="mt-8">
             <ExperienceSection data={experiences} compact limit={4} />
+          </div>
+          <div className="mt-6 text-center">
+            <Link href={useLocalizedPath("/experience")} prefetch={false} className="inline-flex items-center gap-1.5 text-sm text-secondary font-medium hover:text-primary transition-colors">
+              {t("experience.title")} <ArrowRight size={14} />
+            </Link>
           </div>
         </div>
       </section>
@@ -194,8 +199,13 @@ function HomeClient() {
       <section id="education" className="py-10 lg:py-16 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("education.title")} subtitle={t("education.subtitle")} />
-          <div className="mt-12">
+          <div className="mt-8">
             <EducationSection data={education} compact limit={3} />
+          </div>
+          <div className="mt-6 text-center">
+            <Link href={useLocalizedPath("/education")} prefetch={false} className="inline-flex items-center gap-1.5 text-sm text-secondary font-medium hover:text-primary transition-colors">
+              {t("education.title")} <ArrowRight size={14} />
+            </Link>
           </div>
         </div>
       </section>
@@ -204,8 +214,13 @@ function HomeClient() {
       <section id="skills" className="py-10 lg:py-16 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("skills.title")} subtitle={t("skills.subtitle")} />
-          <div className="mt-12">
+          <div className="mt-8">
             <SkillsSection data={skills} compact limit={6} />
+          </div>
+          <div className="mt-6 text-center">
+            <Link href={useLocalizedPath("/skills")} prefetch={false} className="inline-flex items-center gap-1.5 text-sm text-secondary font-medium hover:text-primary transition-colors">
+              {t("skills.title")} <ArrowRight size={14} />
+            </Link>
           </div>
         </div>
       </section>
@@ -214,8 +229,13 @@ function HomeClient() {
       <section id="projects" className="py-10 lg:py-16 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("projects.title")} subtitle={t("projects.subtitle")} />
-          <div className="mt-12">
+          <div className="mt-8">
             <ProjectsSection data={projects} compact limit={4} />
+          </div>
+          <div className="mt-6 text-center">
+            <Link href={useLocalizedPath("/projects")} prefetch={false} className="inline-flex items-center gap-1.5 text-sm text-secondary font-medium hover:text-primary transition-colors">
+              {t("projects.title")} <ArrowRight size={14} />
+            </Link>
           </div>
         </div>
       </section>
@@ -224,8 +244,13 @@ function HomeClient() {
       <section id="testimonials" className="py-10 lg:py-16 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("testimonials.title")} subtitle={t("testimonials.subtitle")} />
-          <div className="mt-12">
+          <div className="mt-8">
             <TestimonialsSection data={testimonials} compact limit={3} />
+          </div>
+          <div className="mt-6 text-center">
+            <Link href={useLocalizedPath("/testimonials")} prefetch={false} className="inline-flex items-center gap-1.5 text-sm text-secondary font-medium hover:text-primary transition-colors">
+              {t("testimonials.title")} <ArrowRight size={14} />
+            </Link>
           </div>
         </div>
       </section>
@@ -234,8 +259,13 @@ function HomeClient() {
       <section id="blog" className="py-10 lg:py-16 border-t border-border">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("blog.title")} subtitle={t("blog.subtitle")} />
-          <div className="mt-12">
+          <div className="mt-8">
             <BlogSection data={articles} compact limit={3} />
+          </div>
+          <div className="mt-6 text-center">
+            <Link href={useLocalizedPath("/blog")} prefetch={false} className="inline-flex items-center gap-1.5 text-sm text-secondary font-medium hover:text-primary transition-colors">
+              {t("blog.title")} <ArrowRight size={14} />
+            </Link>
           </div>
         </div>
       </section>
