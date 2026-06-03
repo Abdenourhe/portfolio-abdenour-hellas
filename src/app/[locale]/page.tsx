@@ -49,7 +49,7 @@ function HomeClient() {
             <Skeleton className="w-48 h-48 md:w-56 md:h-56 rounded-full flex-shrink-0" />
             <div className="text-center lg:text-left space-y-4 max-w-xl w-full">
               <Skeleton className="h-4 w-24 mx-auto lg:mx-0" />
-              <Skeleton className="h-12 w-3/4 mx-auto lg:mx-0" />
+              <Skeleton className="h-16 w-3/4 mx-auto lg:mx-0" />
               <Skeleton className="h-6 w-1/2 mx-auto lg:mx-0" />
               <Skeleton className="h-20 w-full" />
               <div className="flex gap-3 justify-center lg:justify-start pt-2">
@@ -64,16 +64,16 @@ function HomeClient() {
   }
 
   return (
-    <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-20 lg:py-0">
-      <div className="container mx-auto">
+    <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 lg:py-0">
+      <div className="container mx-auto max-w-5xl">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="relative flex-shrink-0"
           >
-            <div className="w-44 h-44 md:w-56 md:h-56 rounded-full overflow-hidden ring-2 ring-primary/20 bg-muted">
+            <div className="w-40 h-40 md:w-52 md:h-52 rounded-full overflow-hidden ring-1 ring-primary/10 bg-muted">
               {profile?.photoUrl ? (
                 <img
                   src={profile.photoUrl}
@@ -82,7 +82,7 @@ function HomeClient() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-5xl font-semibold text-primary/40">
+                  <span className="text-5xl font-semibold text-primary/30 tracking-tight">
                     {profile?.fullName?.split(" ").map((n: string) => n[0]).join("") || "AH"}
                   </span>
                 </div>
@@ -91,18 +91,18 @@ function HomeClient() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="text-center lg:text-left max-w-xl"
           >
-            <p className="text-sm text-primary/70 tracking-wide uppercase mb-3">
+            <p className="text-xs font-medium text-primary/60 tracking-[0.15em] uppercase mb-4">
               {t("hero.title")}
             </p>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-primary leading-[1.1]">
+            <h1 className="text-[clamp(2.5rem,6vw,4.5rem)] font-semibold tracking-tight text-primary leading-[1.05]">
               {profile?.fullName || "Abdenour Hellas"}
             </h1>
-            <p className="mt-5 text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto lg:mx-0">
+            <p className="mt-6 text-base text-muted-foreground leading-relaxed max-w-md mx-auto lg:mx-0">
               {profile?.bio || t("hero.subtitle")}
             </p>
 
@@ -117,7 +117,7 @@ function HomeClient() {
               </Link>
               <Link
                 href={contactPath}
-                className="inline-flex items-center gap-2 px-5 py-2.5 border border-primary/20 text-primary rounded-lg text-sm font-medium hover:bg-primary/5 transition-colors"
+                className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground rounded-lg text-sm font-medium hover:border-primary/30 hover:bg-primary/[0.02] transition-colors"
               >
                 <Send size={15} />
                 {t("hero.contactMe")}
@@ -125,7 +125,7 @@ function HomeClient() {
               {profile?.cvUrl && (
                 <button
                   onClick={handleDownloadCV}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-muted-foreground rounded-lg text-sm font-medium hover:text-primary hover:bg-primary/5 transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 text-muted-foreground rounded-lg text-sm font-medium hover:text-primary transition-colors"
                 >
                   <Download size={15} />
                   {t("contact.downloadCv")}
