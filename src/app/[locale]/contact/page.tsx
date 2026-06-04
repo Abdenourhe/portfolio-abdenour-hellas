@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send, Download, CheckCircle, XCircle, FileText } from "lucide-react";
 import { z } from "zod";
@@ -20,10 +20,17 @@ export default function ContactPage() {
   const t = useT();
   const locale = useLocale();
   const cvPath = useLocalizedPath("/cv");
+  const [profile, setProfile] = useState<any>(null);
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", content: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/profile")
+      .then((r) => r.json())
+      .then((data) => setProfile(data));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,24 +88,30 @@ export default function ContactPage() {
         >
           <h2 className="text-base font-semibold text-primary mb-5">{t("contact.info")}</h2>
           <div className="space-y-2">
-            <a
-              href="mailto:Abdenour.Hellas@uqat.ca"
-              className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card hover:border-primary/30 transition-colors group"
-            >
-              <Mail className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors flex-shrink-0" />
-              <span className="text-sm text-foreground break-all">Abdenour.Hellas@uqat.ca</span>
-            </a>
-            <a
-              href="tel:418-350-5686"
-              className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card hover:border-primary/30 transition-colors group"
-            >
-              <Phone className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors flex-shrink-0" />
-              <span className="text-sm text-foreground">418-350-5686</span>
-            </a>
-            <div className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card">
-              <MapPin className="w-4 h-4 text-primary/60 flex-shrink-0" />
-              <span className="text-sm text-muted-foreground">3490 Rue Principale, Baker-Brook, NB</span>
-            </div>
+            {profile?.email && (
+              <a
+                href={`mailto:${profile.email}`}
+                className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card hover:border-primary/30 transition-colors group"
+              >
+                <Mail className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors flex-shrink-0" />
+                <span className="text-sm text-foreground break-all">{profile.email}</span>
+              </a>
+            )}
+            {profile?.phone && (
+              <a
+                href={`tel:${profile.phone}`}
+                className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card hover:border-primary/30 transition-colors group"
+              >
+                <Phone className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors flex-shrink-0" />
+                <span className="text-sm text-foreground">{profile.phone}</span>
+              </a>
+            )}
+            {profile?.location && (
+              <div className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card">
+                <MapPin className="w-4 h-4 text-primary/60 flex-shrink-0" />
+                <span className="text-sm text-muted-foreground">{profile.location}</span>
+              </div>
+            )}
           </div>
 
           <h2 className="text-base font-semibold text-primary mt-8 mb-4">{t("contact.social")}</h2>
