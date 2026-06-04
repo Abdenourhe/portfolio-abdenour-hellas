@@ -9,8 +9,8 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
-  const [uploadingCV, setUploadingCV] = useState(false);
+  const [loadingPhoto, setLoadingPhoto] = useState(false);
+  const [loadingCV, setLoadingCV] = useState(false);
 
   useEffect(() => {
     fetch("/api/profile")
@@ -44,28 +44,18 @@ export default function ProfilePage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploadingPhoto(true);
+    setLoadingPhoto(true);
     setMessage("");
     const reader = new FileReader();
-    reader.onloadend = async () => {
+    reader.onloadend = () => {
       const base64 = reader.result as string;
-      const formData = new FormData();
-      formData.append("base64", base64);
-      formData.append("type", "photo");
-
-      try {
-        const res = await fetch("/api/upload", { method: "POST", body: formData });
-        const data = await res.json();
-        if (res.ok && data.url) {
-          setProfile({ ...profile, photoUrl: data.url });
-          setMessage("Photo uploadée avec succès");
-        } else {
-          setMessage("Erreur upload : " + (data.error || "Service indisponible"));
-        }
-      } catch (err) {
-        setMessage("Erreur réseau lors de l'upload");
-      }
-      setUploadingPhoto(false);
+      setProfile({ ...profile, photoUrl: base64 });
+      setMessage("Photo prête — clique sur Enregistrer pour sauvegarder");
+      setLoadingPhoto(false);
+    };
+    reader.onerror = () => {
+      setMessage("Erreur lors de la lecture de la photo");
+      setLoadingPhoto(false);
     };
     reader.readAsDataURL(file);
   };
@@ -74,25 +64,20 @@ export default function ProfilePage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploadingCV(true);
+    setLoadingCV(true);
     setMessage("");
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("type", "cv");
-
-    try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        setProfile({ ...profile, cvUrl: data.url, cvFileName: data.fileName });
-        setMessage("CV uploadé avec succès");
-      } else {
-        setMessage("Erreur upload CV : " + (data.error || "Service indisponible"));
-      }
-    } catch (err) {
-      setMessage("Erreur réseau lors de l'upload");
-    }
-    setUploadingCV(false);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result as string;
+      setProfile({ ...profile, cvUrl: base64, cvFileName: file.name });
+      setMessage("CV prêt — clique sur Enregistrer pour sauvegarder");
+      setLoadingCV(false);
+    };
+    reader.onerror = () => {
+      setMessage("Erreur lors de la lecture du CV");
+      setLoadingCV(false);
+    };
+    reader.readAsDataURL(file);
   };
 
   if (loading) {
@@ -123,7 +108,7 @@ export default function ProfilePage() {
             <label className="block text-sm font-medium mb-2">Photo de profil</label>
             <label className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors cursor-pointer">
               <Upload size={16} />
-              {uploadingPhoto ? "Upload..." : "Changer la photo"}
+              {loadingPhoto ? "Chargement..." : "Changer la photo"}
               <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
             </label>
           </div>
@@ -164,14 +149,14 @@ export default function ProfilePage() {
             )}
             <label className="inline-flex items-center gap-2 px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors cursor-pointer">
               <Upload size={16} />
-              {uploadingCV ? "Upload..." : "Uploader un CV"}
+              {loadingCV ? "Chargement..." : "Uploader un CV"}
               <input type="file" accept=".pdf" className="hidden" onChange={handleCVUpload} />
             </label>
           </div>
         </div>
 
         {message && (
-          <p className={`text-sm ${message.includes("succès") ? "text-green-500" : "text-destructive"}`}>{message}</p>
+          <p className={`text-sm ${(message.includes("succès") || message.includes("prêt")) ? "text-green-500" : "text-destructive"}`}>{message}</p>
         )}
 
         <button type="submit" disabled={saving} className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50">
