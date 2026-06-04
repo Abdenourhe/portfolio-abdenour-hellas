@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { FileText, Send, Download, ArrowRight, Calendar, Briefcase, GraduationCap, Wrench } from "lucide-react";
+import { FileText, Send, Download, ArrowRight, Calendar, Briefcase, GraduationCap, Wrench, MapPin } from "lucide-react";
 import { useEffect, useState, useRef, useCallback } from "react";
 import SocialIcons from "@/components/public/SocialIcons";
 import { Skeleton } from "@/components/public/Skeleton";
@@ -266,6 +266,16 @@ function HomeClient() {
               >
                 {getBio()}
               </motion.p>
+
+              {profile?.location && (
+                <motion.p
+                  variants={heroItem}
+                  className="mt-3 text-sm text-muted-foreground flex items-center gap-1.5 justify-center lg:justify-start"
+                >
+                  <MapPin size={14} className="text-secondary" />
+                  {profile.location}
+                </motion.p>
+              )}
 
               <motion.div
                 variants={heroItem}

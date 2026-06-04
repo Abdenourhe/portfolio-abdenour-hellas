@@ -26,16 +26,40 @@ export default function ProfilePage() {
     setSaving(true);
     setMessage("");
 
+    // Send only text fields to avoid huge base64 payloads
+    const payload = {
+      fullName: profile.fullName,
+      title: profile.title,
+      titleEn: profile.titleEn,
+      titleAr: profile.titleAr,
+      email: profile.email,
+      phone: profile.phone,
+      location: profile.location,
+      bio: profile.bio,
+      bioEn: profile.bioEn,
+      bioAr: profile.bioAr,
+      linkedin: profile.linkedin,
+      github: profile.github,
+      twitter: profile.twitter,
+      facebook: profile.facebook,
+      instagram: profile.instagram,
+      whatsapp: profile.whatsapp,
+      photoUrl: profile.photoUrl,
+      cvUrl: profile.cvUrl,
+      cvFileName: profile.cvFileName,
+    };
+
     const res = await fetch("/api/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(profile),
+      body: JSON.stringify(payload),
     });
 
     if (res.ok) {
       setMessage("Profil mis à jour avec succès");
     } else {
-      setMessage("Erreur lors de la mise à jour");
+      const err = await res.json().catch(() => ({}));
+      setMessage("Erreur : " + (err.error || "Mise à jour échouée"));
     }
     setSaving(false);
   };
