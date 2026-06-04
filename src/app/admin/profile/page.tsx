@@ -131,6 +131,10 @@ export default function ProfilePage() {
             <label className="block text-sm font-medium mb-2">Téléphone</label>
             <input type="text" value={profile.phone || ""} onChange={(e) => setProfile({ ...profile, phone: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" />
           </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Adresse</label>
+            <input type="text" value={profile.location || ""} onChange={(e) => setProfile({ ...profile, location: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" />
+          </div>
         </div>
 
         <div>

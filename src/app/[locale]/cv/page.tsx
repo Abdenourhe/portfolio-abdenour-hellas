@@ -351,17 +351,34 @@ export default function CVPage() {
                 <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-3 pb-2 border-b border-[#C9A962]">
                   {locale === "fr" ? "Autres expériences" : locale === "en" ? "Other Experience" : "خبرات أخرى"}
                 </h2>
-                <div className="space-y-2">
-                  {otherExperiences.map((exp: any) => (
-                    <div key={exp.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5 break-inside-avoid">
-                      <p className="text-xs font-semibold text-[#1E3A5F]">
-                        {exp.title} — <span className="text-[#C9A962]">{exp.company}</span>
-                      </p>
-                      <span className="text-[10px] text-[#1E3A5F]/40 tabular-nums shrink-0">
-                        {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
-                      </span>
-                    </div>
-                  ))}
+                <div className="space-y-4">
+                  {otherExperiences.map((exp: any) => {
+                    const bullets = toBullets(exp.description);
+                    return (
+                      <div key={exp.id} className="break-inside-avoid-page">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5">
+                          <p className="text-xs font-semibold text-[#1E3A5F]">
+                            {exp.title} — <span className="text-[#C9A962]">{exp.company}</span>
+                          </p>
+                          <span className="text-[10px] text-[#1E3A5F]/40 tabular-nums shrink-0">
+                            {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
+                          </span>
+                        </div>
+                        {bullets.length > 1 ? (
+                          <ul className="mt-2 space-y-1">
+                            {bullets.map((b, i) => (
+                              <li key={i} className="text-xs text-[#444] leading-relaxed flex items-start gap-2">
+                                <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-[#C9A962]" />
+                                <span>{b}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-xs text-[#444] mt-1 leading-relaxed">{exp.description}</p>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </section>
             )}

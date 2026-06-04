@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Save, Globe, Code } from "lucide-react";
+import { Save, Globe, Code, Lock, Mail, Eye, EyeOff } from "lucide-react";
 
 function TwitterIcon({ className, size = 20 }: { className?: string; size?: number }) {
   return (
@@ -38,23 +38,33 @@ function WhatsAppIcon({ className, size = 20 }: { className?: string; size?: num
 
 export default function SettingsPage() {
   const [profile, setProfile] = useState<any>({});
+  const [account, setAccount] = useState<any>({});
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
+  const [savingSocial, setSavingSocial] = useState(false);
+  const [savingPassword, setSavingPassword] = useState(false);
+  const [messageSocial, setMessageSocial] = useState("");
+  const [messagePassword, setMessagePassword] = useState("");
+  const [passwordForm, setPasswordForm] = useState({ current: "", new: "", confirm: "" });
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
 
   useEffect(() => {
-    fetch("/api/profile")
-      .then((res) => res.json())
-      .then((data) => {
-        setProfile(data || {});
+    Promise.all([
+      fetch("/api/profile").then((r) => r.json()),
+      fetch("/api/admin/account").then((r) => r.json()),
+    ])
+      .then(([profileData, accountData]) => {
+        setProfile(profileData || {});
+        setAccount(accountData || {});
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmitSocial = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
-    setMessage("");
+    setSavingSocial(true);
+    setMessageSocial("");
 
     const res = await fetch("/api/profile", {
       method: "PUT",
@@ -70,11 +80,46 @@ export default function SettingsPage() {
     });
 
     if (res.ok) {
-      setMessage("Paramètres enregistrés avec succès");
+      setMessageSocial("Paramètres enregistrés avec succès");
     } else {
-      setMessage("Erreur lors de l'enregistrement");
+      setMessageSocial("Erreur lors de l'enregistrement");
     }
-    setSaving(false);
+    setSavingSocial(false);
+  };
+
+  const handleSubmitPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingPassword(true);
+    setMessagePassword("");
+
+    if (passwordForm.new !== passwordForm.confirm) {
+      setMessagePassword("Les nouveaux mots de passe ne correspondent pas");
+      setSavingPassword(false);
+      return;
+    }
+    if (passwordForm.new.length < 6) {
+      setMessagePassword("Le nouveau mot de passe doit faire au moins 6 caractères");
+      setSavingPassword(false);
+      return;
+    }
+
+    const res = await fetch("/api/admin/account", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        currentPassword: passwordForm.current,
+        newPassword: passwordForm.new,
+      }),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      setMessagePassword("Mot de passe mis à jour avec succès");
+      setPasswordForm({ current: "", new: "", confirm: "" });
+    } else {
+      setMessagePassword(data.error || "Erreur lors de la mise à jour");
+    }
+    setSavingPassword(false);
   };
 
   if (loading) {
@@ -90,8 +135,83 @@ export default function SettingsPage() {
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
       <h1 className="text-3xl font-bold mb-8">Paramètres</h1>
 
-      <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
-        <div>
+      <div className="max-w-2xl space-y-8">
+        {/* Account */}
+        <section className="p-6 rounded-xl bg-card border border-border space-y-4">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <Lock size={18} className="text-primary" />
+            Compte
+          </h2>
+          <div>
+            <label className="flex items-center gap-2 text-sm font-medium mb-2">
+              <Mail size={16} className="text-primary" />
+              Email de connexion
+            </label>
+            <input
+              type="email"
+              value={account.email || ""}
+              disabled
+              className="w-full px-4 py-2 rounded-lg bg-muted border border-border text-muted-foreground cursor-not-allowed"
+            />
+            <p className="text-xs text-muted-foreground mt-1">L'email ne peut pas être modifié ici.</p>
+          </div>
+
+          <form onSubmit={handleSubmitPassword} className="space-y-4 pt-2 border-t border-border">
+            <h3 className="text-sm font-semibold">Changer le mot de passe</h3>
+            <div className="relative">
+              <label className="block text-sm font-medium mb-1">Mot de passe actuel</label>
+              <input
+                type={showCurrent ? "text" : "password"}
+                value={passwordForm.current}
+                onChange={(e) => setPasswordForm({ ...passwordForm, current: e.target.value })}
+                className="w-full px-4 py-2 pr-10 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                required
+              />
+              <button type="button" onClick={() => setShowCurrent(!showCurrent)} className="absolute right-3 top-[31px] text-muted-foreground">
+                {showCurrent ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+            <div className="relative">
+              <label className="block text-sm font-medium mb-1">Nouveau mot de passe</label>
+              <input
+                type={showNew ? "text" : "password"}
+                value={passwordForm.new}
+                onChange={(e) => setPasswordForm({ ...passwordForm, new: e.target.value })}
+                className="w-full px-4 py-2 pr-10 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                required
+                minLength={6}
+              />
+              <button type="button" onClick={() => setShowNew(!showNew)} className="absolute right-3 top-[31px] text-muted-foreground">
+                {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Confirmer le nouveau mot de passe</label>
+              <input
+                type="password"
+                value={passwordForm.confirm}
+                onChange={(e) => setPasswordForm({ ...passwordForm, confirm: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                required
+                minLength={6}
+              />
+            </div>
+            {messagePassword && (
+              <p className={`text-sm ${messagePassword.includes("succès") ? "text-green-500" : "text-destructive"}`}>{messagePassword}</p>
+            )}
+            <button
+              type="submit"
+              disabled={savingPassword}
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+            >
+              <Save size={16} />
+              {savingPassword ? "Enregistrement..." : "Mettre à jour le mot de passe"}
+            </button>
+          </form>
+        </section>
+
+        {/* Socials */}
+        <form onSubmit={handleSubmitSocial} className="p-6 rounded-xl bg-card border border-border space-y-4">
           <h2 className="text-lg font-semibold mb-4">Réseaux sociaux</h2>
           <div className="space-y-4">
             <div>
@@ -173,21 +293,21 @@ export default function SettingsPage() {
               />
             </div>
           </div>
-        </div>
 
-        {message && (
-          <p className={`text-sm ${message.includes("succès") ? "text-green-500" : "text-destructive"}`}>{message}</p>
-        )}
+          {messageSocial && (
+            <p className={`text-sm ${messageSocial.includes("succès") ? "text-green-500" : "text-destructive"}`}>{messageSocial}</p>
+          )}
 
-        <button
-          type="submit"
-          disabled={saving}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
-        >
-          <Save size={18} />
-          {saving ? "Enregistrement..." : "Enregistrer"}
-        </button>
-      </form>
+          <button
+            type="submit"
+            disabled={savingSocial}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+          >
+            <Save size={18} />
+            {savingSocial ? "Enregistrement..." : "Enregistrer"}
+          </button>
+        </form>
+      </div>
     </motion.div>
   );
 }
