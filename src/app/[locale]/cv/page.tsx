@@ -210,16 +210,36 @@ export default function CVPage() {
                 <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-3 pb-2 border-b border-[#C9A962]">
                   {t("cv.skills")}
                 </h2>
-                <div className="flex flex-wrap gap-1.5">
-                  {techSkills.map((skill: any) => (
-                    <span
-                      key={skill.id}
-                      className="inline-block text-[10px] px-2 py-0.5 rounded-sm bg-[#1E3A5F] text-white font-medium"
-                      style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
-                    >
-                      {skill.name}
-                    </span>
-                  ))}
+                <div className="space-y-3">
+                  {Array.from(new Map(techSkills.map((s: any) => [s.category, s])).entries())
+                    .map(([cat]: [string, any]) => cat)
+                    .filter(Boolean)
+                    .map((cat: string) => {
+                      const catSkills = techSkills.filter((s: any) => s.category === cat);
+                      return (
+                        <div key={cat} className="break-inside-avoid">
+                          <h3 className="text-[10px] font-bold uppercase tracking-wider text-[#1E3A5F]/70 mb-1.5">
+                            {cat}
+                          </h3>
+                          <div className="space-y-1.5">
+                            {catSkills.map((skill: any) => (
+                              <div key={skill.id}>
+                                <div className="flex items-center justify-between text-xs mb-0.5">
+                                  <span className="text-[#1E3A5F] font-medium">{skill.name}</span>
+                                  <span className="text-[10px] font-semibold text-[#C9A962]">{skill.level}%</span>
+                                </div>
+                                <div className="h-1 bg-[#1E3A5F]/10 rounded-full overflow-hidden">
+                                  <div
+                                    className="h-full bg-[#C9A962] rounded-full"
+                                    style={{ width: `${skill.level}%`, printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               </section>
             )}
