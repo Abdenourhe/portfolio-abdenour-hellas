@@ -16,22 +16,25 @@ import ProjectsSection from "@/components/public/sections/ProjectsSection";
 import TestimonialsSection from "@/components/public/sections/TestimonialsSection";
 import BlogSection from "@/components/public/sections/BlogSection";
 
-function useCountUp(end: number, duration = 2000) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.5 });
+function AnimatedNumber({ value, suffix = "" }: { value: number; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const [count, setCount] = useState(value);
 
   useEffect(() => {
-    if (!isInView || end <= 0) return;
-    const controls = animate(0, end, {
-      duration: duration / 1000,
+    if (!isInView || value <= 0) {
+      setCount(value);
+      return;
+    }
+    const controls = animate(0, value, {
+      duration: 2,
       ease: "easeOut",
-      onUpdate: (value) => setCount(Math.floor(value)),
+      onUpdate: (v) => setCount(Math.floor(v)),
     });
     return () => controls.stop();
-  }, [isInView, end, duration]);
+  }, [isInView, value]);
 
-  return { count, ref };
+  return <span ref={ref}>{count}{suffix}</span>;
 }
 
 export default function HomePage() {
@@ -124,11 +127,7 @@ function HomeClient() {
     { label: statLabels[3], value: skills.length, icon: Wrench, suffix: "+" },
   ];
 
-  const yearsCount = useCountUp(stats[0].value, 2000);
-  const projectsCount = useCountUp(stats[1].value, 2000);
-  const eduCount = useCountUp(stats[2].value, 2000);
-  const skillsCount = useCountUp(stats[3].value, 2000);
-  const counts = [yearsCount, projectsCount, eduCount, skillsCount];
+
 
   // Hero animations
   const heroContainer = {
@@ -305,7 +304,6 @@ function HomeClient() {
             {stats.map((stat, index) => (
               <motion.div
                 key={stat.label}
-                ref={counts[index].ref}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -316,7 +314,7 @@ function HomeClient() {
                   <stat.icon className="w-5 h-5 text-primary/70" />
                 </div>
                 <div className="text-3xl font-bold text-primary tabular-nums">
-                  {counts[index].count}{stat.suffix}
+                  <AnimatedNumber value={stat.value} suffix={stat.suffix} />
                 </div>
                 <div className="text-xs text-muted-foreground mt-1 uppercase tracking-wider font-medium">
                   {stat.label}
