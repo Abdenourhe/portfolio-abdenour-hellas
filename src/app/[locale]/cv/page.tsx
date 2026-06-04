@@ -151,7 +151,7 @@ export default function CVPage() {
       >
         {/* Header */}
         <header
-          className="relative px-8 py-6 md:px-12 md:py-8 bg-[#1E3A5F] text-white print:px-[16mm] print:py-[8mm]"
+          className="relative px-8 py-6 md:px-12 md:py-8 bg-[#1E3A5F] text-white print:px-[18mm] print:py-[8mm]"
           style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
         >
           <div className="flex items-center gap-5">
@@ -197,13 +197,14 @@ export default function CVPage() {
           </div>
         </header>
 
-        {/* ===== SCREEN: 2-column grid ===== */}
-        <div className="hidden md:grid grid-cols-[260px_1fr]">
+        {/* Body — screen: grid / print: float sidebar so overflow continues full-width */}
+        <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] print:block">
           {/* Left sidebar */}
           <aside
-            className="px-8 py-8 md:px-10 md:py-10 bg-[#F5F5F0] border-r border-[#E5E5E0]"
+            className="px-8 py-8 md:px-10 md:py-10 bg-[#F5F5F0] border-r border-[#E5E5E0] print:float-left print:w-[65mm] print:bg-[#F5F5F0] print:border-r print:border-[#E5E5E0] print:px-[6mm] print:py-[8mm]"
             style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
           >
+            {/* Skills */}
             {techSkills.length > 0 && (
               <section className="mb-8">
                 <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-3 pb-2 border-b border-[#C9A962]">
@@ -222,6 +223,8 @@ export default function CVPage() {
                 </div>
               </section>
             )}
+
+            {/* Languages */}
             {languages.length > 0 && (
               <section className="mb-8">
                 <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-3 pb-2 border-b border-[#C9A962]">
@@ -239,6 +242,8 @@ export default function CVPage() {
                 </div>
               </section>
             )}
+
+            {/* Education */}
             {education.length > 0 && (
               <section className="mb-8">
                 <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-3 pb-2 border-b border-[#C9A962]">
@@ -247,8 +252,12 @@ export default function CVPage() {
                 <div className="space-y-4">
                   {education.map((edu: any) => (
                     <div key={edu.id} className="break-inside-avoid">
-                      <h3 className="font-bold text-xs text-[#1E3A5F] leading-snug">{edu.degree}</h3>
-                      <p className="text-xs text-[#C9A962] font-semibold mt-0.5">{edu.school}</p>
+                      <h3 className="font-bold text-xs text-[#1E3A5F] leading-snug">
+                        {edu.degree}
+                      </h3>
+                      <p className="text-xs text-[#C9A962] font-semibold mt-0.5">
+                        {edu.school}
+                      </p>
                       <p className="text-[10px] text-[#1E3A5F]/50 mt-0.5">
                         {formatDate(edu.startDate, false)} — {edu.current ? t("experience.present") : formatDate(edu.endDate, false)}
                       </p>
@@ -257,6 +266,8 @@ export default function CVPage() {
                 </div>
               </section>
             )}
+
+            {/* Interests */}
             {interests && interests.length > 0 && (
               <section>
                 <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-3 pb-2 border-b border-[#C9A962]">
@@ -278,23 +289,34 @@ export default function CVPage() {
           </aside>
 
           {/* Right main */}
-          <main className="px-8 py-8 md:px-10 md:py-10">
+          <main className="px-8 py-8 md:px-10 md:py-10 print:overflow-hidden print:px-[6mm] print:py-[8mm]">
+            {/* Profile */}
             {getBio() && (
               <section className="mb-8 break-inside-avoid">
-                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-3 pb-2 border-b border-[#C9A962]">{t("cv.profile")}</h2>
-                <p className="text-sm leading-relaxed text-[#333]">{getBio()}</p>
+                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-3 pb-2 border-b border-[#C9A962]">
+                  {t("cv.profile")}
+                </h2>
+                <p className="text-sm leading-relaxed text-[#333]">
+                  {getBio()}
+                </p>
               </section>
             )}
+
+            {/* Experience — Main */}
             {mainExperiences.length > 0 && (
               <section className="mb-8">
-                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-4 pb-2 border-b border-[#C9A962]">{t("cv.experience")}</h2>
+                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-4 pb-2 border-b border-[#C9A962]">
+                  {t("cv.experience")}
+                </h2>
                 <div className="space-y-6">
                   {mainExperiences.map((exp: any) => {
                     const bullets = toBullets(exp.description);
                     return (
                       <div key={exp.id} className="break-inside-avoid-page">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-0.5">
-                          <h3 className="text-[15px] font-bold text-[#1E3A5F] leading-tight">{exp.title}</h3>
+                          <h3 className="text-[15px] font-bold text-[#1E3A5F] leading-tight">
+                            {exp.title}
+                          </h3>
                           <span className="text-[11px] text-[#1E3A5F]/40 tabular-nums shrink-0 font-medium">
                             {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
                           </span>
@@ -312,7 +334,9 @@ export default function CVPage() {
                             ))}
                           </ul>
                         ) : (
-                          <p className="text-xs text-[#444] mt-2 leading-relaxed">{exp.description}</p>
+                          <p className="text-xs text-[#444] mt-2 leading-relaxed">
+                            {exp.description}
+                          </p>
                         )}
                       </div>
                     );
@@ -320,6 +344,8 @@ export default function CVPage() {
                 </div>
               </section>
             )}
+
+            {/* Experience — Other (compact) */}
             {otherExperiences.length > 0 && (
               <section className="mb-8">
                 <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-3 pb-2 border-b border-[#C9A962]">
@@ -339,167 +365,30 @@ export default function CVPage() {
                 </div>
               </section>
             )}
+
+            {/* Projects */}
             {featuredProjects.length > 0 && (
               <section>
-                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-4 pb-2 border-b border-[#C9A962]">{t("projects.title")}</h2>
+                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-4 pb-2 border-b border-[#C9A962]">
+                  {t("projects.title")}
+                </h2>
                 <div className="space-y-4">
                   {featuredProjects.map((project: any) => (
                     <div key={project.id} className="break-inside-avoid-page">
-                      <h3 className="text-[15px] font-bold text-[#1E3A5F] leading-tight">{project.title}</h3>
-                      <p className="text-xs text-[#444] mt-1.5 leading-relaxed">{project.description}</p>
+                      <h3 className="text-[15px] font-bold text-[#1E3A5F] leading-tight">
+                        {project.title}
+                      </h3>
+                      <p className="text-xs text-[#444] mt-1.5 leading-relaxed">
+                        {project.description}
+                      </p>
                       <div className="flex flex-wrap gap-1.5 mt-2">
                         {project.technologies.slice(0, 6).map((tech: string) => (
-                          <span key={tech} className="text-[10px] px-1.5 py-0.5 rounded-sm bg-[#1E3A5F]/5 text-[#1E3A5F] font-medium">{tech}</span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-          </main>
-        </div>
-
-        {/* ===== PRINT: horizontal top bar + full-width main ===== */}
-        <div className="md:hidden print:block">
-          {/* Compact top bar: skills + languages + education + interests */}
-          <aside
-            className="px-[16mm] py-[5mm] bg-[#F5F5F0] border-b border-[#E5E5E0]"
-            style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
-          >
-            <div className="flex flex-wrap gap-x-[6mm] gap-y-[3mm]">
-              {techSkills.length > 0 && (
-                <div className="break-inside-avoid">
-                  <h2 className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#1E3A5F] mb-1 pb-0.5 border-b border-[#C9A962]">{t("cv.skills")}</h2>
-                  <div className="flex flex-wrap gap-1">
-                    {techSkills.map((skill: any) => (
-                      <span key={skill.id} className="text-[9px] px-1.5 py-0.5 rounded-sm bg-[#1E3A5F] text-white font-medium" style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}>
-                        {skill.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {languages.length > 0 && (
-                <div className="break-inside-avoid">
-                  <h2 className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#1E3A5F] mb-1 pb-0.5 border-b border-[#C9A962]">
-                    {locale === "fr" ? "Langues" : locale === "en" ? "Languages" : "اللغات"}
-                  </h2>
-                  <div className="flex flex-wrap gap-1">
-                    {languages.map((lang: any) => (
-                      <span key={lang.id} className="text-[9px] px-1.5 py-0.5 rounded-sm border border-[#1E3A5F]/30 text-[#1E3A5F] font-medium">
-                        {lang.name} · {lang.level}%
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {education.length > 0 && (
-                <div className="break-inside-avoid">
-                  <h2 className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#1E3A5F] mb-1 pb-0.5 border-b border-[#C9A962]">{t("cv.education")}</h2>
-                  <div className="space-y-1">
-                    {education.map((edu: any) => (
-                      <div key={edu.id}>
-                        <p className="text-[9px] font-bold text-[#1E3A5F] leading-snug">{edu.degree}</p>
-                        <p className="text-[9px] text-[#C9A962] font-semibold">{edu.school}</p>
-                        <p className="text-[8px] text-[#1E3A5F]/50">
-                          {formatDate(edu.startDate, false)} — {edu.current ? t("experience.present") : formatDate(edu.endDate, false)}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {interests && interests.length > 0 && (
-                <div className="break-inside-avoid">
-                  <h2 className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#1E3A5F] mb-1 pb-0.5 border-b border-[#C9A962]">
-                    {locale === "fr" ? "Centres d'intérêt" : locale === "en" ? "Interests" : "الاهتمامات"}
-                  </h2>
-                  <div className="flex flex-wrap gap-1">
-                    {interests.map((interest: any) => (
-                      <span key={interest.id} className="text-[9px] px-1.5 py-0.5 rounded-sm bg-[#C9A962]/20 text-[#1E3A5F] font-medium" style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}>
-                        {interest.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </aside>
-
-          {/* Full-width main */}
-          <main className="px-[16mm] py-[6mm]">
-            {getBio() && (
-              <section className="mb-5 break-inside-avoid">
-                <h2 className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-2 pb-1 border-b border-[#C9A962]">{t("cv.profile")}</h2>
-                <p className="text-xs leading-relaxed text-[#333]">{getBio()}</p>
-              </section>
-            )}
-            {mainExperiences.length > 0 && (
-              <section className="mb-5">
-                <h2 className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-3 pb-1 border-b border-[#C9A962]">{t("cv.experience")}</h2>
-                <div className="space-y-4">
-                  {mainExperiences.map((exp: any) => {
-                    const bullets = toBullets(exp.description);
-                    return (
-                      <div key={exp.id} className="break-inside-avoid-page">
-                        <div className="flex flex-row justify-between items-start gap-2">
-                          <h3 className="text-sm font-bold text-[#1E3A5F] leading-tight">{exp.title}</h3>
-                          <span className="text-[10px] text-[#1E3A5F]/40 tabular-nums shrink-0 font-medium">
-                            {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
+                          <span
+                            key={tech}
+                            className="text-[10px] px-1.5 py-0.5 rounded-sm bg-[#1E3A5F]/5 text-[#1E3A5F] font-medium"
+                          >
+                            {tech}
                           </span>
-                        </div>
-                        <p className="text-xs font-semibold text-[#C9A962] mt-0.5">
-                          {exp.company}{exp.location ? ` — ${exp.location}` : ""}
-                        </p>
-                        {bullets.length > 1 ? (
-                          <ul className="mt-2 space-y-1">
-                            {bullets.map((b, i) => (
-                              <li key={i} className="text-xs text-[#444] leading-relaxed flex items-start gap-2">
-                                <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-[#C9A962]" />
-                                <span>{b}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="text-xs text-[#444] mt-1 leading-relaxed">{exp.description}</p>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
-            {otherExperiences.length > 0 && (
-              <section className="mb-5">
-                <h2 className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-2 pb-1 border-b border-[#C9A962]">
-                  {locale === "fr" ? "Autres expériences" : locale === "en" ? "Other Experience" : "خبرات أخرى"}
-                </h2>
-                <div className="space-y-1.5">
-                  {otherExperiences.map((exp: any) => (
-                    <div key={exp.id} className="flex flex-row justify-between items-baseline gap-2 break-inside-avoid">
-                      <p className="text-xs font-semibold text-[#1E3A5F]">
-                        {exp.title} — <span className="text-[#C9A962]">{exp.company}</span>
-                      </p>
-                      <span className="text-[9px] text-[#1E3A5F]/40 tabular-nums shrink-0">
-                        {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-            {featuredProjects.length > 0 && (
-              <section>
-                <h2 className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-3 pb-1 border-b border-[#C9A962]">{t("projects.title")}</h2>
-                <div className="space-y-3">
-                  {featuredProjects.map((project: any) => (
-                    <div key={project.id} className="break-inside-avoid-page">
-                      <h3 className="text-sm font-bold text-[#1E3A5F] leading-tight">{project.title}</h3>
-                      <p className="text-xs text-[#444] mt-1 leading-relaxed">{project.description}</p>
-                      <div className="flex flex-wrap gap-1 mt-1.5">
-                        {project.technologies.slice(0, 6).map((tech: string) => (
-                          <span key={tech} className="text-[9px] px-1.5 py-0.5 rounded-sm bg-[#1E3A5F]/5 text-[#1E3A5F] font-medium">{tech}</span>
                         ))}
                       </div>
                     </div>
