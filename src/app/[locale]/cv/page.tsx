@@ -276,7 +276,7 @@ export default function CVPage() {
                         {edu.degree}
                       </h3>
                       <p className="text-xs text-[#C9A962] font-semibold mt-0.5">
-                        {edu.school}
+                        {edu.school}{edu.location ? ` — ${edu.location}` : ""}
                       </p>
                       <p className="text-[10px] text-[#1E3A5F]/50 mt-0.5">
                         {formatDate(edu.startDate, false)} — {edu.current ? t("experience.present") : formatDate(edu.endDate, false)}
