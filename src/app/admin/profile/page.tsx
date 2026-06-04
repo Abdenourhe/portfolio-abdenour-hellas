@@ -45,6 +45,7 @@ export default function ProfilePage() {
     if (!file) return;
 
     setUploadingPhoto(true);
+    setMessage("");
     const reader = new FileReader();
     reader.onloadend = async () => {
       const base64 = reader.result as string;
@@ -52,10 +53,17 @@ export default function ProfilePage() {
       formData.append("base64", base64);
       formData.append("type", "photo");
 
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (data.url) {
-        setProfile({ ...profile, photoUrl: data.url });
+      try {
+        const res = await fetch("/api/upload", { method: "POST", body: formData });
+        const data = await res.json();
+        if (res.ok && data.url) {
+          setProfile({ ...profile, photoUrl: data.url });
+          setMessage("Photo uploadée avec succès");
+        } else {
+          setMessage("Erreur upload : " + (data.error || "Service indisponible"));
+        }
+      } catch (err) {
+        setMessage("Erreur réseau lors de l'upload");
       }
       setUploadingPhoto(false);
     };
@@ -67,14 +75,22 @@ export default function ProfilePage() {
     if (!file) return;
 
     setUploadingCV(true);
+    setMessage("");
     const formData = new FormData();
     formData.append("file", file);
     formData.append("type", "cv");
 
-    const res = await fetch("/api/upload", { method: "POST", body: formData });
-    const data = await res.json();
-    if (data.url) {
-      setProfile({ ...profile, cvUrl: data.url, cvFileName: data.fileName });
+    try {
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        setProfile({ ...profile, cvUrl: data.url, cvFileName: data.fileName });
+        setMessage("CV uploadé avec succès");
+      } else {
+        setMessage("Erreur upload CV : " + (data.error || "Service indisponible"));
+      }
+    } catch (err) {
+      setMessage("Erreur réseau lors de l'upload");
     }
     setUploadingCV(false);
   };
