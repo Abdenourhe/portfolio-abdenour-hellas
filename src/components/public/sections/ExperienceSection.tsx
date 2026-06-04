@@ -7,6 +7,7 @@ import { Briefcase } from "lucide-react";
 import { SkeletonList } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
+import ElectricCard from "@/components/public/ElectricCard";
 
 const categoryLabels: Record<string, string> = {
   tech: "Technique",
@@ -78,8 +79,10 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
           <motion.div
             whileHover={{ y: -4 }}
             transition={{ duration: 0.2 }}
-            className={`rounded-xl border border-border bg-card hover:shadow-lg hover:border-primary/20 transition-all ${compact ? "p-4" : "p-5"}`}
+            className="group"
           >
+            <ElectricCard className="rounded-xl h-full">
+              <div className={`bg-card hover:shadow-lg transition-all h-full rounded-xl ${compact ? "p-4" : "p-5"}`}>
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary bg-primary/5 px-2 py-0.5 rounded-md">
                 <Briefcase size={11} />
@@ -97,6 +100,8 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
             <p className={`text-muted-foreground leading-relaxed mt-2 ${compact ? "text-sm line-clamp-2" : "text-base"}`}>
               {exp.description}
             </p>
+              </div>
+            </ElectricCard>
           </motion.div>
         </motion.div>
       ))}

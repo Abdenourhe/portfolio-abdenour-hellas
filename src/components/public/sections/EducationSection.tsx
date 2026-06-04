@@ -7,6 +7,7 @@ import { GraduationCap, Calendar, MapPin } from "lucide-react";
 import { SkeletonList } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
+import ElectricCard from "@/components/public/ElectricCard";
 
 interface EducationSectionProps {
   data?: Education[];
@@ -66,8 +67,10 @@ export default function EducationSection({ data, compact = false, limit }: Educa
           variants={fadeUpItem}
           whileHover={{ y: -4 }}
           transition={{ duration: 0.2 }}
-          className={`rounded-xl border border-border bg-card hover:shadow-lg hover:border-primary/20 transition-all ${compact ? "p-4" : "p-5"}`}
+          className="group"
         >
+          <ElectricCard className="rounded-xl h-full">
+            <div className={`bg-card hover:shadow-lg transition-all h-full rounded-xl ${compact ? "p-4" : "p-5"}`}>
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-primary/5 flex items-center justify-center mt-0.5">
               <GraduationCap className="w-4 h-4 text-primary/70" />
@@ -95,8 +98,10 @@ export default function EducationSection({ data, compact = false, limit }: Educa
                   {edu.description}
                 </p>
               )}
+                </div>
+              </div>
             </div>
-          </div>
+          </ElectricCard>
         </motion.div>
       ))}
     </AnimatedSection>

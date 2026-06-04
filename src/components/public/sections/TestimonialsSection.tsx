@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Testimonial } from "@/types";
 import { Quote, User, ChevronLeft, ChevronRight } from "lucide-react";
+import ElectricCard from "@/components/public/ElectricCard";
 import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 
@@ -108,8 +109,10 @@ export default function TestimonialsSection({ data, compact = false, limit }: Te
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.4, delay: index * 0.05 }}
-              className={`snap-start shrink-0 w-[85vw] md:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)] rounded-xl border border-border bg-card hover:shadow-lg hover:border-primary/20 transition-all flex flex-col ${compact ? "p-5" : "p-6"}`}
+              className="group snap-start shrink-0 w-[85vw] md:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)]"
             >
+              <ElectricCard className="rounded-xl h-full">
+                <div className={`bg-card hover:shadow-lg transition-all h-full rounded-xl flex flex-col ${compact ? "p-5" : "p-6"}`}>
               <Quote className="w-5 h-5 text-secondary/60 mb-4 flex-shrink-0" />
               <p className="text-base text-muted-foreground leading-relaxed flex-1">{item.content}</p>
               <div className="flex items-center gap-3 mt-5 pt-4 border-t border-border/60">
@@ -124,7 +127,9 @@ export default function TestimonialsSection({ data, compact = false, limit }: Te
                   <p className="text-base font-medium text-primary">{item.name}</p>
                   <p className="text-sm text-muted-foreground">{item.role} · {item.company}</p>
                 </div>
-              </div>
+                  </div>
+                </div>
+              </ElectricCard>
             </motion.div>
           ))}
         </div>

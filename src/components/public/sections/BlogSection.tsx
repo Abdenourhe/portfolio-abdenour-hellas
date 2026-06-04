@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 import { useLocale } from "@/components/public/useLocale";
 import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
+import ElectricCard from "@/components/public/ElectricCard";
 
 interface BlogSectionProps {
   data?: Article[];
@@ -60,8 +61,10 @@ export default function BlogSection({ data, compact = false, limit }: BlogSectio
             <motion.div
               whileHover={{ y: -4 }}
               transition={{ duration: 0.2 }}
-              className="h-full rounded-xl border border-border bg-card overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all"
+              className="h-full"
             >
+              <ElectricCard className="rounded-xl h-full">
+                <div className="bg-card overflow-hidden rounded-xl hover:shadow-lg transition-all h-full">
               {article.imageUrl ? (
                 <div className="w-full h-44 overflow-hidden">
                   <img
@@ -87,7 +90,9 @@ export default function BlogSection({ data, compact = false, limit }: BlogSectio
                 <span className="inline-flex items-center gap-1 text-sm text-secondary font-medium">
                   {t("blog.read")} <ArrowRight size={12} />
                 </span>
-              </div>
+                  </div>
+                </div>
+              </ElectricCard>
             </motion.div>
           </Link>
         </motion.div>

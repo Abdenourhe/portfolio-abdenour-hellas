@@ -7,6 +7,7 @@ import { ExternalLink, Code, Star, FolderGit } from "lucide-react";
 import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
+import ElectricCard from "@/components/public/ElectricCard";
 
 function ProjectPlaceholder({ title }: { title: string }) {
   return (
@@ -83,20 +84,22 @@ export default function ProjectsSection({ data, compact = false, limit }: Projec
           variants={fadeUpItem}
           whileHover={{ y: -4 }}
           transition={{ duration: 0.2 }}
-          className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all"
+          className="group"
         >
-          {project.imageUrl ? (
-            <div className="w-full h-44 md:h-52 overflow-hidden">
-              <img
-                src={project.imageUrl}
-                alt={project.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
-              />
-            </div>
-          ) : (
-            <ProjectPlaceholder title={project.title} />
-          )}
-          <div className={compact ? "p-4" : "p-5"}>
+          <ElectricCard className="rounded-xl h-full">
+            <div className="bg-card overflow-hidden rounded-xl hover:shadow-lg transition-all h-full">
+              {project.imageUrl ? (
+                <div className="w-full h-44 md:h-52 overflow-hidden">
+                  <img
+                    src={project.imageUrl}
+                    alt={project.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                  />
+                </div>
+              ) : (
+                <ProjectPlaceholder title={project.title} />
+              )}
+              <div className={compact ? "p-4" : "p-5"}>
             <div className="flex items-start justify-between mb-2">
               <h3 className="text-lg font-semibold text-primary group-hover:text-primary/80 transition-colors">
                 {project.title}
@@ -146,8 +149,10 @@ export default function ProjectsSection({ data, compact = false, limit }: Projec
                   {t("projects.sourceCode")}
                 </a>
               )}
+                </div>
+              </div>
             </div>
-          </div>
+          </ElectricCard>
         </motion.div>
       ))}
     </AnimatedSection>
