@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useInView, animate } from "framer-motion";
 import { FileText, Send, Download, ArrowRight, Calendar, Briefcase, GraduationCap, Wrench, MapPin } from "lucide-react";
 import { useEffect, useState, useRef, useCallback } from "react";
 import SocialIcons from "@/components/public/SocialIcons";
@@ -18,43 +18,18 @@ import BlogSection from "@/components/public/sections/BlogSection";
 
 function useCountUp(end: number, duration = 2000) {
   const [count, setCount] = useState(0);
-  const [hasStarted, setHasStarted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.5 });
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setHasStarted(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.5 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!hasStarted) return;
-    let startTime: number | null = null;
-    let raf: number;
-
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-      setCount(Math.floor(easeOutQuart * end));
-      if (progress < 1) {
-        raf = requestAnimationFrame(animate);
-      }
-    };
-
-    raf = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(raf);
-  }, [hasStarted, end, duration]);
+    if (!isInView || end <= 0) return;
+    const controls = animate(0, end, {
+      duration: duration / 1000,
+      ease: "easeOut",
+      onUpdate: (value) => setCount(Math.floor(value)),
+    });
+    return () => controls.stop();
+  }, [isInView, end, duration]);
 
   return { count, ref };
 }
