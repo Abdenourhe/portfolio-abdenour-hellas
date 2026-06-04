@@ -114,6 +114,14 @@ export default function CVPage() {
 
   const featuredProjects = projects.filter((p: any) => p.featured).slice(0, 3);
 
+  const otherTitles = ["caissière", "service omni", "préposé"];
+  const mainExperiences = experiences.filter(
+    (e: any) => !otherTitles.some((ot) => e.title.toLowerCase().includes(ot))
+  );
+  const otherExperiences = experiences.filter(
+    (e: any) => otherTitles.some((ot) => e.title.toLowerCase().includes(ot))
+  );
+
   return (
     <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28 print:p-0 print:m-0">
       {/* Actions — hidden when printing */}
@@ -143,7 +151,7 @@ export default function CVPage() {
       >
         {/* Header */}
         <header
-          className="relative px-8 py-8 md:px-12 md:py-10 bg-[#1E3A5F] text-white print:px-[18mm] print:py-[12mm]"
+          className="relative px-8 py-6 md:px-12 md:py-8 bg-[#1E3A5F] text-white print:px-[18mm] print:py-[8mm]"
           style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
         >
           <div className="flex items-center gap-5">
@@ -156,10 +164,10 @@ export default function CVPage() {
               <h1 className="text-2xl md:text-[2.25rem] font-bold tracking-tight leading-none">
                 {profile?.fullName || "Abdenour Hellas"}
               </h1>
-              <p className="text-base md:text-lg text-[#C9A962] font-semibold mt-1.5">
+              <p className="text-base md:text-lg text-[#C9A962] font-semibold mt-1">
                 {getTitle() || t("hero.title")}
               </p>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-xs md:text-sm text-white/90">
+              <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs md:text-sm text-white/90">
                 {profile?.email && (
                   <span className="inline-flex items-center gap-1">
                     <Mail size={13} className="text-[#C9A962]" />
@@ -294,14 +302,14 @@ export default function CVPage() {
               </section>
             )}
 
-            {/* Experience */}
-            {experiences.length > 0 && (
+            {/* Experience — Main */}
+            {mainExperiences.length > 0 && (
               <section className="mb-8">
                 <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-4 pb-2 border-b border-[#C9A962]">
                   {t("cv.experience")}
                 </h2>
                 <div className="space-y-6">
-                  {experiences.map((exp: any) => {
+                  {mainExperiences.map((exp: any) => {
                     const bullets = toBullets(exp.description);
                     return (
                       <div key={exp.id} className="break-inside-avoid-page">
@@ -333,6 +341,27 @@ export default function CVPage() {
                       </div>
                     );
                   })}
+                </div>
+              </section>
+            )}
+
+            {/* Experience — Other (compact) */}
+            {otherExperiences.length > 0 && (
+              <section className="mb-8">
+                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-3 pb-2 border-b border-[#C9A962]">
+                  {locale === "fr" ? "Autres expériences" : locale === "en" ? "Other Experience" : "خبرات أخرى"}
+                </h2>
+                <div className="space-y-2">
+                  {otherExperiences.map((exp: any) => (
+                    <div key={exp.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5 break-inside-avoid">
+                      <p className="text-xs font-semibold text-[#1E3A5F]">
+                        {exp.title} — <span className="text-[#C9A962]">{exp.company}</span>
+                      </p>
+                      <span className="text-[10px] text-[#1E3A5F]/40 tabular-nums shrink-0">
+                        {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </section>
             )}
