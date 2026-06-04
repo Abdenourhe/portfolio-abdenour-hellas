@@ -21,14 +21,9 @@ export default function CVPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/profile").then((r) => r.json()),
-      fetch("/api/experiences").then((r) => r.json()),
-      fetch("/api/education").then((r) => r.json()),
-      fetch("/api/skills").then((r) => r.json()),
-      fetch("/api/projects").then((r) => r.json()),
-    ])
-      .then(([profile, experiences, education, skills, projects]) => {
+    fetch("/api/homepage")
+      .then((r) => r.json())
+      .then(({ profile, experiences, education, skills, projects }) => {
         setData({ profile, experiences, education, skills, projects });
         setLoading(false);
       })
@@ -71,9 +66,8 @@ export default function CVPage() {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
         <div className="max-w-[210mm] mx-auto animate-pulse space-y-6">
-          <div className="h-24 bg-muted rounded-xl" />
           <div className="h-32 bg-muted rounded-xl" />
-          <div className="h-48 bg-muted rounded-xl" />
+          <div className="h-96 bg-muted rounded-xl" />
         </div>
       </div>
     );
@@ -90,9 +84,9 @@ export default function CVPage() {
   const { profile, experiences, education, skills, projects } = data;
 
   const topSkills = skills
-    .filter((s: any) => s.level >= 80)
+    .filter((s: any) => s.level >= 60)
     .sort((a: any, b: any) => b.level - a.level)
-    .slice(0, 12);
+    .slice(0, 14);
 
   const featuredProjects = projects
     .filter((p: any) => p.featured)
@@ -101,19 +95,19 @@ export default function CVPage() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
       {/* Actions — hidden when printing */}
-      <div className="max-w-[210mm] mx-auto mb-8 flex flex-wrap justify-center gap-2 print:hidden">
+      <div className="max-w-[210mm] mx-auto mb-8 flex flex-wrap justify-center gap-3 print:hidden">
         <button
           onClick={handleDownload}
           className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
         >
-          <Download size={15} />
+          <Download size={16} />
           {t("cv.download")}
         </button>
         <button
           onClick={() => window.print()}
           className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground rounded-lg text-sm font-medium hover:border-primary/30 hover:bg-primary/[0.02] transition-colors"
         >
-          <Printer size={15} />
+          <Printer size={16} />
           {t("cv.print")}
         </button>
       </div>
@@ -123,150 +117,189 @@ export default function CVPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-[210mm] mx-auto bg-white dark:bg-card text-foreground rounded-xl border border-border shadow-sm print:shadow-none print:border-0 print:rounded-none print:max-w-none print:w-full"
+        className="max-w-[210mm] mx-auto bg-white text-foreground rounded-xl border border-border shadow-sm overflow-hidden print:shadow-none print:border-0 print:rounded-none print:max-w-none print:w-full"
       >
-        <div className="p-8 md:p-12 print:p-0">
-          {/* Header */}
-          <header className="text-center pb-6 mb-6 border-b-2 border-secondary/40">
-            <h1 className="text-[2rem] md:text-[2.5rem] font-bold tracking-tight text-primary leading-tight">
-              {profile?.fullName || "Abdenour Hellas"}
-            </h1>
-            <p className="text-base md:text-lg text-secondary font-medium mt-1.5">
-              {getTitle() || t("hero.title")}
-            </p>
-            <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-xs md:text-sm text-muted-foreground">
-              {profile?.email && (
-                <span className="inline-flex items-center gap-1">
-                  <Mail size={12} className="text-secondary" />
-                  {profile.email}
-                </span>
-              )}
-              {profile?.phone && (
-                <span className="inline-flex items-center gap-1">
-                  <Phone size={12} className="text-secondary" />
-                  {profile.phone}
-                </span>
-              )}
-              {profile?.location && (
-                <span className="inline-flex items-center gap-1">
-                  <MapPin size={12} className="text-secondary" />
-                  {profile.location}
-                </span>
-              )}
-              {profile?.linkedin && (
-                <span className="inline-flex items-center gap-1">
-                  <Globe size={12} className="text-secondary" />
-                  {profile.linkedin.replace(/^https:\/\//, "")}
-                </span>
-              )}
-            </div>
-          </header>
-
-          {/* Profile */}
-          {getBio() && (
-            <section className="mb-6">
-              <h2 className="text-xs font-bold uppercase tracking-[0.15em] text-primary/70 mb-2.5 flex items-center gap-2">
-                <span className="w-6 h-px bg-secondary" />
-                {t("cv.profile")}
-              </h2>
-              <p className="text-sm leading-relaxed text-muted-foreground text-justify">
-                {getBio()}
+        {/* Header */}
+        <header
+          className="relative px-10 py-10 md:px-14 md:py-12 bg-[#1E3A5F] text-white"
+          style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
+        >
+          <div className="flex items-center gap-6">
+            {profile?.photoUrl && (
+              <div className="shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-[#C9A962] overflow-hidden bg-white">
+                <img src={profile.photoUrl} alt="" className="w-full h-full object-cover" />
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <h1 className="text-3xl md:text-[2.75rem] font-bold tracking-tight leading-none">
+                {profile?.fullName || "Abdenour Hellas"}
+              </h1>
+              <p className="text-lg md:text-xl text-[#C9A962] font-semibold mt-2">
+                {getTitle() || t("hero.title")}
               </p>
-            </section>
-          )}
-
-          {/* Experience */}
-          {experiences.length > 0 && (
-            <section className="mb-6">
-              <h2 className="text-xs font-bold uppercase tracking-[0.15em] text-primary/70 mb-3 flex items-center gap-2">
-                <span className="w-6 h-px bg-secondary" />
-                {t("cv.experience")}
-              </h2>
-              <div className="space-y-4">
-                {experiences.map((exp: any) => (
-                  <div key={exp.id}>
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5">
-                      <h3 className="font-semibold text-sm text-foreground">{exp.title}</h3>
-                      <span className="text-xs text-muted-foreground tabular-nums">
-                        {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
-                      </span>
-                    </div>
-                    <p className="text-sm text-secondary font-medium">{exp.company}{exp.location ? `, ${exp.location}` : ""}</p>
-                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{exp.description}</p>
-                  </div>
-                ))}
+              <div className="flex flex-wrap gap-x-5 gap-y-1.5 mt-4 text-sm text-white/90">
+                {profile?.email && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Mail size={14} className="text-[#C9A962]" />
+                    {profile.email}
+                  </span>
+                )}
+                {profile?.phone && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Phone size={14} className="text-[#C9A962]" />
+                    {profile.phone}
+                  </span>
+                )}
+                {profile?.location && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <MapPin size={14} className="text-[#C9A962]" />
+                    {profile.location}
+                  </span>
+                )}
+                {profile?.linkedin && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Globe size={14} className="text-[#C9A962]" />
+                    {profile.linkedin.replace(/^https?:\/\//, "")}
+                  </span>
+                )}
               </div>
-            </section>
-          )}
+            </div>
+          </div>
+        </header>
 
-          {/* Education */}
-          {education.length > 0 && (
-            <section className="mb-6">
-              <h2 className="text-xs font-bold uppercase tracking-[0.15em] text-primary/70 mb-3 flex items-center gap-2">
-                <span className="w-6 h-px bg-secondary" />
-                {t("cv.education")}
-              </h2>
-              <div className="space-y-4">
-                {education.map((edu: any) => (
-                  <div key={edu.id}>
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5">
-                      <h3 className="font-semibold text-sm text-foreground">{edu.degree}</h3>
-                      <span className="text-xs text-muted-foreground tabular-nums">
+        {/* Two-column body */}
+        <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] print:grid-cols-[280px_1fr]">
+          {/* Left sidebar */}
+          <aside
+            className="px-8 py-10 md:px-10 md:py-12 bg-[#F5F5F0] border-r border-[#E5E5E0]"
+            style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
+          >
+            {/* Skills */}
+            {topSkills.length > 0 && (
+              <section className="mb-8">
+                <h2 className="text-sm font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-4 pb-2 border-b-2 border-[#C9A962]">
+                  {t("cv.skills")}
+                </h2>
+                <div className="space-y-3">
+                  {topSkills.map((skill: any) => (
+                    <div key={skill.id} className="break-inside-avoid">
+                      <div className="flex items-center justify-between text-sm mb-1">
+                        <span className="font-medium text-[#1E3A5F]">{skill.name}</span>
+                        <span className="text-xs font-semibold text-[#C9A962]">{skill.level}%</span>
+                      </div>
+                      <div className="h-1.5 bg-[#1E3A5F]/10 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#C9A962] rounded-full"
+                          style={{ width: `${skill.level}%`, printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Education */}
+            {education.length > 0 && (
+              <section className="mb-8">
+                <h2 className="text-sm font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-4 pb-2 border-b-2 border-[#C9A962]">
+                  {t("cv.education")}
+                </h2>
+                <div className="space-y-5">
+                  {education.map((edu: any) => (
+                    <div key={edu.id} className="break-inside-avoid">
+                      <h3 className="font-semibold text-sm text-[#1E3A5F] leading-snug">
+                        {edu.degree}
+                      </h3>
+                      <p className="text-sm text-[#C9A962] font-medium mt-0.5">
+                        {edu.school}
+                      </p>
+                      <p className="text-xs text-[#1E3A5F]/60 mt-1">
                         {formatDate(edu.startDate, false)} — {edu.current ? t("experience.present") : formatDate(edu.endDate, false)}
-                      </span>
+                      </p>
                     </div>
-                    <p className="text-sm text-secondary font-medium">{edu.school}{edu.location ? `, ${edu.location}` : ""}</p>
-                    {edu.description && (
-                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{edu.description}</p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+                  ))}
+                </div>
+              </section>
+            )}
 
-          {/* Skills */}
-          {topSkills.length > 0 && (
-            <section className="mb-6">
-              <h2 className="text-xs font-bold uppercase tracking-[0.15em] text-primary/70 mb-3 flex items-center gap-2">
-                <span className="w-6 h-px bg-secondary" />
-                {t("cv.skills")}
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1.5">
-                {topSkills.map((skill: any) => (
-                  <div key={skill.id} className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{skill.name}</span>
-                    <span className="text-xs text-secondary font-medium tabular-nums">{skill.level}%</span>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+            {/* Languages (if any in bio or we can infer) — skipping for now */}
+          </aside>
 
-          {/* Projects */}
-          {featuredProjects.length > 0 && (
-            <section>
-              <h2 className="text-xs font-bold uppercase tracking-[0.15em] text-primary/70 mb-3 flex items-center gap-2">
-                <span className="w-6 h-px bg-secondary" />
-                {t("projects.title")}
-              </h2>
-              <div className="space-y-3">
-                {featuredProjects.map((project: any) => (
-                  <div key={project.id}>
-                    <h3 className="font-semibold text-sm text-foreground">{project.title}</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{project.description}</p>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {project.technologies.slice(0, 6).map((tech: string) => (
-                        <span key={tech} className="text-[10px] px-1.5 py-0.5 rounded bg-primary/5 text-primary/70">
-                          {tech}
+          {/* Right main */}
+          <main className="px-8 py-10 md:px-12 md:py-12">
+            {/* Profile */}
+            {getBio() && (
+              <section className="mb-8 break-inside-avoid">
+                <h2 className="text-sm font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-3 pb-2 border-b-2 border-[#C9A962] flex items-center gap-2">
+                  {t("cv.profile")}
+                </h2>
+                <p className="text-sm md:text-base leading-relaxed text-[#333]">
+                  {getBio()}
+                </p>
+              </section>
+            )}
+
+            {/* Experience */}
+            {experiences.length > 0 && (
+              <section className="mb-8">
+                <h2 className="text-sm font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-4 pb-2 border-b-2 border-[#C9A962]">
+                  {t("cv.experience")}
+                </h2>
+                <div className="space-y-6">
+                  {experiences.map((exp: any) => (
+                    <div key={exp.id} className="break-inside-avoid">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
+                        <h3 className="text-base font-bold text-[#1E3A5F] leading-tight">
+                          {exp.title}
+                        </h3>
+                        <span className="text-xs font-semibold text-[#C9A962] tabular-nums shrink-0 mt-0.5">
+                          {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
                         </span>
-                      ))}
+                      </div>
+                      <p className="text-sm font-semibold text-[#C9A962] mt-1">
+                        {exp.company}{exp.location ? ` — ${exp.location}` : ""}
+                      </p>
+                      <p className="text-sm text-[#444] mt-2 leading-relaxed">
+                        {exp.description}
+                      </p>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Projects */}
+            {featuredProjects.length > 0 && (
+              <section>
+                <h2 className="text-sm font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-4 pb-2 border-b-2 border-[#C9A962]">
+                  {t("projects.title")}
+                </h2>
+                <div className="space-y-5">
+                  {featuredProjects.map((project: any) => (
+                    <div key={project.id} className="break-inside-avoid">
+                      <h3 className="text-base font-bold text-[#1E3A5F] leading-tight">
+                        {project.title}
+                      </h3>
+                      <p className="text-sm text-[#444] mt-1.5 leading-relaxed">
+                        {project.description}
+                      </p>
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {project.technologies.slice(0, 8).map((tech: string) => (
+                          <span
+                            key={tech}
+                            className="text-[11px] px-2 py-0.5 rounded bg-[#1E3A5F]/5 text-[#1E3A5F] font-medium"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </main>
         </div>
       </motion.div>
     </div>
