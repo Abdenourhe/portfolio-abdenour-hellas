@@ -86,14 +86,14 @@ export default function CVPage() {
   const topSkills = skills
     .filter((s: any) => s.level >= 60)
     .sort((a: any, b: any) => b.level - a.level)
-    .slice(0, 14);
+    .slice(0, 8);
 
   const featuredProjects = projects
     .filter((p: any) => p.featured)
-    .slice(0, 3);
+    .slice(0, 2);
 
   return (
-    <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
+    <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28 print:p-0 print:m-0">
       {/* Actions — hidden when printing */}
       <div className="max-w-[210mm] mx-auto mb-8 flex flex-wrap justify-center gap-3 print:hidden">
         <button
@@ -121,44 +121,44 @@ export default function CVPage() {
       >
         {/* Header */}
         <header
-          className="relative px-10 py-10 md:px-14 md:py-12 bg-[#1E3A5F] text-white"
+          className="relative px-8 py-8 md:px-12 md:py-10 bg-[#1E3A5F] text-white print:px-[18mm] print:py-[12mm]"
           style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
         >
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-5">
             {profile?.photoUrl && (
-              <div className="shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-[#C9A962] overflow-hidden bg-white">
+              <div className="shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-[#C9A962] overflow-hidden bg-white">
                 <img src={profile.photoUrl} alt="" className="w-full h-full object-cover" />
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <h1 className="text-3xl md:text-[2.75rem] font-bold tracking-tight leading-none">
+              <h1 className="text-2xl md:text-[2.25rem] font-bold tracking-tight leading-none">
                 {profile?.fullName || "Abdenour Hellas"}
               </h1>
-              <p className="text-lg md:text-xl text-[#C9A962] font-semibold mt-2">
+              <p className="text-base md:text-lg text-[#C9A962] font-semibold mt-1.5">
                 {getTitle() || t("hero.title")}
               </p>
-              <div className="flex flex-wrap gap-x-5 gap-y-1.5 mt-4 text-sm text-white/90">
+              <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-xs md:text-sm text-white/90">
                 {profile?.email && (
-                  <span className="inline-flex items-center gap-1.5">
-                    <Mail size={14} className="text-[#C9A962]" />
+                  <span className="inline-flex items-center gap-1">
+                    <Mail size={13} className="text-[#C9A962]" />
                     {profile.email}
                   </span>
                 )}
                 {profile?.phone && (
-                  <span className="inline-flex items-center gap-1.5">
-                    <Phone size={14} className="text-[#C9A962]" />
+                  <span className="inline-flex items-center gap-1">
+                    <Phone size={13} className="text-[#C9A962]" />
                     {profile.phone}
                   </span>
                 )}
                 {profile?.location && (
-                  <span className="inline-flex items-center gap-1.5">
-                    <MapPin size={14} className="text-[#C9A962]" />
+                  <span className="inline-flex items-center gap-1">
+                    <MapPin size={13} className="text-[#C9A962]" />
                     {profile.location}
                   </span>
                 )}
                 {profile?.linkedin && (
-                  <span className="inline-flex items-center gap-1.5">
-                    <Globe size={14} className="text-[#C9A962]" />
+                  <span className="inline-flex items-center gap-1">
+                    <Globe size={13} className="text-[#C9A962]" />
                     {profile.linkedin.replace(/^https?:\/\//, "")}
                   </span>
                 )}
@@ -167,27 +167,27 @@ export default function CVPage() {
           </div>
         </header>
 
-        {/* Two-column body */}
-        <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] print:grid-cols-[280px_1fr]">
+        {/* Body — screen: grid / print: float sidebar so overflow continues full-width */}
+        <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] print:block">
           {/* Left sidebar */}
           <aside
-            className="px-8 py-10 md:px-10 md:py-12 bg-[#F5F5F0] border-r border-[#E5E5E0]"
+            className="px-8 py-8 md:px-10 md:py-10 bg-[#F5F5F0] border-r border-[#E5E5E0] print:float-left print:w-[65mm] print:bg-[#F5F5F0] print:border-r print:border-[#E5E5E0] print:px-[6mm] print:py-[8mm]"
             style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
           >
             {/* Skills */}
             {topSkills.length > 0 && (
-              <section className="mb-8">
-                <h2 className="text-sm font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-4 pb-2 border-b-2 border-[#C9A962]">
+              <section className="mb-6">
+                <h2 className="text-xs font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-3 pb-1.5 border-b-2 border-[#C9A962]">
                   {t("cv.skills")}
                 </h2>
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {topSkills.map((skill: any) => (
                     <div key={skill.id} className="break-inside-avoid">
-                      <div className="flex items-center justify-between text-sm mb-1">
+                      <div className="flex items-center justify-between text-xs mb-0.5">
                         <span className="font-medium text-[#1E3A5F]">{skill.name}</span>
-                        <span className="text-xs font-semibold text-[#C9A962]">{skill.level}%</span>
+                        <span className="text-[10px] font-semibold text-[#C9A962]">{skill.level}%</span>
                       </div>
-                      <div className="h-1.5 bg-[#1E3A5F]/10 rounded-full overflow-hidden">
+                      <div className="h-1 bg-[#1E3A5F]/10 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-[#C9A962] rounded-full"
                           style={{ width: `${skill.level}%`, printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
@@ -201,20 +201,20 @@ export default function CVPage() {
 
             {/* Education */}
             {education.length > 0 && (
-              <section className="mb-8">
-                <h2 className="text-sm font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-4 pb-2 border-b-2 border-[#C9A962]">
+              <section>
+                <h2 className="text-xs font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-3 pb-1.5 border-b-2 border-[#C9A962]">
                   {t("cv.education")}
                 </h2>
-                <div className="space-y-5">
+                <div className="space-y-3">
                   {education.map((edu: any) => (
                     <div key={edu.id} className="break-inside-avoid">
-                      <h3 className="font-semibold text-sm text-[#1E3A5F] leading-snug">
+                      <h3 className="font-semibold text-xs text-[#1E3A5F] leading-snug">
                         {edu.degree}
                       </h3>
-                      <p className="text-sm text-[#C9A962] font-medium mt-0.5">
+                      <p className="text-xs text-[#C9A962] font-medium mt-0.5">
                         {edu.school}
                       </p>
-                      <p className="text-xs text-[#1E3A5F]/60 mt-1">
+                      <p className="text-[10px] text-[#1E3A5F]/60 mt-0.5">
                         {formatDate(edu.startDate, false)} — {edu.current ? t("experience.present") : formatDate(edu.endDate, false)}
                       </p>
                     </div>
@@ -222,19 +222,17 @@ export default function CVPage() {
                 </div>
               </section>
             )}
-
-            {/* Languages (if any in bio or we can infer) — skipping for now */}
           </aside>
 
-          {/* Right main */}
-          <main className="px-8 py-10 md:px-12 md:py-12">
+          {/* Right main — overflow-hidden creates BFC so text wraps beside float, then continues full-width when float ends */}
+          <main className="px-8 py-8 md:px-10 md:py-10 print:overflow-hidden print:px-[6mm] print:py-[8mm]">
             {/* Profile */}
             {getBio() && (
-              <section className="mb-8 break-inside-avoid">
-                <h2 className="text-sm font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-3 pb-2 border-b-2 border-[#C9A962] flex items-center gap-2">
+              <section className="mb-6 break-inside-avoid">
+                <h2 className="text-xs font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-2 pb-1.5 border-b-2 border-[#C9A962]">
                   {t("cv.profile")}
                 </h2>
-                <p className="text-sm md:text-base leading-relaxed text-[#333]">
+                <p className="text-xs md:text-sm leading-relaxed text-[#333]">
                   {getBio()}
                 </p>
               </section>
@@ -242,25 +240,25 @@ export default function CVPage() {
 
             {/* Experience */}
             {experiences.length > 0 && (
-              <section className="mb-8">
-                <h2 className="text-sm font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-4 pb-2 border-b-2 border-[#C9A962]">
+              <section className="mb-6">
+                <h2 className="text-xs font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-3 pb-1.5 border-b-2 border-[#C9A962]">
                   {t("cv.experience")}
                 </h2>
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {experiences.map((exp: any) => (
-                    <div key={exp.id} className="break-inside-avoid">
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
-                        <h3 className="text-base font-bold text-[#1E3A5F] leading-tight">
+                    <div key={exp.id} className="break-inside-avoid-page">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-0.5">
+                        <h3 className="text-sm font-bold text-[#1E3A5F] leading-tight">
                           {exp.title}
                         </h3>
-                        <span className="text-xs font-semibold text-[#C9A962] tabular-nums shrink-0 mt-0.5">
+                        <span className="text-[10px] font-semibold text-[#C9A962] tabular-nums shrink-0">
                           {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
                         </span>
                       </div>
-                      <p className="text-sm font-semibold text-[#C9A962] mt-1">
+                      <p className="text-xs font-semibold text-[#C9A962] mt-0.5">
                         {exp.company}{exp.location ? ` — ${exp.location}` : ""}
                       </p>
-                      <p className="text-sm text-[#444] mt-2 leading-relaxed">
+                      <p className="text-xs text-[#444] mt-1 leading-relaxed line-clamp-3">
                         {exp.description}
                       </p>
                     </div>
@@ -272,23 +270,23 @@ export default function CVPage() {
             {/* Projects */}
             {featuredProjects.length > 0 && (
               <section>
-                <h2 className="text-sm font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-4 pb-2 border-b-2 border-[#C9A962]">
+                <h2 className="text-xs font-bold uppercase tracking-[0.12em] text-[#1E3A5F] mb-3 pb-1.5 border-b-2 border-[#C9A962]">
                   {t("projects.title")}
                 </h2>
-                <div className="space-y-5">
+                <div className="space-y-3">
                   {featuredProjects.map((project: any) => (
-                    <div key={project.id} className="break-inside-avoid">
-                      <h3 className="text-base font-bold text-[#1E3A5F] leading-tight">
+                    <div key={project.id} className="break-inside-avoid-page">
+                      <h3 className="text-sm font-bold text-[#1E3A5F] leading-tight">
                         {project.title}
                       </h3>
-                      <p className="text-sm text-[#444] mt-1.5 leading-relaxed">
+                      <p className="text-xs text-[#444] mt-1 leading-relaxed line-clamp-2">
                         {project.description}
                       </p>
-                      <div className="flex flex-wrap gap-1.5 mt-2">
-                        {project.technologies.slice(0, 8).map((tech: string) => (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {project.technologies.slice(0, 6).map((tech: string) => (
                           <span
                             key={tech}
-                            className="text-[11px] px-2 py-0.5 rounded bg-[#1E3A5F]/5 text-[#1E3A5F] font-medium"
+                            className="text-[10px] px-1.5 py-0.5 rounded bg-[#1E3A5F]/5 text-[#1E3A5F] font-medium"
                           >
                             {tech}
                           </span>
