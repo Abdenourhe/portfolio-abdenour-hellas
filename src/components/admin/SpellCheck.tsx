@@ -35,7 +35,7 @@ export default function SpellCheck({ text, lang = "fr", onApply, label }: SpellC
       params.append("text", text);
       params.append("language", lang);
       params.append("enabledOnly", "false");
-      const res = await fetch("https://api.languagetool.org/api/v2/check", {
+      const res = await fetch("https://api.languagetool.org/v2/check", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: params.toString(),
