@@ -19,7 +19,7 @@ export default function SectionHeader({ title, subtitle, centered = true }: Sect
         className={`flex items-center gap-5 ${centered ? "justify-center" : ""}`}
       >
         <h2
-          className="font-[family-name:var(--font-serif)] text-[0.8rem] md:text-[0.85rem] font-normal tracking-[0.22em] uppercase text-foreground whitespace-nowrap"
+          className="font-[family-name:var(--font-serif)] text-[0.9rem] md:text-[0.95rem] font-normal tracking-[0.12em] uppercase text-foreground whitespace-nowrap"
         >
           {title}
         </h2>

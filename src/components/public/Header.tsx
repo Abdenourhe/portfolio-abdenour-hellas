@@ -34,7 +34,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
       <div className="container mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
         <Link
           href={`/${locale}`}
-          className="font-[family-name:var(--font-serif)] text-base font-normal tracking-[0.08em] text-foreground hover:text-muted-foreground transition-colors"
+          className="font-[family-name:var(--font-serif)] text-base font-normal tracking-[0.04em] text-foreground hover:text-muted-foreground transition-colors"
         >
           Abdenour Hellas
         </Link>
@@ -45,7 +45,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
               key={item.href}
               href={item.href}
               prefetch={false}
-              className={`relative text-[0.78rem] tracking-[0.06em] font-normal transition-colors pb-0.5 ${
+              className={`relative text-[0.82rem] tracking-[0.03em] font-normal transition-colors pb-0.5 ${
                 isActive(item.href)
                   ? "text-foreground"
                   : "text-muted-foreground hover:text-foreground"

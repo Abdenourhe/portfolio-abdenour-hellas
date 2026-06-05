@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Playfair_Display } from "next/font/google";
+import { Playfair_Display, Amiri } from "next/font/google";
 import { isValidLocale, Locale } from "@/i18n/config";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-serif",
+  display: "swap",
+});
+
+const amiri = Amiri({
+  subsets: ["arabic"],
+  weight: ["400", "700"],
+  variable: "--font-serif-ar",
   display: "swap",
 });
 import Header from "@/components/public/Header";
@@ -83,7 +90,7 @@ export default async function LocaleLayout({
     <ThemeProvider>
       <I18nProvider messages={messages}>
         <BlueprintBackground />
-        <div lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={`min-h-screen flex flex-col relative z-10 ${playfair.variable}`}>
+        <div lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={`min-h-screen flex flex-col relative z-10 ${playfair.variable} ${amiri.variable}`}>
           <div className="print:hidden">
             <Header locale={locale as Locale} messages={messages} />
           </div>
