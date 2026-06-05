@@ -123,19 +123,19 @@ export default function CVPage() {
   );
 
   return (
-    <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28 print:p-0 print:m-0">
+    <div className="container mx-auto px-4 lg:px-8 py-10 md:py-28 print:p-0 print:m-0">
       {/* Actions — hidden when printing */}
-      <div className="max-w-[210mm] mx-auto mb-8 flex flex-wrap justify-center gap-3 print:hidden">
+      <div className="max-w-[210mm] mx-auto mb-6 flex flex-wrap justify-center gap-3 print:hidden">
         <button
           onClick={handleDownload}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+          className="inline-flex items-center gap-2 px-5 py-3 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors min-h-[48px]"
         >
           <Download size={16} />
           {t("cv.download")}
         </button>
         <button
           onClick={() => window.print()}
-          className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground rounded-lg text-sm font-medium hover:border-primary/30 hover:bg-primary/[0.02] transition-colors"
+          className="inline-flex items-center gap-2 px-5 py-3 border border-border text-foreground rounded-lg text-sm font-medium hover:border-primary/30 hover:bg-primary/[0.02] transition-colors min-h-[48px]"
         >
           <Printer size={16} />
           {t("cv.print")}
@@ -151,23 +151,23 @@ export default function CVPage() {
       >
         {/* Header */}
         <header
-          className="relative px-8 py-6 md:px-12 md:py-8 bg-[#1E3A5F] text-white dark:bg-[#152A45] print:px-[18mm] print:py-[8mm]"
+          className="relative px-5 py-5 md:px-12 md:py-8 bg-[#1E3A5F] text-white dark:bg-[#152A45] print:px-[18mm] print:py-[8mm]"
           style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
         >
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-4 md:gap-5">
             {profile?.photoUrl && (
-              <div className="shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-[#C9A962] overflow-hidden bg-white dark:bg-card print:hidden">
+              <div className="shrink-0 w-16 h-16 md:w-24 md:h-24 rounded-full border-4 border-[#C9A962] overflow-hidden bg-white dark:bg-card print:hidden">
                 <img src={profile.photoUrl} alt="" className="w-full h-full object-cover" />
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <h1 className="text-2xl md:text-[2.25rem] font-bold tracking-tight leading-none">
+              <h1 className="text-xl md:text-[2.25rem] font-bold tracking-tight leading-none">
                 {profile?.fullName || "Abdenour Hellas"}
               </h1>
-              <p className="text-base md:text-lg text-[#C9A962] font-semibold mt-1">
+              <p className="text-sm md:text-lg text-[#C9A962] font-semibold mt-1">
                 {getTitle() || t("hero.title")}
               </p>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs md:text-sm text-white/90">
+              <div className="flex flex-wrap gap-x-3 md:gap-x-4 gap-y-1 mt-2 text-xs md:text-sm text-white/90">
                 {profile?.email && (
                   <span className="inline-flex items-center gap-1">
                     <Mail size={13} className="text-[#C9A962]" />
@@ -197,17 +197,17 @@ export default function CVPage() {
           </div>
         </header>
 
-        {/* Body — screen: grid / print: float sidebar so overflow continues full-width */}
+        {/* Body */}
         <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] print:block">
           {/* Left sidebar */}
           <aside
-            className="px-8 py-8 md:px-10 md:py-10 bg-[#F5F5F0] dark:bg-muted border-r border-[#E5E5E0] dark:border-border print:float-left print:w-[65mm] print:bg-[#F5F5F0] print:border-r print:border-[#E5E5E0] print:px-[6mm] print:py-[8mm]"
+            className="px-5 py-6 md:px-10 md:py-10 bg-[#F5F5F0] dark:bg-muted border-r-0 md:border-r border-[#E5E5E0] dark:border-border print:float-left print:w-[65mm] print:bg-[#F5F5F0] print:border-r print:border-[#E5E5E0] print:px-[6mm] print:py-[8mm]"
             style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
           >
             {/* Skills */}
             {techSkills.length > 0 && (
-              <section className="mb-8">
-                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
+              <section className="mb-6 md:mb-8">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {t("cv.skills")}
                 </h2>
                 <div className="space-y-3">
@@ -218,17 +218,17 @@ export default function CVPage() {
                       const catSkills = techSkills.filter((s: any) => s.category === cat);
                       return (
                         <div key={cat} className="break-inside-avoid">
-                          <h3 className="text-[10px] font-bold uppercase tracking-wider text-[#1E3A5F]/70 dark:text-primary-foreground/70 mb-1.5">
+                          <h3 className="text-xs md:text-[10px] font-bold uppercase tracking-wider text-[#1E3A5F]/70 dark:text-primary-foreground/70 mb-1.5">
                             {cat}
                           </h3>
                           <div className="space-y-1.5">
                             {catSkills.map((skill: any) => (
                               <div key={skill.id}>
-                                <div className="flex items-center justify-between text-xs mb-0.5">
+                                <div className="flex items-center justify-between text-sm md:text-xs mb-0.5">
                                   <span className="text-[#1E3A5F] font-medium">{skill.name}</span>
-                                  <span className="text-[10px] font-semibold text-[#C9A962]">{skill.level}%</span>
+                                  <span className="text-xs md:text-[10px] font-semibold text-[#C9A962]">{skill.level}%</span>
                                 </div>
-                                <div className="h-1 bg-[#1E3A5F]/10 dark:bg-primary-foreground/10 rounded-full overflow-hidden">
+                                <div className="h-1.5 md:h-1 bg-[#1E3A5F]/10 dark:bg-primary-foreground/10 rounded-full overflow-hidden">
                                   <div
                                     className="h-full bg-[#C9A962] rounded-full"
                                     style={{ width: `${skill.level}%`, printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
@@ -246,15 +246,15 @@ export default function CVPage() {
 
             {/* Languages */}
             {languages.length > 0 && (
-              <section className="mb-8">
-                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
+              <section className="mb-6 md:mb-8">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {locale === "fr" ? "Langues" : locale === "en" ? "Languages" : "اللغات"}
                 </h2>
                 <div className="flex flex-wrap gap-1.5">
                   {languages.map((lang: any) => (
                     <span
                       key={lang.id}
-                      className="inline-block text-[10px] px-2 py-0.5 rounded-sm border border-[#1E3A5F]/30 dark:border-primary-foreground/30 text-[#1E3A5F] dark:text-primary-foreground font-medium"
+                      className="inline-block text-xs md:text-[10px] px-2 py-0.5 rounded-sm border border-[#1E3A5F]/30 dark:border-primary-foreground/30 text-[#1E3A5F] dark:text-primary-foreground font-medium"
                     >
                       {lang.name} · {lang.level}%
                     </span>
@@ -265,20 +265,20 @@ export default function CVPage() {
 
             {/* Education */}
             {education.length > 0 && (
-              <section className="mb-8">
-                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
+              <section className="mb-6 md:mb-8">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {t("cv.education")}
                 </h2>
                 <div className="space-y-4">
                   {education.map((edu: any) => (
                     <div key={edu.id} className="break-inside-avoid">
-                      <h3 className="font-bold text-xs text-[#1E3A5F] dark:text-primary-foreground leading-snug">
+                      <h3 className="font-bold text-sm md:text-xs text-[#1E3A5F] dark:text-primary-foreground leading-snug">
                         {edu.degree}
                       </h3>
-                      <p className="text-xs text-[#C9A962] font-semibold mt-0.5">
+                      <p className="text-sm md:text-xs text-[#C9A962] font-semibold mt-0.5">
                         {edu.school}{edu.location ? ` — ${edu.location}` : ""}
                       </p>
-                      <p className="text-[10px] text-[#1E3A5F]/50 dark:text-primary-foreground/50 mt-0.5">
+                      <p className="text-xs md:text-[10px] text-[#1E3A5F]/50 dark:text-primary-foreground/50 mt-0.5">
                         {formatDate(edu.startDate, false)} — {edu.current ? t("experience.present") : formatDate(edu.endDate, false)}
                       </p>
                     </div>
@@ -290,14 +290,14 @@ export default function CVPage() {
             {/* Interests */}
             {interests && interests.length > 0 && (
               <section>
-                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {locale === "fr" ? "Centres d'intérêt" : locale === "en" ? "Interests" : "الاهتمامات"}
                 </h2>
                 <div className="flex flex-wrap gap-1.5">
                   {interests.map((interest: any) => (
                     <span
                       key={interest.id}
-                      className="inline-block text-[10px] px-2 py-0.5 rounded-sm bg-[#C9A962]/20 dark:bg-secondary/20 text-[#1E3A5F] dark:text-primary-foreground font-medium"
+                      className="inline-block text-xs md:text-[10px] px-2 py-0.5 rounded-sm bg-[#C9A962]/20 dark:bg-secondary/20 text-[#1E3A5F] dark:text-primary-foreground font-medium"
                       style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
                     >
                       {interest.name}
@@ -309,14 +309,14 @@ export default function CVPage() {
           </aside>
 
           {/* Right main */}
-          <main className="px-8 py-8 md:px-10 md:py-10 print:overflow-hidden print:px-[6mm] print:py-[8mm]">
+          <main className="px-5 py-6 md:px-10 md:py-10 print:overflow-hidden print:px-[6mm] print:py-[8mm]">
             {/* Profile */}
             {getBio() && (
-              <section className="mb-8 break-inside-avoid">
-                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
+              <section className="mb-6 md:mb-8 break-inside-avoid">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {t("cv.profile")}
                 </h2>
-                <p className="text-sm leading-relaxed text-foreground">
+                <p className="text-base md:text-sm leading-relaxed text-foreground">
                   {getBio()}
                 </p>
               </section>
@@ -324,8 +324,8 @@ export default function CVPage() {
 
             {/* Experience — Main */}
             {mainExperiences.length > 0 && (
-              <section className="mb-8">
-                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-4 pb-2 border-b border-[#C9A962]">
+              <section className="mb-6 md:mb-8">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-4 pb-2 border-b border-[#C9A962]">
                   {t("cv.experience")}
                 </h2>
                 <div className="space-y-6">
@@ -334,27 +334,27 @@ export default function CVPage() {
                     return (
                       <div key={exp.id} className="break-inside-avoid-page">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-0.5">
-                          <h3 className="text-[15px] font-bold text-[#1E3A5F] dark:text-primary-foreground leading-tight">
+                          <h3 className="text-base md:text-[15px] font-bold text-[#1E3A5F] dark:text-primary-foreground leading-tight">
                             {exp.title}
                           </h3>
-                          <span className="text-[11px] text-[#1E3A5F]/40 dark:text-primary-foreground/40 tabular-nums shrink-0 font-medium">
+                          <span className="text-xs md:text-[11px] text-[#1E3A5F]/40 dark:text-primary-foreground/40 tabular-nums shrink-0 font-medium">
                             {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
                           </span>
                         </div>
-                        <p className="text-[13px] font-semibold text-[#C9A962] mt-1">
+                        <p className="text-sm md:text-[13px] font-semibold text-[#C9A962] mt-1">
                           {exp.company}{exp.location ? ` — ${exp.location}` : ""}
                         </p>
                         {bullets.length > 1 ? (
                           <ul className="mt-2.5 space-y-1.5">
                             {bullets.map((b, i) => (
-                              <li key={i} className="text-xs text-muted-foreground leading-relaxed flex items-start gap-2.5">
+                              <li key={i} className="text-sm md:text-xs text-muted-foreground leading-relaxed flex items-start gap-2.5">
                                 <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-[#C9A962]" />
                                 <span>{b}</span>
                               </li>
                             ))}
                           </ul>
                         ) : (
-                          <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                          <p className="text-sm md:text-xs text-muted-foreground mt-2 leading-relaxed">
                             {exp.description}
                           </p>
                         )}
@@ -367,8 +367,8 @@ export default function CVPage() {
 
             {/* Experience — Other (compact) */}
             {otherExperiences.length > 0 && (
-              <section className="mb-8">
-                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
+              <section className="mb-6 md:mb-8">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {locale === "fr" ? "Autres expériences" : locale === "en" ? "Other Experience" : "خبرات أخرى"}
                 </h2>
                 <div className="space-y-4">
@@ -377,24 +377,24 @@ export default function CVPage() {
                     return (
                       <div key={exp.id} className="break-inside-avoid-page">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5">
-                          <p className="text-xs font-semibold text-[#1E3A5F]">
+                          <p className="text-sm md:text-xs font-semibold text-[#1E3A5F]">
                             {exp.title} — <span className="text-[#C9A962]">{exp.company}</span>
                           </p>
-                          <span className="text-[10px] text-[#1E3A5F]/40 dark:text-primary-foreground/40 tabular-nums shrink-0">
+                          <span className="text-xs md:text-[10px] text-[#1E3A5F]/40 dark:text-primary-foreground/40 tabular-nums shrink-0">
                             {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
                           </span>
                         </div>
                         {bullets.length > 1 ? (
                           <ul className="mt-2 space-y-1">
                             {bullets.map((b, i) => (
-                              <li key={i} className="text-xs text-[#444] leading-relaxed flex items-start gap-2">
+                              <li key={i} className="text-sm md:text-xs text-[#444] leading-relaxed flex items-start gap-2">
                                 <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-[#C9A962]" />
                                 <span>{b}</span>
                               </li>
                             ))}
                           </ul>
                         ) : (
-                          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{exp.description}</p>
+                          <p className="text-sm md:text-xs text-muted-foreground mt-1 leading-relaxed">{exp.description}</p>
                         )}
                       </div>
                     );
@@ -406,23 +406,23 @@ export default function CVPage() {
             {/* Projects */}
             {featuredProjects.length > 0 && (
               <section>
-                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-4 pb-2 border-b border-[#C9A962]">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-4 pb-2 border-b border-[#C9A962]">
                   {t("projects.title")}
                 </h2>
                 <div className="space-y-4">
                   {featuredProjects.map((project: any) => (
                     <div key={project.id} className="break-inside-avoid-page">
-                      <h3 className="text-[15px] font-bold text-[#1E3A5F] dark:text-primary-foreground leading-tight">
+                      <h3 className="text-base md:text-[15px] font-bold text-[#1E3A5F] dark:text-primary-foreground leading-tight">
                         {project.title}
                       </h3>
-                      <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                      <p className="text-sm md:text-xs text-muted-foreground mt-1.5 leading-relaxed">
                         {project.description}
                       </p>
                       <div className="flex flex-wrap gap-1.5 mt-2">
                         {project.technologies.slice(0, 6).map((tech: string) => (
                           <span
                             key={tech}
-                            className="text-[10px] px-1.5 py-0.5 rounded-sm bg-[#1E3A5F]/5 dark:bg-primary-foreground/10 text-[#1E3A5F] dark:text-primary-foreground font-medium"
+                            className="text-xs md:text-[10px] px-1.5 py-0.5 rounded-sm bg-[#1E3A5F]/5 dark:bg-primary-foreground/10 text-[#1E3A5F] dark:text-primary-foreground font-medium"
                           >
                             {tech}
                           </span>

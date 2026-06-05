@@ -152,6 +152,11 @@ html[dir="rtl"] {
   }
 }
 
+/* Restore native cursor in admin */
+.admin-mode * {
+  cursor: auto !important;
+}
+
 /* Electric halo animations */
 @keyframes haloSpin {
   from { transform: rotate(0deg); }

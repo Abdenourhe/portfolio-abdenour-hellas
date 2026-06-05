@@ -10,7 +10,7 @@ export default async function AdminLayout({
   const session = await getServerSession(authOptions);
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="admin-mode flex min-h-screen bg-background">
       {session && <AdminSidebar />}
       <main className="flex-1 p-8 overflow-auto">
         {children}
