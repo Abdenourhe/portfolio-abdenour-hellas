@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@page {
+  margin: 10mm;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
