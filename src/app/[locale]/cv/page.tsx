@@ -206,7 +206,7 @@ export default function CVPage() {
           >
             {/* Skills */}
             {techSkills.length > 0 && (
-              <section className="mb-6 md:mb-8">
+              <section className="mb-6 md:mb-8 print:mb-4">
                 <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {t("cv.skills")}
                 </h2>
@@ -246,7 +246,7 @@ export default function CVPage() {
 
             {/* Languages */}
             {languages.length > 0 && (
-              <section className="mb-6 md:mb-8">
+              <section className="mb-6 md:mb-8 print:mb-4">
                 <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {locale === "fr" ? "Langues" : locale === "en" ? "Languages" : "اللغات"}
                 </h2>
@@ -265,7 +265,7 @@ export default function CVPage() {
 
             {/* Education */}
             {education.length > 0 && (
-              <section className="mb-6 md:mb-8">
+              <section className="mb-6 md:mb-8 print:mb-4">
                 <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {t("cv.education")}
                 </h2>
@@ -324,15 +324,15 @@ export default function CVPage() {
 
             {/* Experience — Main */}
             {mainExperiences.length > 0 && (
-              <section className="mb-6 md:mb-8">
+              <section className="mb-6 md:mb-8 print:mb-4">
                 <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-4 pb-2 border-b border-[#C9A962]">
                   {t("cv.experience")}
                 </h2>
-                <div className="space-y-6">
+                <div className="space-y-6 print:space-y-4">
                   {mainExperiences.map((exp: any) => {
                     const bullets = toBullets(exp.description);
                     return (
-                      <div key={exp.id} className="break-inside-avoid-page">
+                      <div key={exp.id} className="break-inside-avoid">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-0.5">
                           <h3 className="text-base md:text-[15px] font-bold text-[#1E3A5F] dark:text-foreground leading-tight">
                             {exp.title}
@@ -367,7 +367,7 @@ export default function CVPage() {
 
             {/* Experience — Other (compact) */}
             {otherExperiences.length > 0 && (
-              <section className="mb-6 md:mb-8">
+              <section className="mb-6 md:mb-8 print:mb-4">
                 <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {locale === "fr" ? "Autres expériences" : locale === "en" ? "Other Experience" : "خبرات أخرى"}
                 </h2>
@@ -375,7 +375,7 @@ export default function CVPage() {
                   {otherExperiences.map((exp: any) => {
                     const bullets = toBullets(exp.description);
                     return (
-                      <div key={exp.id} className="break-inside-avoid-page">
+                      <div key={exp.id} className="break-inside-avoid">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5">
                           <p className="text-sm md:text-xs font-semibold text-[#1E3A5F] dark:text-foreground">
                             {exp.title} — <span className="text-[#C9A962]">{exp.company}</span>
@@ -411,7 +411,7 @@ export default function CVPage() {
                 </h2>
                 <div className="space-y-4">
                   {featuredProjects.map((project: any) => (
-                    <div key={project.id} className="break-inside-avoid-page">
+                    <div key={project.id} className="break-inside-avoid">
                       <h3 className="text-base md:text-[15px] font-bold text-[#1E3A5F] dark:text-foreground leading-tight">
                         {project.title}
                       </h3>
