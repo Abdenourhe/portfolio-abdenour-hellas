@@ -1,6 +1,8 @@
-import { Resend } from "resend";
+import sgMail from "@sendgrid/mail";
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
 export async function sendReplyEmail({
   to,
@@ -15,11 +17,11 @@ export async function sendReplyEmail({
   originalContent: string;
   name: string;
 }) {
-  if (!resend) {
-    return { success: false, error: "RESEND_API_KEY non configuré" };
+  if (!process.env.SENDGRID_API_KEY) {
+    return { success: false, error: "SENDGRID_API_KEY non configuré" };
   }
 
-  const from = process.env.FROM_EMAIL || "onboarding@resend.dev";
+  const from = process.env.FROM_EMAIL || "noreply@portfolio-abdenour-hellas.vercel.app";
 
   const html = `
     <div style="font-family: Inter, system-ui, sans-serif; max-width: 600px; margin: 0 auto; color: #2D2D2D;">
@@ -50,19 +52,16 @@ export async function sendReplyEmail({
   `;
 
   try {
-    const result = await resend.emails.send({
+    await sgMail.send({
       from: `Abdenour Hellas <${from}>`,
       to,
       subject: `Re: ${subject}`,
       html,
     });
-
-    if (result.error) {
-      return { success: false, error: result.error.message };
-    }
-    return { success: true, id: result.data?.id };
+    return { success: true };
   } catch (err: any) {
-    return { success: false, error: err?.message || String(err) };
+    const message = err?.response?.body?.errors?.[0]?.message || err?.message || String(err);
+    return { success: false, error: message };
   }
 }
 
@@ -77,12 +76,12 @@ export async function sendNewMessageNotification({
   subject: string;
   content: string;
 }) {
-  if (!resend) {
-    return { success: false, error: "RESEND_API_KEY non configuré" };
+  if (!process.env.SENDGRID_API_KEY) {
+    return { success: false, error: "SENDGRID_API_KEY non configuré" };
   }
 
   const to = process.env.ADMIN_EMAIL || "abdenour.hellas@uqat.ca";
-  const from = process.env.FROM_EMAIL || "onboarding@resend.dev";
+  const from = process.env.FROM_EMAIL || "noreply@portfolio-abdenour-hellas.vercel.app";
 
   const html = `
     <div style="font-family: Inter, system-ui, sans-serif; max-width: 600px; margin: 0 auto; color: #2D2D2D;">
@@ -106,19 +105,16 @@ export async function sendNewMessageNotification({
   `;
 
   try {
-    const result = await resend.emails.send({
+    await sgMail.send({
       from: `Portfolio <${from}>`,
       to,
       subject: `Nouveau message : ${subject}`,
       html,
     });
-
-    if (result.error) {
-      return { success: false, error: result.error.message };
-    }
-    return { success: true, id: result.data?.id };
+    return { success: true };
   } catch (err: any) {
-    return { success: false, error: err?.message || String(err) };
+    const message = err?.response?.body?.errors?.[0]?.message || err?.message || String(err);
+    return { success: false, error: message };
   }
 }
 
