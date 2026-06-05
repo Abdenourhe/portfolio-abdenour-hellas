@@ -68,8 +68,8 @@ export default function NetworkCanvas() {
       const dark = isDark();
       const t = performance.now();
 
-      const baseNode = dark ? "rgba(255,255,255,0.12)" : "rgba(30,58,95,0.12)";
-      const baseLine = dark ? "rgba(255,255,255,0.06)" : "rgba(30,58,95,0.06)";
+      const baseNode = dark ? "rgba(255,255,255,0.1)" : "rgba(30,58,95,0.04)";
+      const baseLine = dark ? "rgba(255,255,255,0.05)" : "rgba(30,58,95,0.02)";
       const activeNode = "rgba(255,107,0,0.75)";
       const activeLine = "rgba(255,107,0,0.4)";
       const glowNode = "rgba(255,107,0,0.12)";

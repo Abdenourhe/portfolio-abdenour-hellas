@@ -13,7 +13,7 @@ export default function ElectricHalo({ className = "" }: ElectricHaloProps) {
         style={{
           width: "112%",
           height: "112%",
-          background: "conic-gradient(from 0deg, transparent 0%, rgba(201,169,98,0.2) 15%, transparent 30%, rgba(201,169,98,0.12) 50%, transparent 65%, rgba(201,169,98,0.08) 80%, transparent 100%)",
+          background: "conic-gradient(from 0deg, transparent 0%, rgba(201,169,98,0.12) 15%, transparent 30%, rgba(201,169,98,0.08) 50%, transparent 65%, rgba(201,169,98,0.05) 80%, transparent 100%)",
           maskImage: "radial-gradient(transparent 60%, black 62%)",
           WebkitMaskImage: "radial-gradient(transparent 60%, black 62%)",
         }}

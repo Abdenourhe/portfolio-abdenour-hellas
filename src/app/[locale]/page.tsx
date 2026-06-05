@@ -231,13 +231,13 @@ function HomeClient() {
                 {profile?.fullName || "Abdenour Hellas"}
               </motion.h1>
 
-              <motion.div variants={heroItem} className="mt-5 text-base md:text-lg text-foreground/70 font-light min-h-[1.75rem] tracking-wide">
+              <motion.div variants={heroItem} className="mt-5 text-base md:text-lg text-foreground font-light min-h-[1.75rem] tracking-wide">
                 <TypeWriter key={getTitle()} text={getTitle()} delay={700} />
               </motion.div>
 
               <motion.p
                 variants={heroItem}
-                className="mt-8 text-sm md:text-base text-muted-foreground leading-[1.8] max-w-md mx-auto lg:mx-0 font-light"
+                className="mt-8 text-sm md:text-base text-foreground/80 leading-[1.8] max-w-md mx-auto lg:mx-0"
               >
                 {getBio()}
               </motion.p>
@@ -290,7 +290,7 @@ function HomeClient() {
                   facebook={profile?.facebook}
                   instagram={profile?.instagram}
                   whatsapp={profile?.whatsapp}
-                  iconSize={18}
+                  iconSize={22}
                 />
               </motion.div>
             </motion.div>

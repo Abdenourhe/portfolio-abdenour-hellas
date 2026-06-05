@@ -53,9 +53,9 @@ export default function OscilloscopeWave() {
       }
 
       const waves = [
-        { amp: height * 0.28, freq: 0.008, speed: 1.2, phase: 0, color: "#C9A962", width: 1.6, glow: true },
-        { amp: height * 0.18, freq: 0.012, speed: 1.8, phase: 2, color: "rgba(201, 169, 98, 0.35)", width: 1, glow: false },
-        { amp: height * 0.12, freq: 0.006, speed: 0.9, phase: 4, color: "rgba(30, 58, 95, 0.12)", width: 0.8, glow: false },
+        { amp: height * 0.22, freq: 0.008, speed: 1.2, phase: 0, color: "rgba(201, 169, 98, 0.7)", width: 1.4, glow: true },
+        { amp: height * 0.14, freq: 0.012, speed: 1.8, phase: 2, color: "rgba(201, 169, 98, 0.25)", width: 0.9, glow: false },
+        { amp: height * 0.08, freq: 0.006, speed: 0.9, phase: 4, color: "rgba(30, 58, 95, 0.08)", width: 0.7, glow: false },
       ];
 
       for (const wave of waves) {
@@ -81,12 +81,12 @@ export default function OscilloscopeWave() {
       ctx.shadowBlur = 0;
 
       // Scan line (horizontal moving line)
-      const scanX = ((t * 0.08) % (width + 100)) - 50;
+      const scanX = ((t * 0.06) % (width + 100)) - 50;
       ctx.beginPath();
       ctx.moveTo(scanX, 0);
       ctx.lineTo(scanX, height);
-      ctx.strokeStyle = "rgba(201, 169, 98, 0.08)";
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(201, 169, 98, 0.06)";
+      ctx.lineWidth = 0.8;
       ctx.stroke();
 
       rafId = requestAnimationFrame(draw);
