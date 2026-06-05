@@ -207,7 +207,7 @@ export default function CVPage() {
             {/* Skills */}
             {techSkills.length > 0 && (
               <section className="mb-6 md:mb-8">
-                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {t("cv.skills")}
                 </h2>
                 <div className="space-y-3">
@@ -218,17 +218,17 @@ export default function CVPage() {
                       const catSkills = techSkills.filter((s: any) => s.category === cat);
                       return (
                         <div key={cat} className="break-inside-avoid">
-                          <h3 className="text-xs md:text-[10px] font-bold uppercase tracking-wider text-[#1E3A5F]/70 dark:text-primary-foreground/70 mb-1.5">
+                          <h3 className="text-xs md:text-[10px] font-bold uppercase tracking-wider text-[#1E3A5F]/70 dark:text-foreground/70 mb-1.5">
                             {cat}
                           </h3>
                           <div className="space-y-1.5">
                             {catSkills.map((skill: any) => (
                               <div key={skill.id}>
                                 <div className="flex items-center justify-between text-sm md:text-xs mb-0.5">
-                                  <span className="text-[#1E3A5F] dark:text-primary-foreground font-medium">{skill.name}</span>
+                                  <span className="text-[#1E3A5F] dark:text-foreground font-medium">{skill.name}</span>
                                   <span className="text-xs md:text-[10px] font-semibold text-[#C9A962]">{skill.level}%</span>
                                 </div>
-                                <div className="h-1.5 md:h-1 bg-[#1E3A5F]/10 dark:bg-primary-foreground/10 rounded-full overflow-hidden">
+                                <div className="h-1.5 md:h-1 bg-[#1E3A5F]/10 dark:bg-foreground/10 rounded-full overflow-hidden">
                                   <div
                                     className="h-full bg-[#C9A962] rounded-full"
                                     style={{ width: `${skill.level}%`, printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
@@ -247,14 +247,14 @@ export default function CVPage() {
             {/* Languages */}
             {languages.length > 0 && (
               <section className="mb-6 md:mb-8">
-                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {locale === "fr" ? "Langues" : locale === "en" ? "Languages" : "اللغات"}
                 </h2>
                 <div className="flex flex-wrap gap-1.5">
                   {languages.map((lang: any) => (
                     <span
                       key={lang.id}
-                      className="inline-block text-xs md:text-[10px] px-2 py-0.5 rounded-sm border border-[#1E3A5F]/30 dark:border-primary-foreground/30 text-[#1E3A5F] dark:text-primary-foreground font-medium"
+                      className="inline-block text-xs md:text-[10px] px-2 py-0.5 rounded-sm border border-[#1E3A5F]/30 dark:border-foreground/30 text-[#1E3A5F] dark:text-foreground font-medium"
                     >
                       {lang.name} · {lang.level}%
                     </span>
@@ -266,19 +266,19 @@ export default function CVPage() {
             {/* Education */}
             {education.length > 0 && (
               <section className="mb-6 md:mb-8">
-                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {t("cv.education")}
                 </h2>
                 <div className="space-y-4">
                   {education.map((edu: any) => (
                     <div key={edu.id} className="break-inside-avoid">
-                      <h3 className="font-bold text-sm md:text-xs text-[#1E3A5F] dark:text-primary-foreground leading-snug">
+                      <h3 className="font-bold text-sm md:text-xs text-[#1E3A5F] dark:text-foreground leading-snug">
                         {edu.degree}
                       </h3>
                       <p className="text-sm md:text-xs text-[#C9A962] font-semibold mt-0.5">
                         {edu.school}{edu.location ? ` — ${edu.location}` : ""}
                       </p>
-                      <p className="text-xs md:text-[10px] text-[#1E3A5F]/50 dark:text-primary-foreground/50 mt-0.5">
+                      <p className="text-xs md:text-[10px] text-[#1E3A5F]/50 dark:text-foreground/50 mt-0.5">
                         {formatDate(edu.startDate, false)} — {edu.current ? t("experience.present") : formatDate(edu.endDate, false)}
                       </p>
                     </div>
@@ -290,14 +290,14 @@ export default function CVPage() {
             {/* Interests */}
             {interests && interests.length > 0 && (
               <section>
-                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {locale === "fr" ? "Centres d'intérêt" : locale === "en" ? "Interests" : "الاهتمامات"}
                 </h2>
                 <div className="flex flex-wrap gap-1.5">
                   {interests.map((interest: any) => (
                     <span
                       key={interest.id}
-                      className="inline-block text-xs md:text-[10px] px-2 py-0.5 rounded-sm bg-[#C9A962]/20 dark:bg-secondary/20 text-[#1E3A5F] dark:text-primary-foreground font-medium"
+                      className="inline-block text-xs md:text-[10px] px-2 py-0.5 rounded-sm bg-[#C9A962]/20 dark:bg-secondary/20 text-[#1E3A5F] dark:text-foreground font-medium"
                       style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
                     >
                       {interest.name}
@@ -313,7 +313,7 @@ export default function CVPage() {
             {/* Profile */}
             {getBio() && (
               <section className="mb-6 md:mb-8 break-inside-avoid">
-                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {t("cv.profile")}
                 </h2>
                 <p className="text-base md:text-sm leading-relaxed text-foreground">
@@ -325,7 +325,7 @@ export default function CVPage() {
             {/* Experience — Main */}
             {mainExperiences.length > 0 && (
               <section className="mb-6 md:mb-8">
-                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-4 pb-2 border-b border-[#C9A962]">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-4 pb-2 border-b border-[#C9A962]">
                   {t("cv.experience")}
                 </h2>
                 <div className="space-y-6">
@@ -334,10 +334,10 @@ export default function CVPage() {
                     return (
                       <div key={exp.id} className="break-inside-avoid-page">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-0.5">
-                          <h3 className="text-base md:text-[15px] font-bold text-[#1E3A5F] dark:text-primary-foreground leading-tight">
+                          <h3 className="text-base md:text-[15px] font-bold text-[#1E3A5F] dark:text-foreground leading-tight">
                             {exp.title}
                           </h3>
-                          <span className="text-xs md:text-[11px] text-[#1E3A5F]/40 dark:text-primary-foreground/40 tabular-nums shrink-0 font-medium">
+                          <span className="text-xs md:text-[11px] text-[#1E3A5F]/40 dark:text-foreground/40 tabular-nums shrink-0 font-medium">
                             {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
                           </span>
                         </div>
@@ -368,7 +368,7 @@ export default function CVPage() {
             {/* Experience — Other (compact) */}
             {otherExperiences.length > 0 && (
               <section className="mb-6 md:mb-8">
-                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-3 pb-2 border-b border-[#C9A962]">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-3 pb-2 border-b border-[#C9A962]">
                   {locale === "fr" ? "Autres expériences" : locale === "en" ? "Other Experience" : "خبرات أخرى"}
                 </h2>
                 <div className="space-y-4">
@@ -377,10 +377,10 @@ export default function CVPage() {
                     return (
                       <div key={exp.id} className="break-inside-avoid-page">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5">
-                          <p className="text-sm md:text-xs font-semibold text-[#1E3A5F] dark:text-primary-foreground">
+                          <p className="text-sm md:text-xs font-semibold text-[#1E3A5F] dark:text-foreground">
                             {exp.title} — <span className="text-[#C9A962]">{exp.company}</span>
                           </p>
-                          <span className="text-xs md:text-[10px] text-[#1E3A5F]/40 dark:text-primary-foreground/40 tabular-nums shrink-0">
+                          <span className="text-xs md:text-[10px] text-[#1E3A5F]/40 dark:text-foreground/40 tabular-nums shrink-0">
                             {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
                           </span>
                         </div>
@@ -406,13 +406,13 @@ export default function CVPage() {
             {/* Projects */}
             {featuredProjects.length > 0 && (
               <section>
-                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-4 pb-2 border-b border-[#C9A962]">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-4 pb-2 border-b border-[#C9A962]">
                   {t("projects.title")}
                 </h2>
                 <div className="space-y-4">
                   {featuredProjects.map((project: any) => (
                     <div key={project.id} className="break-inside-avoid-page">
-                      <h3 className="text-base md:text-[15px] font-bold text-[#1E3A5F] dark:text-primary-foreground leading-tight">
+                      <h3 className="text-base md:text-[15px] font-bold text-[#1E3A5F] dark:text-foreground leading-tight">
                         {project.title}
                       </h3>
                       <p className="text-sm md:text-xs text-muted-foreground mt-1.5 leading-relaxed">
@@ -422,7 +422,7 @@ export default function CVPage() {
                         {project.technologies.slice(0, 6).map((tech: string) => (
                           <span
                             key={tech}
-                            className="text-xs md:text-[10px] px-1.5 py-0.5 rounded-sm bg-[#1E3A5F]/5 dark:bg-primary-foreground/10 text-[#1E3A5F] dark:text-primary-foreground font-medium"
+                            className="text-xs md:text-[10px] px-1.5 py-0.5 rounded-sm bg-[#1E3A5F]/5 dark:bg-foreground/10 text-[#1E3A5F] dark:text-foreground font-medium"
                           >
                             {tech}
                           </span>
