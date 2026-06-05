@@ -175,7 +175,7 @@ function HomeClient() {
   return (
     <div className="flex flex-col">
       {/* Hero */}
-      <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 lg:py-0 relative overflow-hidden">
+      <section className="min-h-[calc(100dvh-4rem)] flex items-center justify-center px-4 py-12 md:py-16 lg:py-0 relative overflow-hidden">
         {/* Subtle background decoration */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-20 right-10 w-72 h-72 bg-primary/[0.02] rounded-full blur-3xl" />
@@ -192,7 +192,7 @@ function HomeClient() {
               className="relative flex-shrink-0"
             >
               <ElectricHalo />
-              <div className="relative z-10 w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden ring-[3px] ring-secondary/30 ring-offset-4 ring-offset-background shadow-2xl">
+              <div className="relative z-10 w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 rounded-full overflow-hidden ring-[3px] ring-secondary/30 ring-offset-4 ring-offset-background shadow-2xl">
                 {profile?.photoUrl ? (
                   <img
                     src={profile.photoUrl}
@@ -219,7 +219,7 @@ function HomeClient() {
               className="text-center lg:text-left max-w-xl"
             >
               <motion.div variants={heroItem} className="mb-4">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs tracking-wide">
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs tracking-wide">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />

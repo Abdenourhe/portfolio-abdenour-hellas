@@ -37,7 +37,8 @@ export default function NetworkCanvas() {
     window.addEventListener("resize", resize);
 
     // Density: ~1 node per 25 000 px²
-    const nodeCount = Math.max(30, Math.min(100, Math.floor((width * height) / 25000)));
+    const isMobile = width < 768;
+    const nodeCount = Math.max(isMobile ? 15 : 30, Math.min(isMobile ? 50 : 100, Math.floor((width * height) / (isMobile ? 40000 : 25000))));
     const nodes: Node[] = [];
     for (let i = 0; i < nodeCount; i++) {
       nodes.push({

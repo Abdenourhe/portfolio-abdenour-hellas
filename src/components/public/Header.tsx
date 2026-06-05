@@ -71,11 +71,11 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
         </div>
 
         <button
-          className="lg:hidden p-2 text-muted-foreground hover:text-foreground transition-colors"
+          className="lg:hidden p-2.5 text-muted-foreground hover:text-foreground transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Menu"
         >
-          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 
@@ -87,7 +87,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
                 key={item.href}
                 href={item.href}
                 prefetch={false}
-                className={`px-3 py-2 text-sm tracking-wide transition-colors ${
+                className={`px-3 py-3 text-sm tracking-wide transition-colors min-h-[44px] flex items-center ${
                   isActive(item.href)
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground"

@@ -93,7 +93,7 @@ export default function ProjectsSection({ data, compact = false, limit }: Projec
             <button
               key={cat}
               onClick={() => setActiveFilter(cat)}
-              className={`px-3 py-1 text-xs tracking-wide rounded-full border transition-colors ${
+              className={`px-4 py-2 text-xs tracking-wide rounded-full border transition-colors min-h-[40px] ${
                 activeFilter === cat
                   ? "bg-primary text-primary-foreground border-primary"
                   : "bg-transparent text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"

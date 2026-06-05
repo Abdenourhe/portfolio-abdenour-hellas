@@ -138,19 +138,19 @@ export default function TestimonialsSection({ data, compact = false, limit }: Te
         {canScrollLeft && (
           <button
             onClick={() => scrollByDir(-1)}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 w-9 h-9 rounded-full bg-background/90 border border-border shadow-sm flex items-center justify-center text-primary hover:bg-background hover:border-primary/30 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 w-10 h-10 rounded-full bg-background/90 border border-border shadow-sm flex items-center justify-center text-primary hover:bg-background hover:border-primary/30 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100"
             aria-label="Previous"
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft size={20} />
           </button>
         )}
         {canScrollRight && (
           <button
             onClick={() => scrollByDir(1)}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 w-9 h-9 rounded-full bg-background/90 border border-border shadow-sm flex items-center justify-center text-primary hover:bg-background hover:border-primary/30 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 w-10 h-10 rounded-full bg-background/90 border border-border shadow-sm flex items-center justify-center text-primary hover:bg-background hover:border-primary/30 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100"
             aria-label="Next"
           >
-            <ChevronRight size={18} />
+            <ChevronRight size={20} />
           </button>
         )}
       </div>
@@ -168,7 +168,7 @@ export default function TestimonialsSection({ data, compact = false, limit }: Te
                 el.scrollTo({ left: i * cardWidth, behavior: "smooth" });
               }}
               className={`h-1.5 rounded-full transition-all ${
-                i === activeIndex ? "w-6 bg-primary" : "w-1.5 bg-primary/20 hover:bg-primary/40"
+                i === activeIndex ? "w-8 bg-primary" : "w-2 bg-primary/20 hover:bg-primary/40"
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />

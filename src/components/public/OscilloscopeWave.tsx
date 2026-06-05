@@ -101,7 +101,7 @@ export default function OscilloscopeWave() {
   }, []);
 
   return (
-    <div className="relative w-full h-24 md:h-28 overflow-hidden">
+    <div className="relative w-full h-16 md:h-28 overflow-hidden">
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
     </div>
   );
