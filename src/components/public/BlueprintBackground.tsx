@@ -1,124 +1,154 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-export default function BlueprintBackground() {
-  const svgRef = useRef<SVGSVGElement>(null);
+interface Node {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  phase: number;
+}
+
+export default function NetworkCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    // Subtle parallax on scroll: shift the grid slightly
-    const handleScroll = () => {
-      if (!svgRef.current) return;
-      const y = window.scrollY * 0.02;
-      svgRef.current.style.transform = `translateY(${y}px)`;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    const resize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    resize();
+    window.addEventListener("resize", resize);
 
-  const gridColor = "currentColor";
-  const spacing = 80;
-  const width = 2000;
-  const height = 3000;
-  const linesH = Math.ceil(height / spacing);
-  const linesV = Math.ceil(width / spacing);
+    // Density: ~1 node per 25 000 px²
+    const nodeCount = Math.max(30, Math.min(100, Math.floor((width * height) / 25000)));
+    const nodes: Node[] = [];
+    for (let i = 0; i < nodeCount; i++) {
+      nodes.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        radius: Math.random() * 1.2 + 1.2,
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
 
-  return (
-    <div
-      aria-hidden="true"
-      className="fixed inset-0 pointer-events-none z-0 overflow-hidden text-primary/[0.035] dark:text-primary/[0.06] select-none"
-    >
-      <svg
-        ref={svgRef}
-        width={width}
-        height={height}
-        className="absolute top-0 left-1/2 -translate-x-1/2 will-change-transform"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <pattern id="blueprint-grid" width={spacing} height={spacing} patternUnits="userSpaceOnUse">
-            {/* Horizontal */}
-            <path d={`M0 ${spacing / 2} L${spacing} ${spacing / 2}`} stroke={gridColor} strokeWidth="0.5" strokeDasharray="2 4" />
-            {/* Vertical */}
-            <path d={`M${spacing / 2} 0 L${spacing / 2} ${spacing}`} stroke={gridColor} strokeWidth="0.5" strokeDasharray="2 4" />
-            {/* Diagonal / */}
-            <path d={`M0 ${spacing} L${spacing} 0`} stroke={gridColor} strokeWidth="0.5" strokeDasharray="1 6" opacity="0.5" />
-          </pattern>
-        </defs>
+    const mouse = { x: -9999, y: -9999 };
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+    window.addEventListener("mousemove", handleMouseMove);
 
-        {/* Base grid */}
-        <rect width="100%" height="100%" fill="url(#blueprint-grid)" />
+    let rafId: number;
+    const connectDist = 130;
+    const mouseRadius = 160;
 
-        {/* Construction lines that draw slowly */}
-        <g className="blueprint-draw">
-          {Array.from({ length: linesH }).map((_, i) => (
-            <line
-              key={`h-${i}`}
-              x1={0}
-              y1={i * spacing}
-              x2={width}
-              y2={i * spacing}
-              stroke={gridColor}
-              strokeWidth="0.5"
-              strokeDasharray="1200"
-              strokeDashoffset="1200"
-              opacity="0.6"
-              style={{
-                animation: `blueprintDraw 12s ease-in-out ${i * 0.3}s infinite alternate`,
-              }}
-            />
-          ))}
-          {Array.from({ length: linesV }).map((_, i) => (
-            <line
-              key={`v-${i}`}
-              x1={i * spacing}
-              y1={0}
-              x2={i * spacing}
-              y2={height}
-              stroke={gridColor}
-              strokeWidth="0.5"
-              strokeDasharray="1200"
-              strokeDashoffset="1200"
-              opacity="0.6"
-              style={{
-                animation: `blueprintDraw 12s ease-in-out ${i * 0.3 + 6}s infinite alternate`,
-              }}
-            />
-          ))}
-        </g>
+    const isDark = () => document.documentElement.classList.contains("dark");
 
-        {/* Corner markers (crosshairs) */}
-        {Array.from({ length: 5 }).map((_, row) =>
-          Array.from({ length: 8 }).map((_, col) => {
-            const cx = col * spacing * 3 + spacing;
-            const cy = row * spacing * 3 + spacing;
-            return (
-              <g key={`cross-${row}-${col}`} opacity="0.4">
-                <line x1={cx - 6} y1={cy} x2={cx + 6} y2={cy} stroke={gridColor} strokeWidth="0.5" />
-                <line x1={cx} y1={cy - 6} x2={cx} y2={cy + 6} stroke={gridColor} strokeWidth="0.5" />
-                <circle cx={cx} cy={cy} r="2" fill="none" stroke={gridColor} strokeWidth="0.5" strokeDasharray="1 2" />
-              </g>
-            );
-          })
-        )}
-      </svg>
+    const draw = () => {
+      ctx.clearRect(0, 0, width, height);
+      const dark = isDark();
+      const t = performance.now();
 
-      <style jsx global>{`
-        @keyframes blueprintDraw {
-          0% {
-            stroke-dashoffset: 1200;
-          }
-          40% {
-            stroke-dashoffset: 0;
-          }
-          60% {
-            stroke-dashoffset: 0;
-          }
-          100% {
-            stroke-dashoffset: -1200;
+      const baseNode = dark ? "rgba(255,255,255,0.07)" : "rgba(30,58,95,0.07)";
+      const baseLine = dark ? "rgba(255,255,255,0.035)" : "rgba(30,58,95,0.035)";
+      const activeNode = "rgba(255,107,0,0.75)";
+      const activeLine = "rgba(255,107,0,0.4)";
+      const glowNode = "rgba(255,107,0,0.12)";
+
+      // Update positions
+      for (const node of nodes) {
+        node.x += node.vx;
+        node.y += node.vy;
+        if (node.x < 0 || node.x > width) node.vx *= -1;
+        if (node.y < 0 || node.y > height) node.vy *= -1;
+        node.phase += 0.02;
+      }
+
+      // Draw connections
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < connectDist) {
+            const mx = (nodes[i].x + nodes[j].x) / 2;
+            const my = (nodes[i].y + nodes[j].y) / 2;
+            const mouseDist = Math.sqrt((mx - mouse.x) ** 2 + (my - mouse.y) ** 2);
+            const active = mouseDist < mouseRadius;
+
+            const opacity = 1 - dist / connectDist;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.strokeStyle = active
+              ? activeLine
+              : dark
+                ? `rgba(255,255,255,${opacity * 0.035})`
+                : `rgba(30,58,95,${opacity * 0.035})`;
+            ctx.lineWidth = active ? 0.9 : 0.4;
+            ctx.stroke();
           }
         }
-      `}</style>
-    </div>
+      }
+
+      // Draw nodes
+      for (const node of nodes) {
+        const mouseDist = Math.sqrt((node.x - mouse.x) ** 2 + (node.y - mouse.y) ** 2);
+        const active = mouseDist < mouseRadius;
+        const pulse = active ? 1 + Math.sin(t / 120 + node.phase) * 0.3 : 1;
+        const r = node.radius * pulse;
+
+        // Glow ring
+        if (active) {
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, r * 5, 0, Math.PI * 2);
+          ctx.fillStyle = glowNode;
+          ctx.fill();
+        }
+
+        // Core
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, active ? r * 1.4 : r, 0, Math.PI * 2);
+        ctx.fillStyle = active ? activeNode : baseNode;
+        ctx.fill();
+      }
+
+      rafId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      className="fixed inset-0 pointer-events-none z-0 select-none"
+    />
   );
 }
