@@ -12,7 +12,7 @@ export default async function AdminLayout({
   return (
     <div className="admin-mode flex min-h-screen bg-background">
       {session && <AdminSidebar />}
-      <main className="flex-1 p-8 overflow-auto">
+      <main className="flex-1 p-4 md:p-8 pt-16 md:pt-8 overflow-auto">
         {children}
       </main>
     </div>
