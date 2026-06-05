@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Playfair_Display } from "next/font/google";
 import { isValidLocale, Locale } from "@/i18n/config";
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  display: "swap",
+});
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 import { ThemeProvider } from "@/components/public/ThemeProvider";
@@ -76,7 +83,7 @@ export default async function LocaleLayout({
     <ThemeProvider>
       <I18nProvider messages={messages}>
         <BlueprintBackground />
-        <div lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className="min-h-screen flex flex-col relative z-10">
+        <div lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={`min-h-screen flex flex-col relative z-10 ${playfair.variable}`}>
           <div className="print:hidden">
             <Header locale={locale as Locale} messages={messages} />
           </div>

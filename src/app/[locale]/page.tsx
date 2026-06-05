@@ -226,18 +226,18 @@ function HomeClient() {
 
               <motion.h1
                 variants={heroItem}
-                className="text-[clamp(2.5rem,6vw,4.5rem)] font-bold tracking-tight text-primary leading-[1.05]"
+                className="font-[family-name:var(--font-serif)] text-[clamp(2.8rem,6.5vw,5rem)] font-normal tracking-[0.01em] text-primary leading-[1.1]"
               >
                 {profile?.fullName || "Abdenour Hellas"}
               </motion.h1>
 
-              <motion.div variants={heroItem} className="mt-4 text-lg text-foreground/80 font-medium min-h-[1.75rem]">
+              <motion.div variants={heroItem} className="mt-5 text-base md:text-lg text-foreground/70 font-light min-h-[1.75rem] tracking-wide">
                 <TypeWriter key={getTitle()} text={getTitle()} delay={700} />
               </motion.div>
 
               <motion.p
                 variants={heroItem}
-                className="mt-6 text-base text-muted-foreground leading-relaxed max-w-md mx-auto lg:mx-0"
+                className="mt-8 text-sm md:text-base text-muted-foreground leading-[1.8] max-w-md mx-auto lg:mx-0 font-light"
               >
                 {getBio()}
               </motion.p>
@@ -254,11 +254,11 @@ function HomeClient() {
 
               <motion.div
                 variants={heroItem}
-                className="mt-8 flex flex-wrap gap-3 justify-center lg:justify-start"
+                className="mt-10 flex flex-wrap gap-4 justify-center lg:justify-start"
               >
                 <Link
                   href={cvPath}
-                  className="group inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
+                  className="group inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg text-[0.8rem] tracking-wide font-normal hover:bg-primary/90 transition-colors"
                 >
                   <FileText size={16} />
                   {t("hero.viewCv")}
@@ -266,7 +266,7 @@ function HomeClient() {
                 </Link>
                 <Link
                   href={contactPath}
-                  className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground rounded-lg text-sm font-medium hover:border-primary/30 hover:bg-primary/[0.02] transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground rounded-lg text-[0.8rem] tracking-wide font-normal hover:border-primary/30 hover:bg-primary/[0.02] transition-colors"
                 >
                   <Send size={16} />
                   {t("hero.contactMe")}
@@ -274,7 +274,7 @@ function HomeClient() {
                 {profile?.cvUrl && (
                   <button
                     onClick={handleDownloadCV}
-                    className="inline-flex items-center gap-2 px-6 py-3 text-muted-foreground rounded-lg text-sm font-medium hover:text-primary transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-3 text-muted-foreground rounded-lg text-[0.8rem] tracking-wide font-normal hover:text-primary transition-colors underline underline-offset-4 decoration-border hover:decoration-primary"
                   >
                     <Download size={16} />
                     {t("contact.downloadCv")}
@@ -331,7 +331,7 @@ function HomeClient() {
       </section>
 
       {/* Experience */}
-      <section id="experience" className="py-16 lg:py-24">
+      <section id="experience" className="py-20 lg:py-32">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("experience.title")} subtitle={t("experience.subtitle")} />
           <div className="mt-12">
@@ -341,7 +341,7 @@ function HomeClient() {
       </section>
 
       {/* Education */}
-      <section id="education" className="py-16 lg:py-24 bg-muted/20">
+      <section id="education" className="py-20 lg:py-32 bg-muted/20">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("education.title")} subtitle={t("education.subtitle")} />
           <div className="mt-12">
@@ -351,7 +351,7 @@ function HomeClient() {
       </section>
 
       {/* Skills */}
-      <section id="skills" className="py-16 lg:py-24">
+      <section id="skills" className="py-20 lg:py-32">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("skills.title")} subtitle={t("skills.subtitle")} />
           <div className="mt-12">
@@ -361,7 +361,7 @@ function HomeClient() {
       </section>
 
       {/* Projects */}
-      <section id="projects" className="py-16 lg:py-24 bg-muted/20">
+      <section id="projects" className="py-20 lg:py-32 bg-muted/20">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("projects.title")} subtitle={t("projects.subtitle")} />
           <div className="mt-12">
@@ -371,7 +371,7 @@ function HomeClient() {
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-16 lg:py-24">
+      <section id="testimonials" className="py-20 lg:py-32">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("testimonials.title")} subtitle={t("testimonials.subtitle")} />
           <div className="mt-12">
@@ -381,7 +381,7 @@ function HomeClient() {
       </section>
 
       {/* Blog */}
-      <section id="blog" className="py-16 lg:py-24 bg-muted/20">
+      <section id="blog" className="py-20 lg:py-32 bg-muted/20">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("blog.title")} subtitle={t("blog.subtitle")} />
           <div className="mt-12">

@@ -21,6 +21,7 @@
   --color-popover-foreground: var(--popover-foreground);
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-serif: var(--font-serif), Georgia, "Times New Roman", serif;
 }
 
 :root {
@@ -81,6 +82,16 @@ body {
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -106,6 +117,15 @@ html[dir="rtl"] {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--foreground);
+}
+
+/* Editorial section titles */
+.section-title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
 }
 
 /* TypeWriter cursor blink */

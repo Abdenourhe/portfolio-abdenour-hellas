@@ -30,45 +30,48 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full bg-background/85 backdrop-blur-md">
       <div className="container mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
         <Link
           href={`/${locale}`}
-          className="text-lg font-semibold tracking-tight text-foreground hover:text-muted-foreground transition-colors"
+          className="font-[family-name:var(--font-serif)] text-base font-normal tracking-[0.08em] text-foreground hover:text-muted-foreground transition-colors"
         >
           Abdenour Hellas
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-6">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               prefetch={false}
-              className={`relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+              className={`relative text-[0.78rem] tracking-[0.06em] font-normal transition-colors pb-0.5 ${
                 isActive(item.href)
-                  ? "text-foreground bg-muted"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {item.label}
+              {isActive(item.href) && (
+                <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-secondary" />
+              )}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden lg:flex items-center gap-2">
+        <div className="hidden lg:flex items-center gap-3">
           <LanguageSwitcher locale={locale} />
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+            className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
             aria-label="Toggle theme"
           >
-            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+            {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
           </button>
         </div>
 
         <button
-          className="lg:hidden p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+          className="lg:hidden p-2 text-muted-foreground hover:text-foreground transition-colors"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Menu"
         >
@@ -77,28 +80,28 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
       </div>
 
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-border/60 bg-background/95 backdrop-blur-xl">
-          <div className="container mx-auto px-4 py-4 flex flex-col gap-1">
+        <div className="lg:hidden border-t border-border/40 bg-background/95 backdrop-blur-md">
+          <div className="container mx-auto px-4 py-5 flex flex-col gap-1">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 prefetch={false}
-                className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                className={`px-3 py-2 text-sm tracking-wide transition-colors ${
                   isActive(item.href)
-                    ? "text-foreground bg-muted"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.label}
               </Link>
             ))}
-            <div className="flex items-center gap-2 pt-3 mt-2 border-t border-border/60">
+            <div className="flex items-center gap-2 pt-3 mt-2 border-t border-border/40">
               <LanguageSwitcher locale={locale} />
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                className="p-2 text-muted-foreground hover:text-foreground transition-colors"
               >
                 {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
               </button>
