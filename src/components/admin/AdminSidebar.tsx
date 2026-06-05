@@ -18,6 +18,7 @@ import {
   FileText,
   Menu,
   X,
+  ArrowUpRight,
 } from "lucide-react";
 
 const navItems = [
@@ -89,7 +90,16 @@ export default function AdminSidebar() {
           ))}
         </nav>
 
-        <div className="p-3 border-t border-primary-foreground/10">
+        <div className="p-3 border-t border-primary-foreground/10 space-y-0.5">
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2.5 px-3 py-2 w-full rounded-md text-sm text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/5 transition-colors"
+          >
+            <ArrowUpRight size={15} />
+            <span>Voir le site</span>
+          </a>
           <button
             onClick={() => signOut({ callbackUrl: "/admin/login" })}
             className="flex items-center gap-2.5 px-3 py-2 w-full rounded-md text-sm text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/5 transition-colors"
