@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send, Download, CheckCircle, XCircle, FileText } from "lucide-react";
+import { Mail, Phone, MapPin, Send, CheckCircle, XCircle, FileText } from "lucide-react";
 import { z } from "zod";
 import SocialIcons from "@/components/public/SocialIcons";
 import SectionHeader from "@/components/public/SectionHeader";
@@ -18,7 +18,7 @@ const contactSchema = z.object({
 
 export default function ContactPage() {
   const t = useT();
-  const locale = useLocale();
+  useLocale();
   const cvPath = useLocalizedPath("/cv");
   const [profile, setProfile] = useState<any>(null);
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", content: "" });
