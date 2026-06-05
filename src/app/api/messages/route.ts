@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { sendReplyEmail, sendNewMessageNotification } from "@/lib/email";
 
 export async function GET() {
   try {
@@ -14,7 +15,7 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(messages);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to fetch messages" }, { status: 500 });
   }
 }
@@ -30,8 +31,16 @@ export async function POST(request: NextRequest) {
         content: data.content,
       },
     });
+
+    await sendNewMessageNotification({
+      name: data.name,
+      email: data.email,
+      subject: data.subject,
+      content: data.content,
+    });
+
     return NextResponse.json(message);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to create message" }, { status: 500 });
   }
 }
@@ -47,12 +56,24 @@ export async function PUT(request: NextRequest) {
     const data: any = {};
     if (read !== undefined) data.read = read;
     if (reply !== undefined) data.reply = reply;
+
     const message = await prisma.message.update({
       where: { id },
       data,
     });
+
+    if (reply !== undefined && reply.trim()) {
+      await sendReplyEmail({
+        to: message.email,
+        subject: message.subject,
+        reply: reply.trim(),
+        originalContent: message.content,
+        name: message.name,
+      });
+    }
+
     return NextResponse.json(message);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to update message" }, { status: 500 });
   }
 }
@@ -72,7 +93,7 @@ export async function DELETE(request: NextRequest) {
 
     await prisma.message.delete({ where: { id } });
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to delete message" }, { status: 500 });
   }
 }
