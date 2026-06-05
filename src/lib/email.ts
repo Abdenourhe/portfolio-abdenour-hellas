@@ -16,11 +16,10 @@ export async function sendReplyEmail({
   name: string;
 }) {
   if (!resend) {
-    console.warn("RESEND_API_KEY non configuré — email non envoyé");
-    return { success: false, error: "Clé API manquante" };
+    return { success: false, error: "RESEND_API_KEY non configuré" };
   }
 
-  const from = process.env.FROM_EMAIL || "noreply@abdenourhellas.com";
+  const from = process.env.FROM_EMAIL || "onboarding@resend.dev";
 
   const html = `
     <div style="font-family: Inter, system-ui, sans-serif; max-width: 600px; margin: 0 auto; color: #2D2D2D;">
@@ -29,7 +28,7 @@ export async function sendReplyEmail({
         <p style="color: #F5F5F0; margin: 8px 0 0; font-size: 14px;">Ingénieur en Génie Électrique</p>
       </div>
       <div style="padding: 32px 24px; background: #FFFFFF; border: 1px solid #E5E5E0;">
-        <p style="margin: 0 0 16px; font-size: 15px; line-height: 1.6;">Bonjour ${name},</p>
+        <p style="margin: 0 0 16px; font-size: 15px; line-height: 1.6;">Bonjour ${escapeHtml(name)},</p>
         <p style="margin: 0 0 24px; font-size: 15px; line-height: 1.6;">
           Merci pour votre message. Voici ma réponse :
         </p>
@@ -57,10 +56,13 @@ export async function sendReplyEmail({
       subject: `Re: ${subject}`,
       html,
     });
+
+    if (result.error) {
+      return { success: false, error: result.error.message };
+    }
     return { success: true, id: result.data?.id };
-  } catch (err) {
-    console.error("Erreur envoi email:", err);
-    return { success: false, error: String(err) };
+  } catch (err: any) {
+    return { success: false, error: err?.message || String(err) };
   }
 }
 
@@ -76,12 +78,11 @@ export async function sendNewMessageNotification({
   content: string;
 }) {
   if (!resend) {
-    console.warn("RESEND_API_KEY non configuré — notification non envoyée");
-    return { success: false, error: "Clé API manquante" };
+    return { success: false, error: "RESEND_API_KEY non configuré" };
   }
 
   const to = process.env.ADMIN_EMAIL || "abdenour.hellas@uqat.ca";
-  const from = process.env.FROM_EMAIL || "noreply@abdenourhellas.com";
+  const from = process.env.FROM_EMAIL || "onboarding@resend.dev";
 
   const html = `
     <div style="font-family: Inter, system-ui, sans-serif; max-width: 600px; margin: 0 auto; color: #2D2D2D;">
@@ -111,10 +112,13 @@ export async function sendNewMessageNotification({
       subject: `Nouveau message : ${subject}`,
       html,
     });
+
+    if (result.error) {
+      return { success: false, error: result.error.message };
+    }
     return { success: true, id: result.data?.id };
-  } catch (err) {
-    console.error("Erreur envoi notification:", err);
-    return { success: false, error: String(err) };
+  } catch (err: any) {
+    return { success: false, error: err?.message || String(err) };
   }
 }
 

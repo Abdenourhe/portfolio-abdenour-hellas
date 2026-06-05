@@ -32,14 +32,14 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    await sendNewMessageNotification({
+    const emailResult = await sendNewMessageNotification({
       name: data.name,
       email: data.email,
       subject: data.subject,
       content: data.content,
     });
 
-    return NextResponse.json(message);
+    return NextResponse.json({ message, emailSent: emailResult.success, emailError: emailResult.error });
   } catch {
     return NextResponse.json({ error: "Failed to create message" }, { status: 500 });
   }
@@ -62,8 +62,9 @@ export async function PUT(request: NextRequest) {
       data,
     });
 
+    let emailResult = null;
     if (reply !== undefined && reply.trim()) {
-      await sendReplyEmail({
+      emailResult = await sendReplyEmail({
         to: message.email,
         subject: message.subject,
         reply: reply.trim(),
@@ -72,7 +73,7 @@ export async function PUT(request: NextRequest) {
       });
     }
 
-    return NextResponse.json(message);
+    return NextResponse.json({ message, emailSent: emailResult?.success ?? null, emailError: emailResult?.error ?? null });
   } catch {
     return NextResponse.json({ error: "Failed to update message" }, { status: 500 });
   }

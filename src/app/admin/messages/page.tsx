@@ -40,16 +40,24 @@ export default function MessagesPage() {
     fetchMessages();
   };
 
+  const [emailStatus, setEmailStatus] = useState<{sent: boolean; error?: string} | null>(null);
+
   const handleReply = async () => {
     if (!replying || !replyText.trim()) return;
-    await fetch("/api/messages", {
+    const res = await fetch("/api/messages", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: replying.id, reply: replyText.trim() }),
     });
+    const data = await res.json();
     setReplying(null);
     setReplyText("");
     fetchMessages();
+    if (data.emailSent === false && data.emailError) {
+      setEmailStatus({ sent: false, error: data.emailError });
+    } else if (data.emailSent === true) {
+      setEmailStatus({ sent: true });
+    }
   };
 
   if (loading) {
@@ -64,6 +72,13 @@ export default function MessagesPage() {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
       <h1 className="text-3xl font-bold mb-8">Messages</h1>
+
+      {emailStatus && (
+        <div className={`mb-4 p-3 rounded-lg text-sm font-medium ${emailStatus.sent ? "bg-green-500/10 text-green-600 border border-green-500/20" : "bg-red-500/10 text-red-600 border border-red-500/20"}`}>
+          {emailStatus.sent ? "✓ Email envoyé au contact" : `✗ Erreur email : ${emailStatus.error}`}
+          <button onClick={() => setEmailStatus(null)} className="ml-2 text-xs underline">Fermer</button>
+        </div>
+      )}
 
       <div className="space-y-2">
         {messages.map((message) => (
