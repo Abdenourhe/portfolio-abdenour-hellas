@@ -145,6 +145,13 @@ html[dir="rtl"] {
   animation: cursorBlink 1s step-end infinite;
 }
 
+/* Custom cursor: hide native on desktop */
+@media (min-width: 768px) {
+  * {
+    cursor: none !important;
+  }
+}
+
 /* Electric halo animations */
 @keyframes haloSpin {
   from { transform: rotate(0deg); }

@@ -12,6 +12,7 @@ import SectionHeader from "@/components/public/SectionHeader";
 import TypeWriter from "@/components/public/TypeWriter";
 import OscilloscopeWave from "@/components/public/OscilloscopeWave";
 import ElectricHalo from "@/components/public/ElectricHalo";
+import MagneticButton from "@/components/public/MagneticButton";
 import ExperienceSection from "@/components/public/sections/ExperienceSection";
 import EducationSection from "@/components/public/sections/EducationSection";
 import SkillsSection from "@/components/public/sections/SkillsSection";
@@ -266,21 +267,25 @@ function HomeClient() {
                 variants={heroItem}
                 className="mt-10 flex flex-wrap gap-4 justify-center lg:justify-start"
               >
-                <Link
-                  href={cvPath}
-                  className="group inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg text-[0.8rem] tracking-wide font-normal hover:bg-primary/90 transition-colors"
-                >
-                  <FileText size={16} />
-                  {t("hero.viewCv")}
-                  <ArrowRight size={14} className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                </Link>
-                <Link
-                  href={contactPath}
-                  className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground rounded-lg text-[0.8rem] tracking-wide font-normal hover:border-primary/30 hover:bg-primary/[0.02] transition-colors"
-                >
-                  <Send size={16} />
-                  {t("hero.contactMe")}
-                </Link>
+                <MagneticButton>
+                  <Link
+                    href={cvPath}
+                    className="group inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg text-[0.8rem] tracking-wide font-normal hover:bg-primary/90 transition-colors"
+                  >
+                    <FileText size={16} />
+                    {t("hero.viewCv")}
+                    <ArrowRight size={14} className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
+                  </Link>
+                </MagneticButton>
+                <MagneticButton>
+                  <Link
+                    href={contactPath}
+                    className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground rounded-lg text-[0.8rem] tracking-wide font-normal hover:border-primary/30 hover:bg-primary/[0.02] transition-colors"
+                  >
+                    <Send size={16} />
+                    {t("hero.contactMe")}
+                  </Link>
+                </MagneticButton>
                 {profile?.cvUrl && (
                   <button
                     onClick={handleDownloadCV}
