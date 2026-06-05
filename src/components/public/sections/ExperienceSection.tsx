@@ -64,16 +64,16 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
   return (
     <AnimatedSection stagger={0.1} className="relative max-w-3xl mx-auto">
       {/* Vertical line */}
-      <div className="absolute left-[19px] top-2 bottom-2 w-px bg-primary/15" />
+      <div className="absolute left-[15px] md:left-[19px] top-2 bottom-2 w-px bg-primary/15" />
 
       {displayExperiences.map((exp) => (
         <motion.div
           key={exp.id}
           variants={fadeUpItem}
-          className="relative pl-14 pb-8 last:pb-0"
+          className="relative pl-10 md:pl-14 pb-8 last:pb-0"
         >
           {/* Dot */}
-          <div className="absolute left-3 top-2 w-3 h-3 rounded-full bg-secondary ring-4 ring-background" />
+          <div className="absolute left-2 md:left-3 top-2 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-secondary ring-4 ring-background" />
 
           {/* Card */}
           <motion.div
@@ -95,9 +95,9 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
                 </span>
               )}
             </div>
-            <h3 className="text-lg font-semibold text-primary">{exp.title}</h3>
-            <p className="text-base text-muted-foreground">{exp.company} · {exp.location}</p>
-            <p className={`text-muted-foreground leading-relaxed mt-2 ${compact ? "text-sm line-clamp-2" : "text-base"}`}>
+            <h3 className="text-base md:text-lg font-semibold text-primary">{exp.title}</h3>
+            <p className="text-sm md:text-base text-muted-foreground">{exp.company} · {exp.location}</p>
+            <p className={`text-muted-foreground leading-relaxed mt-2 ${compact ? "text-sm line-clamp-2" : "text-sm md:text-base"}`}>
               {exp.description}
             </p>
               </div>

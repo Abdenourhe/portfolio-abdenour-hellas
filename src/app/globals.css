@@ -185,3 +185,12 @@ html[dir="rtl"] {
 .electric-halo-pulse-slow {
   animation: haloPulseSlow 5s ease-in-out infinite;
 }
+
+@keyframes electricPulse {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -22;
+  }
+}

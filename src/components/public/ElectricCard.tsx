@@ -58,17 +58,6 @@ export default function ElectricCard({ children, className = "", rx = 3 }: Elect
         />
       </svg>
       {children}
-
-      <style jsx global>{`
-        @keyframes electricPulse {
-          0% {
-            stroke-dashoffset: 0;
-          }
-          100% {
-            stroke-dashoffset: -22;
-          }
-        }
-      `}</style>
     </div>
   );
 }
