@@ -107,3 +107,37 @@ html[dir="rtl"] {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--foreground);
 }
+
+/* TypeWriter cursor blink */
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.animate-cursor-blink {
+  animation: cursorBlink 1s step-end infinite;
+}
+
+/* Electric halo animations */
+@keyframes haloSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.electric-halo-spin {
+  animation: haloSpin 8s linear infinite;
+}
+
+@keyframes haloPulse {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(1.02); }
+}
+.electric-halo-pulse {
+  animation: haloPulse 3s ease-in-out infinite;
+}
+
+@keyframes haloPulseSlow {
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(1.04); }
+}
+.electric-halo-pulse-slow {
+  animation: haloPulseSlow 5s ease-in-out infinite;
+}

@@ -9,6 +9,9 @@ import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 import { useLocale, useLocalizedPath } from "@/components/public/useLocale";
 import SectionHeader from "@/components/public/SectionHeader";
+import TypeWriter from "@/components/public/TypeWriter";
+import OscilloscopeWave from "@/components/public/OscilloscopeWave";
+import ElectricHalo from "@/components/public/ElectricHalo";
 import ExperienceSection from "@/components/public/sections/ExperienceSection";
 import EducationSection from "@/components/public/sections/EducationSection";
 import SkillsSection from "@/components/public/sections/SkillsSection";
@@ -187,7 +190,8 @@ function HomeClient() {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="relative flex-shrink-0"
             >
-              <div className="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden ring-[3px] ring-secondary/30 ring-offset-4 ring-offset-background shadow-2xl">
+              <ElectricHalo />
+              <div className="relative z-10 w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden ring-[3px] ring-secondary/30 ring-offset-4 ring-offset-background shadow-2xl">
                 {profile?.photoUrl ? (
                   <img
                     src={profile.photoUrl}
@@ -227,12 +231,9 @@ function HomeClient() {
                 {profile?.fullName || "Abdenour Hellas"}
               </motion.h1>
 
-              <motion.p
-                variants={heroItem}
-                className="mt-4 text-lg text-foreground/80 font-medium"
-              >
-                {getTitle()}
-              </motion.p>
+              <motion.div variants={heroItem} className="mt-4 text-lg text-foreground/80 font-medium min-h-[1.75rem]">
+                <TypeWriter key={getTitle()} text={getTitle()} delay={700} />
+              </motion.div>
 
               <motion.p
                 variants={heroItem}
@@ -294,6 +295,10 @@ function HomeClient() {
               </motion.div>
             </motion.div>
           </div>
+        </div>
+        {/* Oscilloscope wave transition */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <OscilloscopeWave />
         </div>
       </section>
 
