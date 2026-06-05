@@ -45,7 +45,7 @@ export default function NetworkCanvas() {
         y: Math.random() * height,
         vx: (Math.random() - 0.5) * 0.35,
         vy: (Math.random() - 0.5) * 0.35,
-        radius: Math.random() * 1.2 + 1.2,
+        radius: Math.random() * 1.5 + 1.8,
         phase: Math.random() * Math.PI * 2,
       });
     }
@@ -68,8 +68,8 @@ export default function NetworkCanvas() {
       const dark = isDark();
       const t = performance.now();
 
-      const baseNode = dark ? "rgba(255,255,255,0.07)" : "rgba(30,58,95,0.07)";
-      const baseLine = dark ? "rgba(255,255,255,0.035)" : "rgba(30,58,95,0.035)";
+      const baseNode = dark ? "rgba(255,255,255,0.12)" : "rgba(30,58,95,0.12)";
+      const baseLine = dark ? "rgba(255,255,255,0.06)" : "rgba(30,58,95,0.06)";
       const activeNode = "rgba(255,107,0,0.75)";
       const activeLine = "rgba(255,107,0,0.4)";
       const glowNode = "rgba(255,107,0,0.12)";
@@ -102,9 +102,9 @@ export default function NetworkCanvas() {
             ctx.strokeStyle = active
               ? activeLine
               : dark
-                ? `rgba(255,255,255,${opacity * 0.035})`
-                : `rgba(30,58,95,${opacity * 0.035})`;
-            ctx.lineWidth = active ? 0.9 : 0.4;
+                ? `rgba(255,255,255,${opacity * 0.06})`
+                : `rgba(30,58,95,${opacity * 0.06})`;
+            ctx.lineWidth = active ? 1.4 : 0.7;
             ctx.stroke();
           }
         }
@@ -120,7 +120,7 @@ export default function NetworkCanvas() {
         // Glow ring
         if (active) {
           ctx.beginPath();
-          ctx.arc(node.x, node.y, r * 5, 0, Math.PI * 2);
+          ctx.arc(node.x, node.y, r * 6, 0, Math.PI * 2);
           ctx.fillStyle = glowNode;
           ctx.fill();
         }
