@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Save, Upload, FileText } from "lucide-react";
+import SpellCheck from "@/components/admin/SpellCheck";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<any>({});
@@ -142,10 +143,12 @@ export default function ProfilePage() {
           <div>
             <label className="block text-sm font-medium mb-2">Nom complet</label>
             <input type="text" value={profile.fullName || ""} onChange={(e) => setProfile({ ...profile, fullName: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" />
+            <SpellCheck text={profile.fullName || ""} onApply={(v) => setProfile({ ...profile, fullName: v })} />
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">Titre</label>
             <input type="text" value={profile.title || ""} onChange={(e) => setProfile({ ...profile, title: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" />
+            <SpellCheck text={profile.title || ""} onApply={(v) => setProfile({ ...profile, title: v })} />
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">Email</label>
@@ -158,12 +161,14 @@ export default function ProfilePage() {
           <div>
             <label className="block text-sm font-medium mb-2">Adresse</label>
             <input type="text" value={profile.location || ""} onChange={(e) => setProfile({ ...profile, location: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" />
+            <SpellCheck text={profile.location || ""} onApply={(v) => setProfile({ ...profile, location: v })} />
           </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-2">Bio</label>
           <textarea rows={4} value={profile.bio || ""} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" />
+          <SpellCheck text={profile.bio || ""} onApply={(v) => setProfile({ ...profile, bio: v })} />
         </div>
 
         <div>

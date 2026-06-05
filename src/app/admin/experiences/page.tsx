@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Experience } from "@/types";
 import { Plus, Pencil, Trash2, GripVertical } from "lucide-react";
+import SpellCheck from "@/components/admin/SpellCheck";
 
 export default function ExperiencesPage() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
@@ -84,29 +85,38 @@ export default function ExperiencesPage() {
         <form onSubmit={handleSubmit} className="mb-8 p-6 rounded-xl bg-card border border-border space-y-4">
           <h2 className="text-lg font-semibold">{editing ? "Modifier" : "Nouvelle expérience"}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Titre"
-              value={form.title || ""}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Entreprise"
-              value={form.company || ""}
-              onChange={(e) => setForm({ ...form, company: e.target.value })}
-              className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Lieu"
-              value={form.location || ""}
-              onChange={(e) => setForm({ ...form, location: e.target.value })}
-              className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
-            />
+            <div className="space-y-1">
+              <input
+                type="text"
+                placeholder="Titre"
+                value={form.title || ""}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                required
+              />
+              <SpellCheck text={form.title || ""} onApply={(v) => setForm({ ...form, title: v })} />
+            </div>
+            <div className="space-y-1">
+              <input
+                type="text"
+                placeholder="Entreprise"
+                value={form.company || ""}
+                onChange={(e) => setForm({ ...form, company: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                required
+              />
+              <SpellCheck text={form.company || ""} onApply={(v) => setForm({ ...form, company: v })} />
+            </div>
+            <div className="space-y-1">
+              <input
+                type="text"
+                placeholder="Lieu"
+                value={form.location || ""}
+                onChange={(e) => setForm({ ...form, location: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+              />
+              <SpellCheck text={form.location || ""} onApply={(v) => setForm({ ...form, location: v })} />
+            </div>
             <input
               type="date"
               placeholder="Date début"
@@ -132,13 +142,16 @@ export default function ExperiencesPage() {
               Poste actuel
             </label>
           </div>
-          <textarea
-            placeholder="Description"
-            rows={3}
-            value={form.description || ""}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-            className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
-          />
+          <div className="space-y-1">
+            <textarea
+              placeholder="Description"
+              rows={3}
+              value={form.description || ""}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+            />
+            <SpellCheck text={form.description || ""} onApply={(v) => setForm({ ...form, description: v })} />
+          </div>
           <div className="flex gap-2">
             <button type="submit" className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">
               {editing ? "Mettre à jour" : "Créer"}

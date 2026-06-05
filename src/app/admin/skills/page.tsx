@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Skill } from "@/types";
 import { Plus, Pencil, Trash2, GripVertical } from "lucide-react";
+import SpellCheck from "@/components/admin/SpellCheck";
 
 export default function SkillsPage() {
   const [skills, setSkills] = useState<Skill[]>([]);
@@ -79,22 +80,28 @@ export default function SkillsPage() {
         <form onSubmit={handleSubmit} className="mb-8 p-6 rounded-xl bg-card border border-border space-y-4">
           <h2 className="text-lg font-semibold">{editing ? "Modifier" : "Nouvelle compétence"}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Nom"
-              value={form.name || ""}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Catégorie (logiciel, technique, langue, soft)"
-              value={form.category || ""}
-              onChange={(e) => setForm({ ...form, category: e.target.value })}
-              className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
-              required
-            />
+            <div className="space-y-1">
+              <input
+                type="text"
+                placeholder="Nom"
+                value={form.name || ""}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                required
+              />
+              <SpellCheck text={form.name || ""} onApply={(v) => setForm({ ...form, name: v })} />
+            </div>
+            <div className="space-y-1">
+              <input
+                type="text"
+                placeholder="Catégorie (logiciel, technique, langue, soft)"
+                value={form.category || ""}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                required
+              />
+              <SpellCheck text={form.category || ""} onApply={(v) => setForm({ ...form, category: v })} />
+            </div>
             <input
               type="number"
               placeholder="Niveau (0-100)"

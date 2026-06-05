@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Project } from "@/types";
 import { Plus, Pencil, Trash2, GripVertical, Star } from "lucide-react";
+import SpellCheck from "@/components/admin/SpellCheck";
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -88,14 +89,17 @@ export default function ProjectsPage() {
         <form onSubmit={handleSubmit} className="mb-8 p-6 rounded-xl bg-card border border-border space-y-4">
           <h2 className="text-lg font-semibold">{editing ? "Modifier" : "Nouveau projet"}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Titre"
-              value={form.title || ""}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
-              required
-            />
+            <div className="space-y-1">
+              <input
+                type="text"
+                placeholder="Titre"
+                value={form.title || ""}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                required
+              />
+              <SpellCheck text={form.title || ""} onApply={(v) => setForm({ ...form, title: v })} />
+            </div>
             <input
               type="text"
               placeholder="Technologies (séparées par des virgules)"
@@ -103,13 +107,16 @@ export default function ProjectsPage() {
               onChange={(e) => setForm({ ...form, technologies: e.target.value.split(",").map((t) => t.trim()) })}
               className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
             />
-            <input
-              type="text"
-              placeholder="Catégorie (ex: Automatisation, IoT, Web)"
-              value={form.category || ""}
-              onChange={(e) => setForm({ ...form, category: e.target.value })}
-              className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
-            />
+            <div className="space-y-1">
+              <input
+                type="text"
+                placeholder="Catégorie (ex: Automatisation, IoT, Web)"
+                value={form.category || ""}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+              />
+              <SpellCheck text={form.category || ""} onApply={(v) => setForm({ ...form, category: v })} />
+            </div>
             <input
               type="text"
               placeholder="URL GitHub"
@@ -134,14 +141,17 @@ export default function ProjectsPage() {
               Projet à la une
             </label>
           </div>
-          <textarea
-            placeholder="Description"
-            rows={3}
-            value={form.description || ""}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-            className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
-            required
-          />
+          <div className="space-y-1">
+            <textarea
+              placeholder="Description"
+              rows={3}
+              value={form.description || ""}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+              required
+            />
+            <SpellCheck text={form.description || ""} onApply={(v) => setForm({ ...form, description: v })} />
+          </div>
           <div className="flex gap-2">
             <button type="submit" className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">
               {editing ? "Mettre à jour" : "Créer"}

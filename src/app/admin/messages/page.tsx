@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Message } from "@/types";
 import { Trash2, Mail, MailOpen, Send, Reply, X } from "lucide-react";
+import SpellCheck from "@/components/admin/SpellCheck";
 
 export default function MessagesPage() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -151,13 +152,16 @@ export default function MessagesPage() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground mb-1">Votre réponse</p>
-                <textarea
-                  value={replyText}
-                  onChange={(e) => setReplyText(e.target.value)}
-                  rows={5}
-                  className="w-full px-3 py-2 rounded-md border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
-                  placeholder="Écrivez votre réponse..."
-                />
+                <div className="space-y-1">
+                  <textarea
+                    value={replyText}
+                    onChange={(e) => setReplyText(e.target.value)}
+                    rows={5}
+                    className="w-full px-3 py-2 rounded-md border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
+                    placeholder="Écrivez votre réponse..."
+                  />
+                  <SpellCheck text={replyText} onApply={(v) => setReplyText(v)} />
+                </div>
               </div>
             </div>
             <div className="flex justify-end gap-2 p-4 border-t border-border">

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Plus, Pencil, Trash2 } from "lucide-react";
+import SpellCheck from "@/components/admin/SpellCheck";
 
 export default function TestimonialsPage() {
   const [testimonials, setTestimonials] = useState<any[]>([]);
@@ -73,12 +74,24 @@ export default function TestimonialsPage() {
         <form onSubmit={handleSubmit} className="mb-8 p-6 rounded-xl bg-card border border-border space-y-4">
           <h2 className="text-lg font-semibold">{editing ? "Modifier" : "Nouveau témoignage"}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" placeholder="Nom" value={form.name || ""} onChange={(e) => setForm({ ...form, name: e.target.value })} className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
-            <input type="text" placeholder="Rôle" value={form.role || ""} onChange={(e) => setForm({ ...form, role: e.target.value })} className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
-            <input type="text" placeholder="Entreprise" value={form.company || ""} onChange={(e) => setForm({ ...form, company: e.target.value })} className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
+            <div className="space-y-1">
+              <input type="text" placeholder="Nom" value={form.name || ""} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
+              <SpellCheck text={form.name || ""} onApply={(v) => setForm({ ...form, name: v })} />
+            </div>
+            <div className="space-y-1">
+              <input type="text" placeholder="Rôle" value={form.role || ""} onChange={(e) => setForm({ ...form, role: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
+              <SpellCheck text={form.role || ""} onApply={(v) => setForm({ ...form, role: v })} />
+            </div>
+            <div className="space-y-1">
+              <input type="text" placeholder="Entreprise" value={form.company || ""} onChange={(e) => setForm({ ...form, company: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
+              <SpellCheck text={form.company || ""} onApply={(v) => setForm({ ...form, company: v })} />
+            </div>
             <input type="text" placeholder="Image URL (optionnel)" value={form.imageUrl || ""} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" />
           </div>
-          <textarea placeholder="Contenu" rows={3} value={form.content || ""} onChange={(e) => setForm({ ...form, content: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
+          <div className="space-y-1">
+            <textarea placeholder="Contenu" rows={3} value={form.content || ""} onChange={(e) => setForm({ ...form, content: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
+            <SpellCheck text={form.content || ""} onApply={(v) => setForm({ ...form, content: v })} />
+          </div>
           <div className="flex gap-2">
             <button type="submit" className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">{editing ? "Mettre à jour" : "Créer"}</button>
             <button type="button" onClick={() => { setEditing(null); setForm({}); setAdding(false); }} className="px-4 py-2 border border-border rounded-lg hover:bg-muted">Annuler</button>

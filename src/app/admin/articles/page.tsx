@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Plus, Pencil, Trash2, Eye } from "lucide-react";
+import SpellCheck from "@/components/admin/SpellCheck";
 
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<any[]>([]);
@@ -82,7 +83,10 @@ export default function ArticlesPage() {
         <form onSubmit={handleSubmit} className="mb-8 p-6 rounded-xl bg-card border border-border space-y-4">
           <h2 className="text-lg font-semibold">{editing ? "Modifier" : "Nouvel article"}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" placeholder="Titre" value={form.title || ""} onChange={(e) => setForm({ ...form, title: e.target.value })} className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
+            <div className="space-y-1">
+            <input type="text" placeholder="Titre" value={form.title || ""} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
+            <SpellCheck text={form.title || ""} onApply={(v) => setForm({ ...form, title: v })} />
+          </div>
             <input type="text" placeholder="Slug (unique)" value={form.slug || ""} onChange={(e) => setForm({ ...form, slug: e.target.value })} className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
             <input type="text" placeholder="Image URL (optionnel)" value={form.imageUrl || ""} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" />
             <label className="flex items-center gap-2 px-4 py-2">
@@ -90,8 +94,14 @@ export default function ArticlesPage() {
               Publié
             </label>
           </div>
-          <input type="text" placeholder="Extrait" value={form.excerpt || ""} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
-          <textarea placeholder="Contenu" rows={6} value={form.content || ""} onChange={(e) => setForm({ ...form, content: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
+          <div className="space-y-1">
+            <input type="text" placeholder="Extrait" value={form.excerpt || ""} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
+            <SpellCheck text={form.excerpt || ""} onApply={(v) => setForm({ ...form, excerpt: v })} />
+          </div>
+          <div className="space-y-1">
+            <textarea placeholder="Contenu" rows={6} value={form.content || ""} onChange={(e) => setForm({ ...form, content: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
+            <SpellCheck text={form.content || ""} onApply={(v) => setForm({ ...form, content: v })} />
+          </div>
           <div className="flex gap-2">
             <button type="submit" className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">{editing ? "Mettre à jour" : "Créer"}</button>
             <button type="button" onClick={() => { setEditing(null); setForm({}); setAdding(false); }} className="px-4 py-2 border border-border rounded-lg hover:bg-muted">Annuler</button>
