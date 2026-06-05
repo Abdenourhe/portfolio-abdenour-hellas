@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Project } from "@/types";
 import { ExternalLink, Code, Star, FolderGit } from "lucide-react";
 import { Skeleton } from "@/components/public/Skeleton";
@@ -27,9 +27,17 @@ interface ProjectsSectionProps {
 export default function ProjectsSection({ data, compact = false, limit }: ProjectsSectionProps) {
   const t = useT();
   const [projects, setProjects] = useState<Project[]>(data || []);
-  const displayProjects = limit ? projects.slice(0, limit) : projects;
+  const [activeFilter, setActiveFilter] = useState<string>("Tous");
   const [loading, setLoading] = useState(!data);
   const [error, setError] = useState(false);
+
+  const categories = ["Tous", ...Array.from(new Set(projects.map((p) => p.category).filter((c): c is string => Boolean(c))))];
+
+  const filteredProjects = activeFilter === "Tous"
+    ? projects
+    : projects.filter((p) => p.category === activeFilter);
+
+  const displayProjects = limit ? filteredProjects.slice(0, limit) : filteredProjects;
 
   useEffect(() => {
     if (data) return;
@@ -77,11 +85,33 @@ export default function ProjectsSection({ data, compact = false, limit }: Projec
   }
 
   return (
-    <AnimatedSection stagger={0.1} className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div className="max-w-4xl mx-auto">
+      {/* Category filters */}
+      {!limit && categories.length > 1 && (
+        <div className="flex flex-wrap gap-2 justify-center mb-8">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveFilter(cat)}
+              className={`px-3 py-1 text-xs tracking-wide rounded-full border transition-colors ${
+                activeFilter === cat
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-transparent text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <AnimatedSection stagger={0.1} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <AnimatePresence mode="popLayout">
       {displayProjects.map((project) => (
         <motion.div
           key={project.id}
           variants={fadeUpItem}
+          layout
           whileHover={{ y: -4 }}
           transition={{ duration: 0.2 }}
           className="group"
@@ -155,6 +185,8 @@ export default function ProjectsSection({ data, compact = false, limit }: Projec
           </ElectricCard>
         </motion.div>
       ))}
+      </AnimatePresence>
     </AnimatedSection>
+  </div>
   );
 }

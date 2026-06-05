@@ -79,6 +79,7 @@ export interface Project {
   descriptionEn?: string | null;
   descriptionAr?: string | null;
   technologies: string[];
+  category?: string | null;
   imageUrl?: string | null;
   githubUrl?: string | null;
   demoUrl?: string | null;

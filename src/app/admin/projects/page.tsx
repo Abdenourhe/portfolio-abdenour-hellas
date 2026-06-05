@@ -105,6 +105,13 @@ export default function ProjectsPage() {
             />
             <input
               type="text"
+              placeholder="Catégorie (ex: Automatisation, IoT, Web)"
+              value={form.category || ""}
+              onChange={(e) => setForm({ ...form, category: e.target.value })}
+              className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+            />
+            <input
+              type="text"
               placeholder="URL GitHub"
               value={form.githubUrl || ""}
               onChange={(e) => setForm({ ...form, githubUrl: e.target.value })}
