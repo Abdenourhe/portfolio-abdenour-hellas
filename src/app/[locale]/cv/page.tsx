@@ -225,7 +225,7 @@ export default function CVPage() {
                             {catSkills.map((skill: any) => (
                               <div key={skill.id}>
                                 <div className="flex items-center justify-between text-sm md:text-xs mb-0.5">
-                                  <span className="text-[#1E3A5F] font-medium">{skill.name}</span>
+                                  <span className="text-[#1E3A5F] dark:text-primary-foreground font-medium">{skill.name}</span>
                                   <span className="text-xs md:text-[10px] font-semibold text-[#C9A962]">{skill.level}%</span>
                                 </div>
                                 <div className="h-1.5 md:h-1 bg-[#1E3A5F]/10 dark:bg-primary-foreground/10 rounded-full overflow-hidden">
@@ -325,7 +325,7 @@ export default function CVPage() {
             {/* Experience — Main */}
             {mainExperiences.length > 0 && (
               <section className="mb-6 md:mb-8">
-                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-4 pb-2 border-b border-[#C9A962]">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-4 pb-2 border-b border-[#C9A962]">
                   {t("cv.experience")}
                 </h2>
                 <div className="space-y-6">
@@ -377,7 +377,7 @@ export default function CVPage() {
                     return (
                       <div key={exp.id} className="break-inside-avoid-page">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5">
-                          <p className="text-sm md:text-xs font-semibold text-[#1E3A5F]">
+                          <p className="text-sm md:text-xs font-semibold text-[#1E3A5F] dark:text-primary-foreground">
                             {exp.title} — <span className="text-[#C9A962]">{exp.company}</span>
                           </p>
                           <span className="text-xs md:text-[10px] text-[#1E3A5F]/40 dark:text-primary-foreground/40 tabular-nums shrink-0">
@@ -406,7 +406,7 @@ export default function CVPage() {
             {/* Projects */}
             {featuredProjects.length > 0 && (
               <section>
-                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] mb-4 pb-2 border-b border-[#C9A962]">
+                <h2 className="text-sm md:text-xs font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-primary-foreground mb-4 pb-2 border-b border-[#C9A962]">
                   {t("projects.title")}
                 </h2>
                 <div className="space-y-4">
