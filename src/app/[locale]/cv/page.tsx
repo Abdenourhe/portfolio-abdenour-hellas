@@ -387,7 +387,7 @@ export default function CVPage() {
                         {bullets.length > 1 ? (
                           <ul className="mt-2 space-y-1">
                             {bullets.map((b, i) => (
-                              <li key={i} className="text-sm md:text-xs text-[#444] leading-relaxed flex items-start gap-2">
+                              <li key={i} className="text-sm md:text-xs text-[#444] dark:text-foreground/80 leading-relaxed flex items-start gap-2">
                                 <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-[#C9A962]" />
                                 <span>{b}</span>
                               </li>
