@@ -11,38 +11,33 @@ interface SectionHeaderProps {
 export default function SectionHeader({ title, subtitle, centered = true }: SectionHeaderProps) {
   return (
     <div className={centered ? "text-center" : ""}>
-      <motion.div
+      <motion.h2
         initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className={`flex items-center gap-5 ${centered ? "justify-center" : ""}`}
+        className={`text-xl md:text-2xl font-semibold tracking-tight text-foreground ${centered ? "" : ""}`}
       >
-        <h2
-          className="font-[family-name:var(--font-serif)] text-[0.9rem] md:text-[0.95rem] font-normal tracking-[0.12em] uppercase text-foreground whitespace-nowrap"
-        >
-          {title}
-        </h2>
-        <motion.div
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-          className="h-px bg-border origin-left"
-          style={{ width: centered ? "clamp(3rem, 10vw, 8rem)" : "clamp(3rem, 10vw, 8rem)" }}
-        />
-      </motion.div>
+        {title}
+      </motion.h2>
       {subtitle && (
         <motion.p
           initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="mt-5 text-muted-foreground text-sm md:text-base max-w-lg leading-[1.7] font-sans"
+          className="mt-2 text-muted-foreground text-sm md:text-base max-w-lg leading-relaxed"
         >
           {subtitle}
         </motion.p>
       )}
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="mt-3 h-px w-12 bg-secondary mx-auto"
+      />
     </div>
   );
 }

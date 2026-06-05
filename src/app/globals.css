@@ -13,12 +13,12 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
   --color-border: var(--border);
   --color-ring: var(--ring);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --font-serif: var(--font-serif), Georgia, "Times New Roman", serif;
@@ -82,19 +82,27 @@ body {
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-h1, h2, h3, h4 {
+h1 {
   font-family: var(--font-serif);
-  font-weight: 400;
-  letter-spacing: 0.01em;
+  font-weight: 500;
 }
 
-html[dir="rtl"] h1,
+h2, h3, h4 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+html[dir="rtl"] h1 {
+  font-family: var(--font-serif-ar), Georgia, serif;
+  font-weight: 700;
+}
+
 html[dir="rtl"] h2,
 html[dir="rtl"] h3,
 html[dir="rtl"] h4 {
-  font-family: var(--font-serif-ar), Georgia, serif;
+  font-family: var(--font-sans);
   font-weight: 700;
-  letter-spacing: 0;
 }
 
 .font-sans {
@@ -126,22 +134,6 @@ html[dir="rtl"] {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--foreground);
-}
-
-/* Editorial section titles */
-.section-title {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-size: 0.9rem;
-}
-
-html[dir="rtl"] .section-title {
-  font-family: var(--font-serif-ar), Georgia, serif;
-  font-weight: 700;
-  letter-spacing: 0;
-  text-transform: none;
 }
 
 /* TypeWriter cursor blink */

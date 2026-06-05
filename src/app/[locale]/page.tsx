@@ -226,7 +226,7 @@ function HomeClient() {
 
               <motion.h1
                 variants={heroItem}
-                className="font-[family-name:var(--font-serif)] text-[clamp(2.8rem,6.5vw,5rem)] font-normal tracking-[0.01em] text-primary leading-[1.1]"
+                className="font-[family-name:var(--font-serif)] text-[clamp(2.8rem,6.5vw,5rem)] font-medium tracking-[0.01em] text-primary leading-[1.1]"
               >
                 {profile?.fullName || "Abdenour Hellas"}
               </motion.h1>

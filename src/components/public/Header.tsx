@@ -34,7 +34,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
       <div className="container mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
         <Link
           href={`/${locale}`}
-          className="font-[family-name:var(--font-serif)] text-base font-normal tracking-[0.04em] text-foreground hover:text-muted-foreground transition-colors"
+          className="font-[family-name:var(--font-serif)] text-base font-medium tracking-[0.02em] text-foreground hover:text-muted-foreground transition-colors"
         >
           Abdenour Hellas
         </Link>
