@@ -213,7 +213,7 @@ export default function ExperiencesPage() {
             <GripVertical className="text-muted-foreground cursor-move" size={18} />
             <div className="flex-1">
               <h3 className="font-medium">{exp.title}</h3>
-              <p className="text-sm text-muted-foreground">{exp.company} · {exp.location}{exp.url ? " · " : ""}{exp.url && <a href={exp.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Attestation ↗</a>}{exp.certificateImage && <span className="inline-flex items-center gap-1 ml-2 text-xs text-[#059669]"><ImageIcon size={12} /> Image</span>}</p>
+              <p className="text-sm text-muted-foreground">{exp.company} · {exp.location}{exp.url ? " · " : ""}{exp.url && <a href={exp.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Attestation ↗</a>}{exp.certificateImage && <span className="inline-flex items-center gap-1 ml-2 text-xs text-[#2A6E3A]"><ImageIcon size={12} /> Image</span>}</p>
             </div>
             <div className="flex items-center gap-2">
               <button
