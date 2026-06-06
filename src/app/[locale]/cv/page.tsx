@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Download, Printer, Globe, Mail, Phone, MapPin } from "lucide-react";
+import { Download, Printer, Globe, Mail, Phone, MapPin, ExternalLink, Award } from "lucide-react";
 import { useT } from "@/components/public/I18nProvider";
 import { useLocale } from "@/components/public/useLocale";
 import QRCode from "qrcode";
@@ -14,6 +14,7 @@ interface CVData {
   skills: any[];
   projects: any[];
   interests: any[];
+  certifications: any[];
 }
 
 function toBullets(text: string): string[] {
@@ -36,18 +37,27 @@ const LANGUAGE_NAMES = new Set([
   "spanish",
 ]);
 
+function mapPinHref(location: string): string {
+  try {
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
+  } catch {
+    return "#";
+  }
+}
+
 export default function CVPage() {
   const t = useT();
   const locale = useLocale();
   const [data, setData] = useState<CVData | null>(null);
   const [loading, setLoading] = useState(true);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
+  const [generatedAt, setGeneratedAt] = useState<string>("");
 
   useEffect(() => {
     fetch("/api/homepage")
       .then((r) => r.json())
-      .then(({ profile, experiences, education, skills, projects, interests }) => {
-        setData({ profile, experiences, education, skills, projects, interests });
+      .then(({ profile, experiences, education, skills, projects, interests, certifications }) => {
+        setData({ profile, experiences, education, skills, projects, interests, certifications });
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -55,7 +65,16 @@ export default function CVPage() {
     QRCode.toDataURL("https://abdenour-hellas.online", { width: 180, margin: 1, color: { dark: "#1E3A5F", light: "#FFFFFF" } })
       .then(setQrCodeUrl)
       .catch(() => setQrCodeUrl(""));
-  }, []);
+
+    const now = new Date();
+    setGeneratedAt(
+      now.toLocaleDateString(locale === "fr" ? "fr-CA" : locale === "ar" ? "ar-SA" : "en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    );
+  }, [locale]);
 
   const handleDownload = async () => {
     await fetch("/api/stats", {
@@ -108,7 +127,7 @@ export default function CVPage() {
     );
   }
 
-  const { profile, experiences, education, skills, projects, interests } = data;
+  const { profile, experiences, education, skills, projects, interests, certifications } = data;
 
   const languages = skills
     .filter((s: any) => LANGUAGE_NAMES.has(s.name.toLowerCase()))
@@ -127,6 +146,37 @@ export default function CVPage() {
   const otherExperiences = experiences.filter(
     (e: any) => otherTitles.some((ot) => e.title.toLowerCase().includes(ot))
   );
+
+  const headerContact = [
+    {
+      key: "email",
+      show: profile?.email,
+      icon: <Mail size={13} className="text-[#C9A962]" />,
+      text: profile?.email,
+      href: profile?.email ? `mailto:${profile.email}` : "#",
+    },
+    {
+      key: "phone",
+      show: profile?.phone,
+      icon: <Phone size={13} className="text-[#C9A962]" />,
+      text: profile?.phone,
+      href: profile?.phone ? `tel:${profile.phone.replace(/\s+/g, "")}` : "#",
+    },
+    {
+      key: "location",
+      show: profile?.location,
+      icon: <MapPin size={13} className="text-[#C9A962]" />,
+      text: profile?.location,
+      href: profile?.location ? mapPinHref(profile.location) : "#",
+    },
+    {
+      key: "linkedin",
+      show: profile?.linkedin,
+      icon: <Globe size={13} className="text-[#C9A962]" />,
+      text: profile?.linkedin?.replace(/^https?:\/\//, ""),
+      href: profile?.linkedin || "#",
+    },
+  ];
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-10 md:py-28 print:p-0 print:m-0">
@@ -169,30 +219,20 @@ export default function CVPage() {
                 {getTitle() || t("hero.title")}
               </p>
               <div className="flex flex-wrap gap-x-3 md:gap-x-4 gap-y-1 mt-2 text-xs md:text-sm text-white/90">
-                {profile?.email && (
-                  <span className="inline-flex items-center gap-1">
-                    <Mail size={13} className="text-[#C9A962]" />
-                    {profile.email}
-                  </span>
-                )}
-                {profile?.phone && (
-                  <span className="inline-flex items-center gap-1">
-                    <Phone size={13} className="text-[#C9A962]" />
-                    {profile.phone}
-                  </span>
-                )}
-                {profile?.location && (
-                  <span className="inline-flex items-center gap-1">
-                    <MapPin size={13} className="text-[#C9A962]" />
-                    {profile.location}
-                  </span>
-                )}
-                {profile?.linkedin && (
-                  <span className="inline-flex items-center gap-1">
-                    <Globe size={13} className="text-[#C9A962]" />
-                    {profile.linkedin.replace(/^https?:\/\//, "")}
-                  </span>
-                )}
+                {headerContact
+                  .filter((c) => c.show)
+                  .map((c) => (
+                    <a
+                      key={c.key}
+                      href={c.href}
+                      target={c.key === "location" || c.key === "linkedin" ? "_blank" : undefined}
+                      rel={c.key === "location" || c.key === "linkedin" ? "noopener noreferrer" : undefined}
+                      className="inline-flex items-center gap-1 hover:text-[#C9A962] transition-colors"
+                    >
+                      {c.icon}
+                      <span>{c.text}</span>
+                    </a>
+                  ))}
               </div>
             </div>
           </div>
@@ -282,6 +322,37 @@ export default function CVPage() {
                       <p className="text-sm md:text-xs text-[#1E3A5F]/50 dark:text-foreground/50 mt-0.5">
                         {formatDate(edu.startDate, false)} — {edu.current ? t("experience.present") : formatDate(edu.endDate, false)}
                       </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Certifications (web view sidebar) */}
+            {certifications && certifications.length > 0 && (
+              <section className="mb-6 md:mb-8 print:mb-4">
+                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-3 pb-2 border-b border-[#C9A962]">
+                  {locale === "fr" ? "Certifications" : locale === "en" ? "Certifications" : "الشهادات"}
+                </h2>
+                <div className="space-y-3">
+                  {certifications.map((cert: any) => (
+                    <div key={cert.id} className="break-inside-avoid">
+                      <h3 className="font-bold text-sm md:text-xs text-[#1E3A5F] dark:text-foreground leading-snug">
+                        {cert.name}
+                      </h3>
+                      <p className="text-sm md:text-xs text-[#C9A962] font-semibold mt-0.5">{cert.issuer}</p>
+                      {cert.date && <p className="text-sm md:text-xs text-[#1E3A5F]/50 dark:text-foreground/50 mt-0.5">{cert.date}</p>}
+                      {cert.url && (
+                        <a
+                          href={cert.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1"
+                        >
+                          <ExternalLink size={10} />
+                          Voir le certificat
+                        </a>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -454,10 +525,26 @@ export default function CVPage() {
                 <h1 className="text-[22pt] font-bold leading-tight tracking-tight">{profile?.fullName || "Abdenour Hellas"}</h1>
                 <p className="text-[12pt] font-semibold text-[#1E3A5F]/80 mt-0.5">{getTitle() || t("hero.title")}</p>
                 <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-[9pt] text-[#1E3A5F]/70 mt-1.5">
-                  {profile?.email && <span>✉ {profile.email}</span>}
-                  {profile?.phone && <span>☎ {profile.phone}</span>}
-                  {profile?.location && <span>📍 {profile.location}</span>}
-                  {profile?.linkedin && <span>🔗 {profile.linkedin.replace(/^https?:\/\//, "")}</span>}
+                  {profile?.email && (
+                    <a href={`mailto:${profile.email}`} className="inline-flex items-center gap-1 hover:underline">
+                      <Mail size={12} /> {profile.email}
+                    </a>
+                  )}
+                  {profile?.phone && (
+                    <a href={`tel:${profile.phone.replace(/\s+/g, "")}`} className="inline-flex items-center gap-1 hover:underline">
+                      <Phone size={12} /> {profile.phone}
+                    </a>
+                  )}
+                  {profile?.location && (
+                    <a href={mapPinHref(profile.location)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:underline">
+                      <MapPin size={12} /> {profile.location}
+                    </a>
+                  )}
+                  {profile?.linkedin && (
+                    <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:underline">
+                      <Globe size={12} /> {profile.linkedin.replace(/^https?:\/\//, "")}
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -540,6 +627,34 @@ export default function CVPage() {
               </section>
             )}
 
+            {/* Certifications */}
+            {certifications && certifications.length > 0 && (
+              <section className="mb-[4mm]">
+                <h2 className="text-[11pt] font-bold uppercase tracking-[0.1em] text-[#1E3A5F] mb-2 pb-1 border-b border-[#1E3A5F]/20">
+                  {locale === "fr" ? "Certifications" : locale === "en" ? "Certifications" : "الشهادات"}
+                </h2>
+                <div className="space-y-1.5">
+                  {certifications.map((cert: any) => (
+                    <div key={cert.id}>
+                      <div className="flex justify-between items-baseline">
+                        <h3 className="text-[10pt] font-bold text-[#1E3A5F]">{cert.name}</h3>
+                        {cert.date && <span className="text-[8.5pt] text-[#1E3A5F]/50 tabular-nums">{cert.date}</span>}
+                      </div>
+                      <p className="text-[9pt] text-[#1E3A5F]/70">
+                        {cert.issuer}
+                        {cert.url && (
+                          <a href={cert.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 ml-2 hover:underline">
+                            <ExternalLink size={10} />
+                            Voir en ligne
+                          </a>
+                        )}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {/* Languages */}
             {languages.length > 0 && (
               <section className="mb-[4mm]">
@@ -567,6 +682,20 @@ export default function CVPage() {
               </section>
             )}
           </div>
+
+          {/* Footer with generation date */}
+          <footer className="px-[10mm] pt-[3mm] pb-[5mm] border-t border-[#1E3A5F]/10 mt-[4mm]">
+            <div className="flex items-center justify-between text-[7.5pt] text-[#1E3A5F]/50">
+              <div className="flex items-center gap-1">
+                <Award size={10} />
+                <span>{profile?.fullName || "Abdenour Hellas"}</span>
+              </div>
+              <div>
+                {locale === "fr" ? "Généré le" : locale === "en" ? "Generated on" : "تم إنشاؤه بتاريخ"} {generatedAt}
+              </div>
+              <div>abdenour-hellas.online</div>
+            </div>
+          </footer>
         </div>
       </div>
     </div>
