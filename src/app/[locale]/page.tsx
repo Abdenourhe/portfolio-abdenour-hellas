@@ -133,8 +133,6 @@ function HomeClient() {
     { label: statLabels[3], value: skills.length, icon: Wrench, suffix: "+" },
   ];
 
-
-
   // Hero animations
   const heroContainer = {
     hidden: {},
@@ -230,11 +228,12 @@ function HomeClient() {
               animate="visible"
               className="text-center lg:text-left max-w-xl"
             >
+              {/* BADGE CORRIGE - utilise secondary/10 au lieu de #E0F3E4 */}
               <motion.div variants={heroItem} className="mb-4">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#8FCF9B]/40 bg-[#E0F3E4] text-[#4AB566] dark:text-[#74C484] text-xs tracking-wide">
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-secondary/30 bg-secondary/10 text-secondary text-xs tracking-wide">
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#34CF46] opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#34CF46]" />
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary" />
                   </span>
                   {locale === "fr" ? "Disponible pour de nouvelles opportunités" : locale === "ar" ? "متاح لفرص جديدة" : "Open to new opportunities"}
                 </span>
