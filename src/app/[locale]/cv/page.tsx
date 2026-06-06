@@ -609,8 +609,8 @@ export default function CVPage() {
               </section>
             )}
 
-            {/* Education */}
-            {education.length > 0 && (
+            {/* Education + Certifications */}
+            {(education.length > 0 || (certifications && certifications.length > 0)) && (
               <section className="mb-[4mm]">
                 <h2 className="text-[11pt] font-bold uppercase tracking-[0.1em] text-[#1E3A5F] mb-2 pb-1 border-b border-[#1E3A5F]/20">{t("cv.education")}</h2>
                 <div className="space-y-1.5">
@@ -623,18 +623,7 @@ export default function CVPage() {
                       <p className="text-[9pt] font-semibold text-[#1E3A5F]/70">{edu.school}{edu.location ? ` · ${edu.location}` : ""}</p>
                     </div>
                   ))}
-                </div>
-              </section>
-            )}
-
-            {/* Certifications */}
-            {certifications && certifications.length > 0 && (
-              <section className="mb-[4mm]">
-                <h2 className="text-[11pt] font-bold uppercase tracking-[0.1em] text-[#1E3A5F] mb-2 pb-1 border-b border-[#1E3A5F]/20">
-                  {locale === "fr" ? "Certifications" : locale === "en" ? "Certifications" : "الشهادات"}
-                </h2>
-                <div className="space-y-1.5">
-                  {certifications.map((cert: any) => (
+                  {certifications && certifications.map((cert: any) => (
                     <div key={cert.id}>
                       <div className="flex justify-between items-baseline">
                         <h3 className="text-[10pt] font-bold text-[#1E3A5F]">{cert.name}</h3>
