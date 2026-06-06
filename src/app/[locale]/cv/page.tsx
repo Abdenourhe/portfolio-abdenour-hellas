@@ -147,7 +147,7 @@ export default function CVPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-[210mm] mx-auto bg-white dark:bg-card text-foreground rounded-xl border border-border shadow-sm overflow-hidden print:shadow-none print:border-0 print:rounded-none print:max-w-none print:w-full"
+        className="max-w-[210mm] mx-auto bg-white dark:bg-card text-foreground rounded-xl border border-border shadow-sm overflow-hidden print:hidden print:shadow-none print:border-0 print:rounded-none print:max-w-none print:w-full"
       >
         {/* Header */}
         <header
@@ -436,6 +436,135 @@ export default function CVPage() {
           </main>
         </div>
       </motion.div>
+
+      {/* ===== PRINT LAYOUT — Single Column Professional ===== */}
+      <div className="hidden print:block">
+        <div className="max-w-[210mm] mx-auto text-[#1E3A5F] bg-white">
+          {/* Header */}
+          <header className="px-[10mm] pt-[8mm] pb-[4mm] border-b-2 border-[#1E3A5F]">
+            <div className="flex items-center gap-4">
+              {profile?.photoUrl && (
+                <img src={profile.photoUrl} alt="" className="w-20 h-20 rounded-full object-cover border-2 border-[#1E3A5F]" />
+              )}
+              <div className="flex-1">
+                <h1 className="text-[22pt] font-bold leading-tight tracking-tight">{profile?.fullName || "Abdenour Hellas"}</h1>
+                <p className="text-[12pt] font-semibold text-[#1E3A5F]/80 mt-0.5">{getTitle() || t("hero.title")}</p>
+                <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-[9pt] text-[#1E3A5F]/70 mt-1.5">
+                  {profile?.email && <span>✉ {profile.email}</span>}
+                  {profile?.phone && <span>☎ {profile.phone}</span>}
+                  {profile?.location && <span>📍 {profile.location}</span>}
+                  {profile?.linkedin && <span>🔗 {profile.linkedin.replace(/^https?:\/\//, "")}</span>}
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <div className="px-[10mm] py-[4mm]">
+            {/* Profile */}
+            {getBio() && (
+              <section className="mb-[4mm]">
+                <h2 className="text-[11pt] font-bold uppercase tracking-[0.1em] text-[#1E3A5F] mb-1 pb-1 border-b border-[#1E3A5F]/20">{t("cv.profile")}</h2>
+                <p className="text-[10pt] leading-relaxed text-[#1E3A5F]/90">{getBio()}</p>
+              </section>
+            )}
+
+            {/* Skills by category */}
+            {techSkills.length > 0 && (
+              <section className="mb-[4mm]">
+                <h2 className="text-[11pt] font-bold uppercase tracking-[0.1em] text-[#1E3A5F] mb-1.5 pb-1 border-b border-[#1E3A5F]/20">{t("cv.skills")}</h2>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                  {Array.from(new Map(techSkills.map((s: any) => [s.category, s])).entries())
+                    .map(([cat]: [string, any]) => cat)
+                    .filter(Boolean)
+                    .map((cat: string) => (
+                      <div key={cat}>
+                        <span className="text-[9pt] font-bold uppercase text-[#1E3A5F]/60">{cat}:</span>
+                        <span className="text-[9pt] text-[#1E3A5F]/80 ml-1">
+                          {techSkills.filter((s: any) => s.category === cat).map((s: any) => s.name).join(", ")}
+                        </span>
+                      </div>
+                    ))}
+                </div>
+              </section>
+            )}
+
+            {/* Experience */}
+            {mainExperiences.length > 0 && (
+              <section className="mb-[4mm]">
+                <h2 className="text-[11pt] font-bold uppercase tracking-[0.1em] text-[#1E3A5F] mb-2 pb-1 border-b border-[#1E3A5F]/20">{t("cv.experience")}</h2>
+                <div className="space-y-2">
+                  {mainExperiences.map((exp: any) => (
+                    <div key={exp.id}>
+                      <div className="flex justify-between items-baseline">
+                        <h3 className="text-[10.5pt] font-bold text-[#1E3A5F]">{exp.title}</h3>
+                        <span className="text-[8.5pt] text-[#1E3A5F]/50 tabular-nums">{formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}</span>
+                      </div>
+                      <p className="text-[9.5pt] font-semibold text-[#1E3A5F]/70">{exp.company}{exp.location ? ` · ${exp.location}` : ""}</p>
+                      {toBullets(exp.description).length > 1 ? (
+                        <ul className="mt-1 space-y-0.5">
+                          {toBullets(exp.description).map((b: string, i: number) => (
+                            <li key={i} className="text-[9pt] text-[#1E3A5F]/80 leading-snug flex items-start gap-1.5">
+                              <span className="mt-1 shrink-0 w-1 h-1 rounded-full bg-[#1E3A5F]/40" />
+                              <span>{b}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-[9pt] text-[#1E3A5F]/80 mt-0.5 leading-snug">{exp.description}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Education */}
+            {education.length > 0 && (
+              <section className="mb-[4mm]">
+                <h2 className="text-[11pt] font-bold uppercase tracking-[0.1em] text-[#1E3A5F] mb-2 pb-1 border-b border-[#1E3A5F]/20">{t("cv.education")}</h2>
+                <div className="space-y-1.5">
+                  {education.map((edu: any) => (
+                    <div key={edu.id}>
+                      <div className="flex justify-between items-baseline">
+                        <h3 className="text-[10pt] font-bold text-[#1E3A5F]">{edu.degree}</h3>
+                        <span className="text-[8.5pt] text-[#1E3A5F]/50 tabular-nums">{formatDate(edu.startDate, false)} — {edu.current ? t("experience.present") : formatDate(edu.endDate, false)}</span>
+                      </div>
+                      <p className="text-[9pt] font-semibold text-[#1E3A5F]/70">{edu.school}{edu.location ? ` · ${edu.location}` : ""}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Languages */}
+            {languages.length > 0 && (
+              <section className="mb-[4mm]">
+                <h2 className="text-[11pt] font-bold uppercase tracking-[0.1em] text-[#1E3A5F] mb-1.5 pb-1 border-b border-[#1E3A5F]/20">{locale === "fr" ? "Langues" : locale === "en" ? "Languages" : "اللغات"}</h2>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-[9.5pt] text-[#1E3A5F]/80">
+                  {languages.map((lang: any) => (
+                    <span key={lang.id}><strong>{lang.name}</strong> {lang.level}%</span>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Projects */}
+            {featuredProjects.length > 0 && (
+              <section>
+                <h2 className="text-[11pt] font-bold uppercase tracking-[0.1em] text-[#1E3A5F] mb-2 pb-1 border-b border-[#1E3A5F]/20">{t("projects.title")}</h2>
+                <div className="space-y-1.5">
+                  {featuredProjects.map((project: any) => (
+                    <div key={project.id}>
+                      <h3 className="text-[10pt] font-bold text-[#1E3A5F]">{project.title}</h3>
+                      <p className="text-[8.5pt] text-[#1E3A5F]/70 mt-0.5 leading-snug">{project.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
