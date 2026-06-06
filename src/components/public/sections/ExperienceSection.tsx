@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Experience } from "@/types";
-import { Briefcase } from "lucide-react";
+import { Briefcase, ExternalLink, ImageIcon } from "lucide-react";
 import { SkeletonList } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
 import ElectricCard from "@/components/public/ElectricCard";
+import ImageLightbox from "@/components/public/ImageLightbox";
 
 const categoryLabels: Record<string, string> = {
   tech: "Technique",
@@ -26,6 +27,8 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
   const [experiences, setExperiences] = useState<Experience[]>(data || []);
   const [loading, setLoading] = useState(!data);
   const [error, setError] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxSrc, setLightboxSrc] = useState("");
 
   useEffect(() => {
     if (data) return;
@@ -45,6 +48,11 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
       });
   }, [data]);
 
+  const openImage = (src: string) => {
+    setLightboxSrc(src);
+    setLightboxOpen(true);
+  };
+
   if (loading) {
     return (
       <div className="max-w-3xl mx-auto">
@@ -62,49 +70,79 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
   const displayExperiences = limit ? experiences.slice(0, limit) : experiences;
 
   return (
-    <AnimatedSection stagger={0.1} className="relative max-w-3xl mx-auto">
-      {/* Vertical line */}
-      <div className="absolute left-[15px] md:left-[19px] top-2 bottom-2 w-px bg-primary/15" />
+    <>
+      <AnimatedSection stagger={0.1} className="relative max-w-3xl mx-auto">
+        {/* Vertical line */}
+        <div className="absolute left-[15px] md:left-[19px] top-2 bottom-2 w-px bg-primary/15" />
 
-      {displayExperiences.map((exp) => (
-        <motion.div
-          key={exp.id}
-          variants={fadeUpItem}
-          className="relative pl-10 md:pl-14 pb-8 last:pb-0"
-        >
-          {/* Dot */}
-          <div className="absolute left-2 md:left-3 top-2 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-secondary ring-4 ring-background" />
-
-          {/* Card */}
+        {displayExperiences.map((exp) => (
           <motion.div
-            whileHover={{ y: -4 }}
-            transition={{ duration: 0.2 }}
-            className="group"
+            key={exp.id}
+            variants={fadeUpItem}
+            className="relative pl-10 md:pl-14 pb-8 last:pb-0"
           >
-            <ElectricCard className="rounded-xl h-full">
-              <div className={`bg-card hover:shadow-lg transition-all h-full rounded-xl ${compact ? "p-4" : "p-5"}`}>
-            <div className="flex flex-wrap items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary bg-primary/5 px-2 py-0.5 rounded-md">
-                <Briefcase size={11} />
-                {new Date(exp.startDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" })} —{" "}
-                {exp.current ? t("experience.present") : exp.endDate ? new Date(exp.endDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" }) : ""}
-              </span>
-              {exp.category && (
-                <span className="text-xs px-1.5 py-0.5 rounded-md bg-secondary/10 text-secondary font-medium">
-                  {categoryLabels[exp.category] || exp.category}
-                </span>
-              )}
-            </div>
-            <h3 className="text-base md:text-lg font-semibold text-primary">{exp.title}</h3>
-            <p className="text-sm md:text-base text-muted-foreground">{exp.company} · {exp.location}</p>
-            <p className={`text-muted-foreground leading-relaxed mt-2 ${compact ? "text-sm line-clamp-2" : "text-sm md:text-base"}`}>
-              {exp.description}
-            </p>
-              </div>
-            </ElectricCard>
+            {/* Dot */}
+            <div className="absolute left-2 md:left-3 top-2 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-secondary ring-4 ring-background" />
+
+            {/* Card */}
+            <motion.div
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="group"
+            >
+              <ElectricCard className="rounded-xl h-full">
+                <div className={`bg-card hover:shadow-lg transition-all h-full rounded-xl ${compact ? "p-4" : "p-5"}`}>
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary bg-primary/5 px-2 py-0.5 rounded-md">
+                      <Briefcase size={11} />
+                      {new Date(exp.startDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" })} —{" "}
+                      {exp.current ? t("experience.present") : exp.endDate ? new Date(exp.endDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" }) : ""}
+                    </span>
+                    {exp.category && (
+                      <span className="text-xs px-1.5 py-0.5 rounded-md bg-secondary/10 text-secondary font-medium">
+                        {categoryLabels[exp.category] || exp.category}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-base md:text-lg font-semibold text-primary">{exp.title}</h3>
+                  <p className="text-sm md:text-base text-muted-foreground">{exp.company} · {exp.location}</p>
+                  <p className={`text-muted-foreground leading-relaxed mt-2 ${compact ? "text-sm line-clamp-2" : "text-sm md:text-base"}`}>
+                    {exp.description}
+                  </p>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {exp.url && (
+                      <a
+                        href={exp.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs font-medium text-primary bg-primary/5 hover:bg-primary/10 px-2 py-1 rounded-md transition-colors"
+                      >
+                        <ExternalLink size={10} />
+                        Attestation
+                      </a>
+                    )}
+                    {exp.certificateImage && (
+                      <button
+                        onClick={() => openImage(exp.certificateImage!)}
+                        className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-300 dark:hover:bg-emerald-900/30 px-2 py-1 rounded-md transition-colors"
+                      >
+                        <ImageIcon size={10} />
+                        Voir attestation
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </ElectricCard>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      ))}
-    </AnimatedSection>
+        ))}
+      </AnimatedSection>
+      <ImageLightbox
+        src={lightboxSrc}
+        alt="Attestation"
+        open={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+      />
+    </>
   );
 }
