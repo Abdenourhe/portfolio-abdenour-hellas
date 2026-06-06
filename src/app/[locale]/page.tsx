@@ -231,10 +231,10 @@ function HomeClient() {
               className="text-center lg:text-left max-w-xl"
             >
               <motion.div variants={heroItem} className="mb-4">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#8FCF9B]/40 bg-[#D4EFDA] text-[#1A3D25] dark:text-[#8FCF9B] text-xs tracking-wide">
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#8FCF9B]/40 bg-[#E0F3E4] text-[#4AB566] dark:text-[#74C484] text-xs tracking-wide">
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#8FCF9B] opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#8FCF9B]" />
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#34CF46] opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#34CF46]" />
                   </span>
                   {locale === "fr" ? "Disponible pour de nouvelles opportunités" : locale === "ar" ? "متاح لفرص جديدة" : "Open to new opportunities"}
                 </span>
