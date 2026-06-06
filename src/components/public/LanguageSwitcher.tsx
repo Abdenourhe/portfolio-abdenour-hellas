@@ -13,7 +13,7 @@ export default function LanguageSwitcher({ locale }: { locale: Locale }) {
   };
 
   return (
-    <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+    <div className="flex items-center gap-1 bg-muted-foreground/15 rounded-lg p-1">
       {locales.map((l) => (
         <button
           key={l}

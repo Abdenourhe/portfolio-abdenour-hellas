@@ -180,8 +180,8 @@ function HomeClient() {
       <section className="min-h-[calc(100dvh-4rem)] flex items-center justify-center px-4 py-12 md:py-16 lg:py-0 relative overflow-hidden">
         {/* Subtle background decoration */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-20 right-10 w-72 h-72 bg-primary/[0.02] rounded-full blur-3xl" />
-          <div className="absolute bottom-20 left-10 w-96 h-96 bg-secondary/[0.03] rounded-full blur-3xl" />
+          <div className="absolute top-20 right-10 w-72 h-72 bg-primary/[0.08] rounded-full blur-3xl" />
+          <div className="absolute bottom-20 left-10 w-96 h-96 bg-secondary/[0.10] rounded-full blur-3xl" />
         </div>
 
         <div className="container mx-auto max-w-5xl relative z-10">
@@ -220,7 +220,7 @@ function HomeClient() {
                 )}
               </div>
               {/* Decorative ring */}
-              <div className="absolute -inset-3 rounded-full border border-primary/5 pointer-events-none" />
+              <div className="absolute -inset-3 rounded-full border border-primary/20 pointer-events-none" />
             </motion.div>
 
             {/* Hero Content */}
@@ -292,7 +292,7 @@ function HomeClient() {
                 <MagneticButton>
                   <Link
                     href={contactPath}
-                    className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground rounded-lg text-[0.8rem] tracking-wide font-normal hover:border-primary/30 hover:bg-primary/[0.02] transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground rounded-lg text-[0.8rem] tracking-wide font-normal hover:border-primary/30 hover:bg-primary/[0.06] transition-colors"
                   >
                     <Send size={16} />
                     {t("hero.contactMe")}
@@ -330,7 +330,7 @@ function HomeClient() {
       </section>
 
       {/* Stats Bar */}
-      <section className="py-10 border-y border-border/60 bg-muted/30">
+      <section className="py-10 border-y border-border/60 bg-muted/50">
         <div className="container mx-auto max-w-5xl px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             {stats.map((stat, index) => (
@@ -342,7 +342,7 @@ function HomeClient() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/5 mb-3">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/15 mb-3">
                   <stat.icon className="w-5 h-5 text-primary/70" />
                 </div>
                 <div className="text-3xl font-bold text-primary tabular-nums">

@@ -72,7 +72,7 @@ export default function SocialIcons({
 
   const linkClass = light
     ? "p-2 rounded-md text-white/60 hover:text-white hover:bg-white/10 transition-colors"
-    : "p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors";
+    : "p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted-foreground/15 transition-colors";
 
   return (
     <div className={`flex items-center gap-1 ${className}`}>

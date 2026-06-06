@@ -34,7 +34,7 @@ export default function ElectricCard({ children, className = "", rx = 3 }: Elect
           style={{
             strokeDashoffset: 0,
             animation: "electricPulse 3s linear infinite",
-            opacity: 0.5,
+            opacity: 0.85,
           }}
         />
         {/* Glow overlay on hover */}

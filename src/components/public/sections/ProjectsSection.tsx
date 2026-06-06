@@ -12,7 +12,7 @@ import ElectricCard from "@/components/public/ElectricCard";
 function ProjectPlaceholder({ title }: { title: string }) {
   return (
     <div className="w-full h-44 md:h-52 bg-muted flex flex-col items-center justify-center border-b border-border">
-      <FolderGit className="w-10 h-10 text-primary/20 mb-2" />
+      <FolderGit className="w-10 h-10 text-primary/40 mb-2" />
       <span className="text-xs text-primary/40 text-center px-4">{title}</span>
     </div>
   );
@@ -145,13 +145,13 @@ export default function ProjectsSection({ data, compact = false, limit }: Projec
               {project.technologies.slice(0, 4).map((tech) => (
                 <span
                   key={tech}
-                  className="px-2 py-0.5 text-xs font-medium rounded-md bg-primary/5 text-primary/80"
+                  className="px-2 py-0.5 text-xs font-medium rounded-md bg-primary/15 text-primary/80"
                 >
                   {tech}
                 </span>
               ))}
               {project.technologies.length > 4 && (
-                <span className="px-2 py-0.5 text-xs font-medium rounded-md bg-primary/5 text-primary/80">
+                <span className="px-2 py-0.5 text-xs font-medium rounded-md bg-primary/15 text-primary/80">
                   +{project.technologies.length - 4}
                 </span>
               )}

@@ -51,7 +51,7 @@ export default async function NotFound({ params }: { params: Promise<{ locale: s
           </Link>
           <button
             onClick={() => typeof window !== "undefined" && window.history.back()}
-            className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground rounded-lg text-sm font-medium hover:border-primary/30 hover:bg-primary/[0.02] transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground rounded-lg text-sm font-medium hover:border-primary/30 hover:bg-primary/[0.06] transition-colors"
           >
             <ArrowLeft size={16} />
             {t.back}

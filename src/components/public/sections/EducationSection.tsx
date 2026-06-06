@@ -81,7 +81,7 @@ export default function EducationSection({ data, compact = false, limit }: Educa
             <ElectricCard className="rounded-xl h-full">
               <div className={`bg-card hover:shadow-lg transition-all h-full rounded-xl ${compact ? "p-4" : "p-5"}`}>
                 <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-primary/5 flex items-center justify-center mt-0.5">
+                  <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-primary/15 flex items-center justify-center mt-0.5">
                     <GraduationCap className="w-4 h-4 text-primary/70" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -113,7 +113,7 @@ export default function EducationSection({ data, compact = false, limit }: Educa
                           href={edu.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs font-medium text-primary bg-primary/5 hover:bg-primary/10 px-2 py-1 rounded-md transition-colors"
+                          className="inline-flex items-center gap-1 text-xs font-medium text-primary bg-primary/15 hover:bg-primary/25 px-2 py-1 rounded-md transition-colors"
                         >
                           <ExternalLink size={10} />
                           Certificat

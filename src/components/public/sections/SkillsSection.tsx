@@ -89,7 +89,7 @@ export default function SkillsSection({ data, compact = false, limit }: SkillsSe
                     <span className="text-base font-medium text-foreground">{skill.name}</span>
                     <span className="text-sm text-secondary font-medium tabular-nums">{skill.level}%</span>
                   </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div className="h-2 bg-muted-foreground/20 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       whileInView={{ width: `${skill.level}%` }}

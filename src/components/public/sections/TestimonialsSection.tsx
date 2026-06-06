@@ -119,7 +119,7 @@ export default function TestimonialsSection({ data, compact = false, limit }: Te
                 {item.imageUrl ? (
                   <img src={item.imageUrl} alt={item.name} className="w-9 h-9 rounded-full object-cover" />
                 ) : (
-                  <div className="w-9 h-9 rounded-full bg-primary/5 flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-full bg-primary/15 flex items-center justify-center">
                     <User className="w-4 h-4 text-primary/60" />
                   </div>
                 )}

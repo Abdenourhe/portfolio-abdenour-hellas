@@ -74,7 +74,7 @@ export default function BlogSection({ data, compact = false, limit }: BlogSectio
                   />
                 </div>
               ) : (
-                <div className="w-full h-44 bg-muted flex items-center justify-center">
+                <div className="w-full h-44 bg-muted-foreground/15 flex items-center justify-center">
                   <FileText className="w-8 h-8 text-primary/20" />
                 </div>
               )}

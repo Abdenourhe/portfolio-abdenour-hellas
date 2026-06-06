@@ -73,7 +73,7 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
     <>
       <AnimatedSection stagger={0.1} className="relative max-w-3xl mx-auto">
         {/* Vertical line */}
-        <div className="absolute left-[15px] md:left-[19px] top-2 bottom-2 w-px bg-primary/15" />
+        <div className="absolute left-[15px] md:left-[19px] top-2 bottom-2 w-px bg-primary/35" />
 
         {displayExperiences.map((exp) => (
           <motion.div
@@ -93,13 +93,13 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
               <ElectricCard className="rounded-xl h-full">
                 <div className={`bg-card hover:shadow-lg transition-all h-full rounded-xl ${compact ? "p-4" : "p-5"}`}>
                   <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary bg-primary/5 px-2 py-0.5 rounded-md">
+                    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary bg-primary/15 px-2 py-0.5 rounded-md">
                       <Briefcase size={11} />
                       {new Date(exp.startDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" })} —{" "}
                       {exp.current ? t("experience.present") : exp.endDate ? new Date(exp.endDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" }) : ""}
                     </span>
                     {exp.category && (
-                      <span className="text-xs px-1.5 py-0.5 rounded-md bg-secondary/10 text-secondary font-medium">
+                      <span className="text-xs px-1.5 py-0.5 rounded-md bg-secondary/20 text-secondary font-medium">
                         {categoryLabels[exp.category] || exp.category}
                       </span>
                     )}
@@ -115,7 +115,7 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
                         href={exp.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs font-medium text-primary bg-primary/5 hover:bg-primary/10 px-2 py-1 rounded-md transition-colors"
+                        className="inline-flex items-center gap-1 text-xs font-medium text-primary bg-primary/15 hover:bg-primary/25 px-2 py-1 rounded-md transition-colors"
                       >
                         <ExternalLink size={10} />
                         Attestation
