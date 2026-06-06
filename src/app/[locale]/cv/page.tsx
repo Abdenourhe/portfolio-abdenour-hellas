@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Download, Printer, Globe, Mail, Phone, MapPin } from "lucide-react";
 import { useT } from "@/components/public/I18nProvider";
 import { useLocale } from "@/components/public/useLocale";
+import QRCode from "qrcode";
 
 interface CVData {
   profile: any;
@@ -40,6 +41,7 @@ export default function CVPage() {
   const locale = useLocale();
   const [data, setData] = useState<CVData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [qrCodeUrl, setQrCodeUrl] = useState("");
 
   useEffect(() => {
     fetch("/api/homepage")
@@ -49,6 +51,10 @@ export default function CVPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+
+    QRCode.toDataURL("https://abdenour-hellas.online", { width: 180, margin: 1, color: { dark: "#1E3A5F", light: "#FFFFFF" } })
+      .then(setQrCodeUrl)
+      .catch(() => setQrCodeUrl(""));
   }, []);
 
   const handleDownload = async () => {
@@ -155,11 +161,6 @@ export default function CVPage() {
           style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}
         >
           <div className="flex items-center gap-4 md:gap-5">
-            {profile?.photoUrl && (
-              <div className="shrink-0 w-16 h-16 md:w-24 md:h-24 rounded-full border-4 border-[#C9A962] overflow-hidden bg-white dark:bg-card print:hidden">
-                <img src={profile.photoUrl} alt="" className="w-full h-full object-cover" />
-              </div>
-            )}
             <div className="flex-1 min-w-0">
               <h1 className="text-xl md:text-[2.25rem] font-bold tracking-tight leading-none">
                 {profile?.fullName || "Abdenour Hellas"}
@@ -443,8 +444,11 @@ export default function CVPage() {
           {/* Header */}
           <header className="px-[10mm] pt-[8mm] pb-[4mm] border-b-2 border-[#1E3A5F]">
             <div className="flex items-center gap-4">
-              {profile?.photoUrl && (
-                <img src={profile.photoUrl} alt="" className="w-20 h-20 rounded-full object-cover border-2 border-[#1E3A5F]" />
+              {qrCodeUrl && (
+                <div className="shrink-0 text-center">
+                  <img src={qrCodeUrl} alt="QR Code" className="w-16 h-16" />
+                  <p className="text-[7pt] text-[#1E3A5F]/60 mt-0.5">Scannez pour visiter</p>
+                </div>
               )}
               <div className="flex-1">
                 <h1 className="text-[22pt] font-bold leading-tight tracking-tight">{profile?.fullName || "Abdenour Hellas"}</h1>
