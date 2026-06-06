@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Experience } from "@/types";
-import { Plus, Pencil, Trash2, GripVertical } from "lucide-react";
+import { Plus, Pencil, Trash2, GripVertical, Upload, ImageIcon } from "lucide-react";
 import SpellCheck from "@/components/admin/SpellCheck";
 
 export default function ExperiencesPage() {
@@ -148,6 +148,36 @@ export default function ExperiencesPage() {
               onChange={(e) => setForm({ ...form, url: e.target.value })}
               className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
             />
+            <div className="space-y-2">
+              <label className="inline-flex items-center gap-2 px-4 py-2 bg-background border border-border rounded-lg hover:bg-muted transition-colors cursor-pointer">
+                <Upload size={16} />
+                <span>{form.certificateImage ? "Changer l'image" : "Uploader image attestation"}</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onloadend = () => setForm({ ...form, certificateImage: reader.result as string });
+                    reader.readAsDataURL(file);
+                  }}
+                />
+              </label>
+              {form.certificateImage && (
+                <div className="relative w-32 h-20 rounded-lg border border-border overflow-hidden">
+                  <img src={form.certificateImage} alt="Aperçu attestation" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, certificateImage: "" })}
+                    className="absolute top-1 right-1 p-1 rounded bg-black/50 text-white hover:bg-black/70"
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           <div className="space-y-1">
             <textarea
@@ -183,7 +213,7 @@ export default function ExperiencesPage() {
             <GripVertical className="text-muted-foreground cursor-move" size={18} />
             <div className="flex-1">
               <h3 className="font-medium">{exp.title}</h3>
-              <p className="text-sm text-muted-foreground">{exp.company} · {exp.location}{exp.url ? " · " : ""}{exp.url && <a href={exp.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Attestation ↗</a>}</p>
+              <p className="text-sm text-muted-foreground">{exp.company} · {exp.location}{exp.url ? " · " : ""}{exp.url && <a href={exp.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Attestation ↗</a>}{exp.certificateImage && <span className="inline-flex items-center gap-1 ml-2 text-xs text-emerald-600"><ImageIcon size={12} /> Image</span>}</p>
             </div>
             <div className="flex items-center gap-2">
               <button

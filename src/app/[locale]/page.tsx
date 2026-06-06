@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, useInView, animate } from "framer-motion";
-import { FileText, Send, Download, ArrowRight, Calendar, Briefcase, GraduationCap, Wrench, MapPin } from "lucide-react";
+import { FileText, Send, Download, ArrowRight, Calendar, Briefcase, GraduationCap, Wrench, MapPin, ZoomIn } from "lucide-react";
 import { useEffect, useState, useRef, useCallback } from "react";
 import SocialIcons from "@/components/public/SocialIcons";
 import { Skeleton } from "@/components/public/Skeleton";
@@ -13,6 +13,7 @@ import TypeWriter from "@/components/public/TypeWriter";
 import OscilloscopeWave from "@/components/public/OscilloscopeWave";
 import ElectricHalo from "@/components/public/ElectricHalo";
 import MagneticButton from "@/components/public/MagneticButton";
+import ImageLightbox from "@/components/public/ImageLightbox";
 import ExperienceSection from "@/components/public/sections/ExperienceSection";
 import EducationSection from "@/components/public/sections/EducationSection";
 import SkillsSection from "@/components/public/sections/SkillsSection";
@@ -59,6 +60,7 @@ function HomeClient() {
   const [testimonials, setTestimonials] = useState<any[]>([]);
   const [articles, setArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
     fetch("/api/homepage")
@@ -192,18 +194,28 @@ function HomeClient() {
               className="relative flex-shrink-0"
             >
               <ElectricHalo />
-              <div className="relative z-10 w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 rounded-full overflow-hidden ring-[3px] ring-secondary/30 ring-offset-4 ring-offset-background shadow-2xl">
+              <div
+                className="relative z-10 w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 rounded-full overflow-hidden ring-[3px] ring-secondary/30 ring-offset-4 ring-offset-background shadow-2xl cursor-pointer group"
+                onClick={() => profile?.photoUrl && setLightboxOpen(true)}
+              >
                 {profile?.photoUrl ? (
                   <img
                     src={profile.photoUrl}
                     alt={profile.fullName}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-muted">
                     <span className="text-6xl font-semibold text-primary/30 tracking-tight">
                       {profile?.fullName?.split(" ").map((n: string) => n[0]).join("") || "AH"}
                     </span>
+                  </div>
+                )}
+                {profile?.photoUrl && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 transition-colors">
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity p-3 rounded-full bg-black/40 text-white backdrop-blur-sm">
+                      <ZoomIn size={24} />
+                    </div>
                   </div>
                 )}
               </div>
@@ -447,6 +459,13 @@ function HomeClient() {
           </motion.div>
         </div>
       </section>
+
+      <ImageLightbox
+        src={profile?.photoUrl || ""}
+        alt={profile?.fullName || "Photo"}
+        open={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+      />
     </div>
   );
 }

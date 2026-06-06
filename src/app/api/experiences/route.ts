@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
         startDate: new Date(data.startDate),
         endDate: data.endDate ? new Date(data.endDate) : null,
         url: data.url || null,
+        certificateImage: data.certificateImage || null,
       },
     });
     return NextResponse.json(experience);
