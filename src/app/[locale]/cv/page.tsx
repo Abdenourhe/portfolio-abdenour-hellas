@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Download, Printer, Globe, Mail, Phone, MapPin, ExternalLink } from "lucide-react";
+import { Download, Printer, Globe, Mail, Phone, MapPin, ExternalLink, ImageIcon } from "lucide-react";
 import { useT } from "@/components/public/I18nProvider";
 import { useLocale } from "@/components/public/useLocale";
 import QRCode from "qrcode";
@@ -323,6 +323,12 @@ export default function CVPage() {
                             Certificat
                           </a>
                         )}
+                        {edu.certificateImage && (
+                          <a href={edu.certificateImage} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 text-primary hover:underline">
+                            <ImageIcon size={10} />
+                            Voir certificat
+                          </a>
+                        )}
                       </p>
                       <p className="text-sm md:text-xs text-[#1E3A5F]/50 dark:text-foreground/50 mt-0.5">
                         {formatDate(edu.startDate, false)} — {edu.current ? t("experience.present") : formatDate(edu.endDate, false)}
@@ -395,6 +401,12 @@ export default function CVPage() {
                               Attestation
                             </a>
                           )}
+                          {exp.certificateImage && (
+                            <a href={exp.certificateImage} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 text-primary hover:underline">
+                              <ImageIcon size={10} />
+                              Voir attestation
+                            </a>
+                          )}
                         </p>
                         {bullets.length > 1 ? (
                           <ul className="mt-2.5 space-y-1.5">
@@ -435,6 +447,12 @@ export default function CVPage() {
                               <a href={exp.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 text-primary hover:underline">
                                 <ExternalLink size={10} />
                                 Attestation
+                              </a>
+                            )}
+                            {exp.certificateImage && (
+                              <a href={exp.certificateImage} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 text-primary hover:underline">
+                                <ImageIcon size={10} />
+                                Voir attestation
                               </a>
                             )}
                           </p>
@@ -584,6 +602,12 @@ export default function CVPage() {
                             Attestation
                           </a>
                         )}
+                        {exp.certificateImage && (
+                          <a href={exp.certificateImage} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 ml-2 hover:underline">
+                            <ImageIcon size={10} />
+                            Image
+                          </a>
+                        )}
                       </p>
                       {toBullets(exp.description).length > 1 ? (
                         <ul className="mt-1 space-y-0.5">
@@ -620,6 +644,12 @@ export default function CVPage() {
                           <a href={edu.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 ml-2 hover:underline">
                             <ExternalLink size={10} />
                             Voir en ligne
+                          </a>
+                        )}
+                        {edu.certificateImage && (
+                          <a href={edu.certificateImage} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 ml-2 hover:underline">
+                            <ImageIcon size={10} />
+                            Image
                           </a>
                         )}
                       </p>
