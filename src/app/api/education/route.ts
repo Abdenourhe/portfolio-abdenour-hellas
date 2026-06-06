@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
         ...data,
         startDate: new Date(data.startDate),
         endDate: data.endDate ? new Date(data.endDate) : null,
+        url: data.url || null,
       },
     });
     return NextResponse.json(education);

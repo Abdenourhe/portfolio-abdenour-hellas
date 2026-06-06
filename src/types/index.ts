@@ -33,6 +33,7 @@ export interface Experience {
   description: string;
   descriptionEn?: string | null;
   descriptionAr?: string | null;
+  url?: string | null;
   category: string;
   order: number;
   createdAt: Date;
@@ -52,6 +53,7 @@ export interface Education {
   description?: string | null;
   descriptionEn?: string | null;
   descriptionAr?: string | null;
+  url?: string | null;
   order: number;
   createdAt: Date;
   updatedAt: Date;

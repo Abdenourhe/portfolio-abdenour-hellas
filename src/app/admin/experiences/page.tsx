@@ -141,6 +141,13 @@ export default function ExperiencesPage() {
               />
               Poste actuel
             </label>
+            <input
+              type="url"
+              placeholder="Lien du certificat / attestation (URL)"
+              value={form.url || ""}
+              onChange={(e) => setForm({ ...form, url: e.target.value })}
+              className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+            />
           </div>
           <div className="space-y-1">
             <textarea
@@ -176,7 +183,7 @@ export default function ExperiencesPage() {
             <GripVertical className="text-muted-foreground cursor-move" size={18} />
             <div className="flex-1">
               <h3 className="font-medium">{exp.title}</h3>
-              <p className="text-sm text-muted-foreground">{exp.company} · {exp.location}</p>
+              <p className="text-sm text-muted-foreground">{exp.company} · {exp.location}{exp.url ? " · " : ""}{exp.url && <a href={exp.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Attestation ↗</a>}</p>
             </div>
             <div className="flex items-center gap-2">
               <button

@@ -19,7 +19,6 @@ import {
   Menu,
   X,
   ArrowUpRight,
-  Award,
 } from "lucide-react";
 
 const navItems = [
@@ -28,7 +27,6 @@ const navItems = [
   { href: "/admin/experiences", label: "Expériences", icon: Briefcase },
   { href: "/admin/education", label: "Formations", icon: GraduationCap },
   { href: "/admin/skills", label: "Compétences", icon: Wrench },
-  { href: "/admin/certifications", label: "Certifications", icon: Award },
   { href: "/admin/projects", label: "Projets", icon: FolderOpen },
   { href: "/admin/testimonials", label: "Témoignages", icon: Quote },
   { href: "/admin/articles", label: "Articles", icon: FileText },

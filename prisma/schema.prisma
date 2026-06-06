@@ -58,6 +58,7 @@ model Experience {
   description String   @db.Text
   descriptionEn String? @db.Text
   descriptionAr String? @db.Text
+  url         String?
   category    String   @default("tech")
   order       Int      @default(0)
   createdAt   DateTime @default(now())
@@ -77,6 +78,7 @@ model Education {
   description String?  @db.Text
   descriptionEn String? @db.Text
   descriptionAr String? @db.Text
+  url         String?
   order       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -157,17 +159,6 @@ model Message {
   read      Boolean  @default(false)
   reply     String?  @db.Text
   createdAt DateTime @default(now())
-}
-
-model Certification {
-  id          String   @id @default(cuid())
-  name        String
-  issuer      String?
-  date        String?
-  url         String?
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
 
 model Stat {

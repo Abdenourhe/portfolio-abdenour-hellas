@@ -12,7 +12,6 @@ export async function GET() {
       testimonials,
       articles,
       interests,
-      certifications,
     ] = await Promise.all([
       prisma.profile.findFirst(),
       prisma.experience.findMany({ orderBy: { order: "asc" } }),
@@ -22,7 +21,6 @@ export async function GET() {
       prisma.testimonial.findMany({ orderBy: { order: "asc" } }),
       prisma.article.findMany({ where: { published: true }, orderBy: { createdAt: "desc" } }),
       prisma.interest.findMany({ orderBy: { order: "asc" } }),
-      prisma.certification.findMany({ orderBy: { order: "asc" } }),
     ]);
 
     return NextResponse.json({
@@ -34,7 +32,6 @@ export async function GET() {
       testimonials,
       articles,
       interests,
-      certifications,
     });
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch homepage data" }, { status: 500 });

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Download, Printer, Globe, Mail, Phone, MapPin, ExternalLink, Award } from "lucide-react";
+import { Download, Printer, Globe, Mail, Phone, MapPin, ExternalLink } from "lucide-react";
 import { useT } from "@/components/public/I18nProvider";
 import { useLocale } from "@/components/public/useLocale";
 import QRCode from "qrcode";
@@ -14,7 +14,6 @@ interface CVData {
   skills: any[];
   projects: any[];
   interests: any[];
-  certifications: any[];
 }
 
 function toBullets(text: string): string[] {
@@ -56,8 +55,8 @@ export default function CVPage() {
   useEffect(() => {
     fetch("/api/homepage")
       .then((r) => r.json())
-      .then(({ profile, experiences, education, skills, projects, interests, certifications }) => {
-        setData({ profile, experiences, education, skills, projects, interests, certifications });
+      .then(({ profile, experiences, education, skills, projects, interests }) => {
+        setData({ profile, experiences, education, skills, projects, interests });
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -127,7 +126,7 @@ export default function CVPage() {
     );
   }
 
-  const { profile, experiences, education, skills, projects, interests, certifications } = data;
+  const { profile, experiences, education, skills, projects, interests } = data;
 
   const languages = skills
     .filter((s: any) => LANGUAGE_NAMES.has(s.name.toLowerCase()))
@@ -318,41 +317,16 @@ export default function CVPage() {
                       </h3>
                       <p className="text-sm md:text-xs text-[#C9A962] font-semibold mt-0.5">
                         {edu.school}{edu.location ? ` — ${edu.location}` : ""}
+                        {edu.url && (
+                          <a href={edu.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 text-primary hover:underline">
+                            <ExternalLink size={10} />
+                            Certificat
+                          </a>
+                        )}
                       </p>
                       <p className="text-sm md:text-xs text-[#1E3A5F]/50 dark:text-foreground/50 mt-0.5">
                         {formatDate(edu.startDate, false)} — {edu.current ? t("experience.present") : formatDate(edu.endDate, false)}
                       </p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Certifications (web view sidebar) */}
-            {certifications && certifications.length > 0 && (
-              <section className="mb-6 md:mb-8 print:mb-4">
-                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-[#1E3A5F] dark:text-foreground mb-3 pb-2 border-b border-[#C9A962]">
-                  {locale === "fr" ? "Certifications" : locale === "en" ? "Certifications" : "الشهادات"}
-                </h2>
-                <div className="space-y-3">
-                  {certifications.map((cert: any) => (
-                    <div key={cert.id} className="break-inside-avoid">
-                      <h3 className="font-bold text-sm md:text-xs text-[#1E3A5F] dark:text-foreground leading-snug">
-                        {cert.name}
-                      </h3>
-                      <p className="text-sm md:text-xs text-[#C9A962] font-semibold mt-0.5">{cert.issuer}</p>
-                      {cert.date && <p className="text-sm md:text-xs text-[#1E3A5F]/50 dark:text-foreground/50 mt-0.5">{cert.date}</p>}
-                      {cert.url && (
-                        <a
-                          href={cert.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1"
-                        >
-                          <ExternalLink size={10} />
-                          Voir le certificat
-                        </a>
-                      )}
                     </div>
                   ))}
                 </div>
@@ -415,6 +389,12 @@ export default function CVPage() {
                         </div>
                         <p className="text-base md:text-sm font-semibold text-[#C9A962] mt-1">
                           {exp.company}{exp.location ? ` — ${exp.location}` : ""}
+                          {exp.url && (
+                            <a href={exp.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 text-primary hover:underline">
+                              <ExternalLink size={10} />
+                              Attestation
+                            </a>
+                          )}
                         </p>
                         {bullets.length > 1 ? (
                           <ul className="mt-2.5 space-y-1.5">
@@ -451,6 +431,12 @@ export default function CVPage() {
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5">
                           <p className="text-sm md:text-xs font-semibold text-[#1E3A5F] dark:text-foreground">
                             {exp.title} — <span className="text-[#C9A962]">{exp.company}</span>
+                            {exp.url && (
+                              <a href={exp.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 text-primary hover:underline">
+                                <ExternalLink size={10} />
+                                Attestation
+                              </a>
+                            )}
                           </p>
                           <span className="text-sm md:text-xs text-[#1E3A5F]/40 dark:text-foreground/40 tabular-nums shrink-0">
                             {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
@@ -590,7 +576,15 @@ export default function CVPage() {
                         <h3 className="text-[10.5pt] font-bold text-[#1E3A5F]">{exp.title}</h3>
                         <span className="text-[8.5pt] text-[#1E3A5F]/50 tabular-nums">{formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}</span>
                       </div>
-                      <p className="text-[9.5pt] font-semibold text-[#1E3A5F]/70">{exp.company}{exp.location ? ` · ${exp.location}` : ""}</p>
+                      <p className="text-[9.5pt] font-semibold text-[#1E3A5F]/70">
+                        {exp.company}{exp.location ? ` · ${exp.location}` : ""}
+                        {exp.url && (
+                          <a href={exp.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 ml-2 hover:underline">
+                            <ExternalLink size={10} />
+                            Attestation
+                          </a>
+                        )}
+                      </p>
                       {toBullets(exp.description).length > 1 ? (
                         <ul className="mt-1 space-y-0.5">
                           {toBullets(exp.description).map((b: string, i: number) => (
@@ -609,8 +603,8 @@ export default function CVPage() {
               </section>
             )}
 
-            {/* Education + Certifications */}
-            {(education.length > 0 || (certifications && certifications.length > 0)) && (
+            {/* Education */}
+            {education.length > 0 && (
               <section className="mb-[4mm]">
                 <h2 className="text-[11pt] font-bold uppercase tracking-[0.1em] text-[#1E3A5F] mb-2 pb-1 border-b border-[#1E3A5F]/20">{t("cv.education")}</h2>
                 <div className="space-y-1.5">
@@ -620,19 +614,10 @@ export default function CVPage() {
                         <h3 className="text-[10pt] font-bold text-[#1E3A5F]">{edu.degree}</h3>
                         <span className="text-[8.5pt] text-[#1E3A5F]/50 tabular-nums">{formatDate(edu.startDate, false)} — {edu.current ? t("experience.present") : formatDate(edu.endDate, false)}</span>
                       </div>
-                      <p className="text-[9pt] font-semibold text-[#1E3A5F]/70">{edu.school}{edu.location ? ` · ${edu.location}` : ""}</p>
-                    </div>
-                  ))}
-                  {certifications && certifications.map((cert: any) => (
-                    <div key={cert.id}>
-                      <div className="flex justify-between items-baseline">
-                        <h3 className="text-[10pt] font-bold text-[#1E3A5F]">{cert.name}</h3>
-                        {cert.date && <span className="text-[8.5pt] text-[#1E3A5F]/50 tabular-nums">{cert.date}</span>}
-                      </div>
-                      <p className="text-[9pt] text-[#1E3A5F]/70">
-                        {cert.issuer}
-                        {cert.url && (
-                          <a href={cert.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 ml-2 hover:underline">
+                      <p className="text-[9pt] font-semibold text-[#1E3A5F]/70">
+                        {edu.school}{edu.location ? ` · ${edu.location}` : ""}
+                        {edu.url && (
+                          <a href={edu.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 ml-2 hover:underline">
                             <ExternalLink size={10} />
                             Voir en ligne
                           </a>
@@ -676,7 +661,7 @@ export default function CVPage() {
           <footer className="px-[10mm] pt-[3mm] pb-[5mm] border-t border-[#1E3A5F]/10 mt-[4mm]">
             <div className="flex items-center justify-between text-[7.5pt] text-[#1E3A5F]/50">
               <div className="flex items-center gap-1">
-                <Award size={10} />
+                <Globe size={10} />
                 <span>{profile?.fullName || "Abdenour Hellas"}</span>
               </div>
               <div>

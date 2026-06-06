@@ -138,6 +138,13 @@ export default function EducationPage() {
               />
               En cours
             </label>
+            <input
+              type="url"
+              placeholder="Lien du certificat (URL)"
+              value={form.url || ""}
+              onChange={(e) => setForm({ ...form, url: e.target.value })}
+              className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+            />
           </div>
           <textarea
             placeholder="Description"
@@ -171,7 +178,7 @@ export default function EducationPage() {
             <GripVertical className="text-muted-foreground cursor-move" size={18} />
             <div className="flex-1">
               <h3 className="font-medium">{edu.degree}</h3>
-              <p className="text-sm text-muted-foreground">{edu.school} · {edu.location}</p>
+              <p className="text-sm text-muted-foreground">{edu.school} · {edu.location}{edu.url ? " · " : ""}{edu.url && <a href={edu.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Certificat ↗</a>}</p>
             </div>
             <div className="flex items-center gap-2">
               <button
