@@ -124,7 +124,7 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
                     {exp.certificateImage && (
                       <button
                         onClick={() => openImage(exp.certificateImage!)}
-                        className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-300 dark:hover:bg-emerald-900/30 px-2 py-1 rounded-md transition-colors"
+                        className="inline-flex items-center gap-1 text-xs font-medium text-[#047857] bg-[#ECFDF5] hover:bg-[#D1FAE5] dark:bg-[#064E3B]/20 dark:text-[#6EE7B7] dark:hover:bg-[#064E3B]/30 px-2 py-1 rounded-md transition-colors"
                       >
                         <ImageIcon size={10} />
                         Voir attestation

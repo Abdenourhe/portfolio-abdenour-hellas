@@ -196,7 +196,7 @@ export default function ContactPage() {
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 p-3 rounded-lg bg-emerald-500/10 text-emerald-700 text-sm"
+                className="flex items-center gap-2 p-3 rounded-lg bg-[#10B981]/10 text-[#047857] text-sm"
               >
                 <CheckCircle size={14} />
                 {t("contact.success")}
