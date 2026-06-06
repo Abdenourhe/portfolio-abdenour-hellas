@@ -31,9 +31,9 @@
 :root {
   --background: #DDE7EF;
   --foreground: #1E293B;
-  --card: #FFFFFF;
+  --card: #F8FAFC;
   --card-foreground: #1E293B;
-  --popover: #FFFFFF;
+  --popover: #F8FAFC;
   --popover-foreground: #1E293B;
   --primary: #1E3A5F;
   --primary-foreground: #FFFFFF;
