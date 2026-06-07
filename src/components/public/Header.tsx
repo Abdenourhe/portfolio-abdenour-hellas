@@ -16,6 +16,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
   const navItems = [
     { href: `/${locale}`, label: messages.nav.home },
     { href: `/${locale}/about`, label: messages.nav.about },
+    { href: `/${locale}/education`, label: messages.nav.education },
     { href: `/${locale}/experience`, label: messages.nav.experience },
     { href: `/${locale}/skills`, label: messages.nav.skills },
     { href: `/${locale}/projects`, label: messages.nav.projects },
