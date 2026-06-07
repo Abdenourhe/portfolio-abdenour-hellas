@@ -56,7 +56,7 @@ export default function OscilloscopeWave() {
       const c = getColors();
       ctx.clearRect(0, 0, width, height);
       if (!document.documentElement.classList.contains("dark")) {
-        ctx.fillStyle = "#E8E4DA";
+        ctx.fillStyle = "#F0EDE6";
         ctx.fillRect(0, 0, width, height);
       }
       const time = t * 0.0018;
