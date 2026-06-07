@@ -6,7 +6,6 @@ import { Testimonial } from "@/types";
 import { Quote, User, ChevronLeft, ChevronRight } from "lucide-react";
 import ElectricCard from "@/components/public/ElectricCard";
 import { Skeleton } from "@/components/public/Skeleton";
-import { useT } from "@/components/public/I18nProvider";
 
 interface TestimonialsSectionProps {
   data?: Testimonial[];
@@ -15,7 +14,6 @@ interface TestimonialsSectionProps {
 }
 
 export default function TestimonialsSection({ data, compact = false, limit }: TestimonialsSectionProps) {
-  const t = useT();
   const [testimonials, setTestimonials] = useState<Testimonial[]>(data || []);
   const [loading, setLoading] = useState(!data);
   const scrollRef = useRef<HTMLDivElement>(null);

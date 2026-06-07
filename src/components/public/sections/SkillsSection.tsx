@@ -16,11 +16,10 @@ const categoryLabels: Record<string, string> = {
 
 interface SkillsSectionProps {
   data?: Skill[];
-  compact?: boolean;
   limit?: number;
 }
 
-export default function SkillsSection({ data, compact = false, limit }: SkillsSectionProps) {
+export default function SkillsSection({ data, limit }: SkillsSectionProps) {
   const t = useT();
   const [skills, setSkills] = useState<Skill[]>(data || []);
   const [loading, setLoading] = useState(!data);
