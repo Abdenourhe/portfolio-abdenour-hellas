@@ -122,7 +122,7 @@ export default function SpellCheck({ text, lang = "fr", onApply, label }: SpellC
       {open && matches.length === 0 && !loading && (
         <div className="absolute z-50 mt-2 w-64 rounded-lg border border-border bg-card shadow-lg p-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-green-600">
+            <span className="text-xs font-medium text-secondary">
               {appliedCount > 0 ? `${appliedCount} correction(s) appliquée(s) ✓` : "Aucune faute détectée ✓"}
             </span>
             <button onClick={() => setOpen(false)} className="text-muted-foreground hover:text-foreground">

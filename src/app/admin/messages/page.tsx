@@ -74,7 +74,7 @@ export default function MessagesPage() {
       <h1 className="text-3xl font-bold mb-8">Messages</h1>
 
       {emailStatus && (
-        <div className={`mb-4 p-3 rounded-lg text-sm font-medium ${emailStatus.sent ? "bg-green-500/10 text-green-600 border border-green-500/20" : "bg-red-500/10 text-red-600 border border-red-500/20"}`}>
+        <div className={`mb-4 p-3 rounded-lg text-sm font-medium ${emailStatus.sent ? "bg-secondary/15 text-secondary border border-secondary/30" : "bg-red-500/10 text-red-600 border border-red-500/20"}`}>
           {emailStatus.sent ? "✓ Email envoyé au contact" : `✗ Erreur email : ${emailStatus.error}`}
           <button onClick={() => setEmailStatus(null)} className="ml-2 text-xs underline">Fermer</button>
         </div>

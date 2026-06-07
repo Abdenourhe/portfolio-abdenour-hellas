@@ -82,7 +82,7 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
             className="relative pl-10 md:pl-14 pb-8 last:pb-0"
           >
             {/* Dot - VERT DISCRET */}
-            <div className="absolute left-2 md:left-3 top-2 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-emerald-700 ring-4 ring-background" />
+            <div className="absolute left-2 md:left-3 top-2 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-secondary ring-4 ring-background" />
 
             {/* Card */}
             <motion.div
@@ -99,7 +99,7 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
                       {exp.current ? t("experience.present") : exp.endDate ? new Date(exp.endDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" }) : ""}
                     </span>
                     {exp.category && (
-                      <span className="text-xs px-1.5 py-0.5 rounded-md bg-emerald-100/50 dark:bg-emerald-900/20 text-emerald-800 dark:text-emerald-400 font-medium">
+                      <span className="text-xs px-1.5 py-0.5 rounded-md bg-secondary/10 dark:bg-secondary/15 text-[#8B6914] dark:text-secondary font-medium">
                         {categoryLabels[exp.category] || exp.category}
                       </span>
                     )}
@@ -124,7 +124,7 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
                     {exp.certificateImage && (
                       <button
                         onClick={() => openImage(exp.certificateImage!)}
-                        className="inline-flex items-center gap-1 text-xs font-medium text-emerald-800 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 px-2 py-1 rounded-md transition-colors"
+                        className="inline-flex items-center gap-1 text-xs font-medium text-[#8B6914] dark:text-secondary bg-secondary/15 dark:bg-secondary/15 hover:bg-secondary/25 dark:hover:bg-secondary/25 px-2 py-1 rounded-md transition-colors"
                       >
                         <ImageIcon size={10} />
                         Voir attestation

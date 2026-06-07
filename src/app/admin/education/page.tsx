@@ -208,7 +208,7 @@ export default function EducationPage() {
             <GripVertical className="text-muted-foreground cursor-move" size={18} />
             <div className="flex-1">
               <h3 className="font-medium">{edu.degree}</h3>
-              <p className="text-sm text-muted-foreground">{edu.school} · {edu.location}{edu.url ? " · " : ""}{edu.url && <a href={edu.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Certificat ↗</a>}{edu.certificateImage && <span className="inline-flex items-center gap-1 ml-2 text-xs text-[#1A3D25]"><ImageIcon size={12} /> Image</span>}</p>
+              <p className="text-sm text-muted-foreground">{edu.school} · {edu.location}{edu.url ? " · " : ""}{edu.url && <a href={edu.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Certificat ↗</a>}{edu.certificateImage && <span className="inline-flex items-center gap-1 ml-2 text-xs text-[#8B6914]"><ImageIcon size={12} /> Image</span>}</p>
             </div>
             <div className="flex items-center gap-2">
               <button

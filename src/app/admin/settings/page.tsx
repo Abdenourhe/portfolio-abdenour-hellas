@@ -197,7 +197,7 @@ export default function SettingsPage() {
               />
             </div>
             {messagePassword && (
-              <p className={`text-sm ${messagePassword.includes("succès") ? "text-green-500" : "text-destructive"}`}>{messagePassword}</p>
+              <p className={`text-sm ${messagePassword.includes("succès") ? "text-secondary" : "text-destructive"}`}>{messagePassword}</p>
             )}
             <button
               type="submit"
@@ -281,7 +281,7 @@ export default function SettingsPage() {
             </div>
             <div>
               <label className="flex items-center gap-2 text-sm font-medium mb-2">
-                <WhatsAppIcon className="text-green-500" size={16} />
+                <WhatsAppIcon className="text-secondary" size={16} />
                 WhatsApp
               </label>
               <input
@@ -295,7 +295,7 @@ export default function SettingsPage() {
           </div>
 
           {messageSocial && (
-            <p className={`text-sm ${messageSocial.includes("succès") ? "text-green-500" : "text-destructive"}`}>{messageSocial}</p>
+            <p className={`text-sm ${messageSocial.includes("succès") ? "text-secondary" : "text-destructive"}`}>{messageSocial}</p>
           )}
 
           <button

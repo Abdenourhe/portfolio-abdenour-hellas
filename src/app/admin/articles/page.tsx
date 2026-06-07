@@ -116,7 +116,7 @@ export default function ArticlesPage() {
               <div className="flex items-center gap-2">
                 <h3 className="font-medium">{a.title}</h3>
                 {a.published ? (
-                  <span className="px-2 py-0.5 text-xs rounded-full bg-green-500/10 text-green-500">Publié</span>
+                  <span className="px-2 py-0.5 text-xs rounded-full bg-secondary/15 text-secondary">Publié</span>
                 ) : (
                   <span className="px-2 py-0.5 text-xs rounded-full bg-muted text-muted-foreground">Brouillon</span>
                 )}
@@ -135,7 +135,7 @@ export default function ArticlesPage() {
               </a>
               <button
                 onClick={() => togglePublished(a)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${a.published ? "bg-green-500" : "bg-muted"}`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${a.published ? "bg-secondary" : "bg-muted"}`}
                 title={a.published ? "Dépublier" : "Publier"}
               >
                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${a.published ? "translate-x-6" : "translate-x-1"}`} />

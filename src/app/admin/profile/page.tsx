@@ -189,7 +189,7 @@ export default function ProfilePage() {
         </div>
 
         {message && (
-          <p className={`text-sm ${(message.includes("succès") || message.includes("prêt")) ? "text-green-500" : "text-destructive"}`}>{message}</p>
+          <p className={`text-sm ${(message.includes("succès") || message.includes("prêt")) ? "text-secondary" : "text-destructive"}`}>{message}</p>
         )}
 
         <button type="submit" disabled={saving} className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50">

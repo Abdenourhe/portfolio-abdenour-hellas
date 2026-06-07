@@ -122,7 +122,7 @@ export default function EducationSection({ data, compact = false, limit }: Educa
                       {edu.certificateImage && (
                         <button
                           onClick={() => openImage(edu.certificateImage!)}
-                          className="inline-flex items-center gap-1 text-xs font-medium text-emerald-800 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 px-2 py-1 rounded-md transition-colors"
+                          className="inline-flex items-center gap-1 text-xs font-medium text-[#8B6914] dark:text-secondary bg-secondary/15 dark:bg-secondary/15 hover:bg-secondary/25 dark:hover:bg-secondary/25 px-2 py-1 rounded-md transition-colors"
                         >
                           <ImageIcon size={10} />
                           Voir certificat
