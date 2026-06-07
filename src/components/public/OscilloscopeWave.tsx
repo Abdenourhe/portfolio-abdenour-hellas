@@ -55,6 +55,10 @@ export default function OscilloscopeWave() {
     const draw = (t: number) => {
       const c = getColors();
       ctx.clearRect(0, 0, width, height);
+      if (!document.documentElement.classList.contains("dark")) {
+        ctx.fillStyle = "#E8E4DA";
+        ctx.fillRect(0, 0, width, height);
+      }
       const time = t * 0.0018;
       const midY = height / 2;
 
