@@ -31,13 +31,35 @@ export default function OscilloscopeWave() {
 
     let rafId: number;
 
+    const getColors = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      return isDark
+        ? {
+            grid: "rgba(148, 163, 184, 0.22)",
+            wave1: "rgba(201, 169, 98, 0.95)",
+            wave2: "rgba(201, 169, 98, 0.50)",
+            wave3: "rgba(96, 165, 250, 0.45)",
+            scan: "rgba(201, 169, 98, 0.50)",
+            glow: "rgba(201, 169, 98, 0.70)",
+          }
+        : {
+            grid: "rgba(30, 58, 95, 0.28)",
+            wave1: "rgba(201, 169, 98, 0.90)",
+            wave2: "rgba(201, 169, 98, 0.45)",
+            wave3: "rgba(30, 58, 95, 0.40)",
+            scan: "rgba(201, 169, 98, 0.40)",
+            glow: "rgba(201, 169, 98, 0.60)",
+          };
+    };
+
     const draw = (t: number) => {
+      const c = getColors();
       ctx.clearRect(0, 0, width, height);
       const time = t * 0.0018;
       const midY = height / 2;
 
       // Oscilloscope grid
-      ctx.strokeStyle = "rgba(30, 58, 95, 0.14)";
+      ctx.strokeStyle = c.grid;
       ctx.lineWidth = 0.4;
       for (let y = 0; y < height; y += 16) {
         ctx.beginPath();
@@ -53,9 +75,9 @@ export default function OscilloscopeWave() {
       }
 
       const waves = [
-        { amp: height * 0.22, freq: 0.008, speed: 1.2, phase: 0, color: "rgba(201, 169, 98, 0.7)", width: 1.4, glow: true },
-        { amp: height * 0.14, freq: 0.012, speed: 1.8, phase: 2, color: "rgba(201, 169, 98, 0.25)", width: 0.9, glow: false },
-        { amp: height * 0.08, freq: 0.006, speed: 0.9, phase: 4, color: "rgba(30, 58, 95, 0.20)", width: 0.7, glow: false },
+        { amp: height * 0.22, freq: 0.008, speed: 1.2, phase: 0, color: c.wave1, width: 1.4, glow: true },
+        { amp: height * 0.14, freq: 0.012, speed: 1.8, phase: 2, color: c.wave2, width: 0.9, glow: false },
+        { amp: height * 0.08, freq: 0.006, speed: 0.9, phase: 4, color: c.wave3, width: 0.7, glow: false },
       ];
 
       for (const wave of waves) {
@@ -68,7 +90,7 @@ export default function OscilloscopeWave() {
         ctx.strokeStyle = wave.color;
         ctx.lineWidth = wave.width;
         if (wave.glow) {
-          ctx.shadowColor = "rgba(201, 169, 98, 0.4)";
+          ctx.shadowColor = c.glow;
           ctx.shadowBlur = 8;
         } else {
           ctx.shadowColor = "transparent";
@@ -85,7 +107,7 @@ export default function OscilloscopeWave() {
       ctx.beginPath();
       ctx.moveTo(scanX, 0);
       ctx.lineTo(scanX, height);
-      ctx.strokeStyle = "rgba(201, 169, 98, 0.18)";
+      ctx.strokeStyle = c.scan;
       ctx.lineWidth = 0.8;
       ctx.stroke();
 
