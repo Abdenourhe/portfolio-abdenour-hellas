@@ -179,7 +179,7 @@ function HomeClient() {
         {/* Subtle background decoration */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-20 right-10 w-72 h-72 bg-primary/[0.08] rounded-full blur-3xl" />
-          <div className="absolute bottom-20 left-10 w-96 h-96 bg-secondary/[0.10] rounded-full blur-3xl" />
+          <div className="absolute bottom-20 left-10 w-96 h-96 bg-emerald-500/[0.10] rounded-full blur-3xl" />
         </div>
 
         <div className="container mx-auto max-w-5xl relative z-10">
@@ -193,7 +193,7 @@ function HomeClient() {
             >
               <ElectricHalo />
               <div
-                className="relative z-10 w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 rounded-full overflow-hidden ring-[3px] ring-secondary/30 ring-offset-4 ring-offset-background shadow-2xl cursor-pointer group"
+                className="relative z-10 w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 rounded-full overflow-hidden ring-[3px] ring-emerald-500/30 ring-offset-4 ring-offset-background shadow-2xl cursor-pointer group"
                 onClick={() => profile?.photoUrl && setLightboxOpen(true)}
               >
                 {profile?.photoUrl ? (
@@ -228,12 +228,12 @@ function HomeClient() {
               animate="visible"
               className="text-center lg:text-left max-w-xl"
             >
-              {/* BADGE CORRIGE - utilise secondary/10 au lieu de #E0F3E4 */}
+              {/* BADGE VERT */}
               <motion.div variants={heroItem} className="mb-4">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-secondary/30 bg-secondary/10 text-secondary text-xs tracking-wide">
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs tracking-wide">
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary" />
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                   </span>
                   {locale === "fr" ? "Disponible pour de nouvelles opportunités" : locale === "ar" ? "متاح لفرص جديدة" : "Open to new opportunities"}
                 </span>
@@ -241,7 +241,7 @@ function HomeClient() {
 
               <motion.p
                 variants={heroItem}
-                className="text-xs font-medium text-secondary tracking-[0.2em] uppercase mb-4"
+                className="text-xs font-medium text-emerald-600 dark:text-emerald-400 tracking-[0.2em] uppercase mb-4"
               >
                 {t("hero.greeting")}
               </motion.p>
@@ -269,7 +269,7 @@ function HomeClient() {
                   variants={heroItem}
                   className="mt-3 text-sm text-muted-foreground flex items-center gap-1.5 justify-center lg:justify-start"
                 >
-                  <MapPin size={14} className="text-secondary" />
+                  <MapPin size={14} className="text-emerald-600 dark:text-emerald-400" />
                   {profile.location}
                 </motion.p>
               )}
@@ -329,7 +329,7 @@ function HomeClient() {
       </section>
 
       {/* Stats Bar */}
-      <section className="py-10 border-y border-border/60 bg-muted/50">
+      <section className="py-10 border-y border-border/60 bg-emerald-50/50 dark:bg-muted/50">
         <div className="container mx-auto max-w-5xl px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             {stats.map((stat, index) => (
@@ -341,10 +341,10 @@ function HomeClient() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/15 mb-3">
-                  <stat.icon className="w-5 h-5 text-primary/70" />
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-500/15 mb-3">
+                  <stat.icon className="w-5 h-5 text-emerald-600/70 dark:text-emerald-400/70" />
                 </div>
-                <div className="text-3xl font-bold text-primary tabular-nums">
+                <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                   <AnimatedNumber value={stat.value} suffix={stat.suffix} />
                 </div>
                 <div className="text-xs text-muted-foreground mt-1 uppercase tracking-wider font-medium">
@@ -367,7 +367,7 @@ function HomeClient() {
       </section>
 
       {/* Education */}
-      <section id="education" className="py-20 lg:py-32 bg-muted/20">
+      <section id="education" className="py-20 lg:py-32 bg-emerald-50/30 dark:bg-muted/20">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("education.title")} subtitle={t("education.subtitle")} />
           <div className="mt-12">
@@ -387,7 +387,7 @@ function HomeClient() {
       </section>
 
       {/* Projects */}
-      <section id="projects" className="py-20 lg:py-32 bg-muted/20">
+      <section id="projects" className="py-20 lg:py-32 bg-emerald-50/30 dark:bg-muted/20">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("projects.title")} subtitle={t("projects.subtitle")} />
           <div className="mt-12">
@@ -407,7 +407,7 @@ function HomeClient() {
       </section>
 
       {/* Blog */}
-      <section id="blog" className="py-20 lg:py-32 bg-muted/20">
+      <section id="blog" className="py-20 lg:py-32 bg-emerald-50/30 dark:bg-muted/20">
         <div className="container mx-auto max-w-5xl px-4">
           <SectionHeader title={t("blog.title")} subtitle={t("blog.subtitle")} />
           <div className="mt-12">
@@ -420,7 +420,7 @@ function HomeClient() {
       <section className="py-20 lg:py-28 bg-primary text-primary-foreground relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/[0.03] rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-72 h-72 bg-secondary/[0.08] rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-emerald-500/[0.08] rounded-full blur-3xl" />
         </div>
         <div className="container mx-auto max-w-5xl px-4 relative z-10 text-center">
           <motion.h2
@@ -450,7 +450,7 @@ function HomeClient() {
           >
             <Link
               href={contactPath}
-              className="inline-flex items-center gap-2 px-8 py-4 bg-secondary text-secondary-foreground rounded-lg text-base font-semibold hover:bg-secondary/90 transition-colors shadow-lg shadow-black/20"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-emerald-500 text-white rounded-lg text-base font-semibold hover:bg-emerald-600 transition-colors shadow-lg shadow-black/20"
             >
               <Send size={18} />
               {t("hero.contactMe")}
