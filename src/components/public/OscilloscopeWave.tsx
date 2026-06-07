@@ -57,8 +57,8 @@ export default function OscilloscopeWave() {
       ctx.clearRect(0, 0, width, height);
       if (!document.documentElement.classList.contains("dark")) {
         const grad = ctx.createLinearGradient(0, 0, 0, height);
-        grad.addColorStop(0, "#F5F2EC");
-        grad.addColorStop(1, "#EDEAE3");
+        grad.addColorStop(0, "#FAF8F5");
+        grad.addColorStop(1, "#E0DCD0");
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, width, height);
       }
