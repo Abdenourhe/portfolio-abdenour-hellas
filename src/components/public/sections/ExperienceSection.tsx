@@ -81,8 +81,8 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
             variants={fadeUpItem}
             className="relative pl-10 md:pl-14 pb-8 last:pb-0"
           >
-            {/* Dot */}
-            <div className="absolute left-2 md:left-3 top-2 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-emerald-500 ring-4 ring-background" />
+            {/* Dot - VERT DISCRET */}
+            <div className="absolute left-2 md:left-3 top-2 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-emerald-700 ring-4 ring-background" />
 
             {/* Card */}
             <motion.div
@@ -91,7 +91,7 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
               className="group"
             >
               <ElectricCard className="rounded-xl h-full">
-                <div className={`bg-emerald-50/50 dark:bg-card hover:shadow-lg transition-all h-full rounded-xl ${compact ? "p-4" : "p-5"}`}>
+                <div className={`bg-slate-50/50 dark:bg-card hover:shadow-lg transition-all h-full rounded-xl ${compact ? "p-4" : "p-5"}`}>
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary bg-primary/15 px-2 py-0.5 rounded-md">
                       <Briefcase size={11} />
@@ -99,7 +99,7 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
                       {exp.current ? t("experience.present") : exp.endDate ? new Date(exp.endDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" }) : ""}
                     </span>
                     {exp.category && (
-                      <span className="text-xs px-1.5 py-0.5 rounded-md bg-emerald-100/50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-medium">
+                      <span className="text-xs px-1.5 py-0.5 rounded-md bg-emerald-100/50 dark:bg-emerald-900/20 text-emerald-800 dark:text-emerald-400 font-medium">
                         {categoryLabels[exp.category] || exp.category}
                       </span>
                     )}
@@ -124,7 +124,7 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
                     {exp.certificateImage && (
                       <button
                         onClick={() => openImage(exp.certificateImage!)}
-                        className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-100/50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 px-2 py-1 rounded-md transition-colors"
+                        className="inline-flex items-center gap-1 text-xs font-medium text-emerald-800 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 px-2 py-1 rounded-md transition-colors"
                       >
                         <ImageIcon size={10} />
                         Voir attestation

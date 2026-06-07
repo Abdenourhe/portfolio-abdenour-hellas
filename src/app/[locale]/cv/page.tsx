@@ -100,8 +100,8 @@ export default function CVPage() {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
         <div className="max-w-[210mm] mx-auto animate-pulse space-y-6">
-          <div className="h-32 bg-emerald-50/50 dark:bg-muted rounded-xl" />
-          <div className="h-96 bg-emerald-50/50 dark:bg-muted rounded-xl" />
+          <div className="h-32 bg-slate-100/50 dark:bg-muted rounded-xl" />
+          <div className="h-96 bg-slate-100/50 dark:bg-muted rounded-xl" />
         </div>
       </div>
     );
@@ -132,10 +132,10 @@ export default function CVPage() {
   const otherExperiences = experiences.filter((e: any) => otherTitles.some((ot) => e.title.toLowerCase().includes(ot)));
 
   const headerContact = [
-    { key: "email", show: profile?.email, icon: <Mail size={13} className="text-emerald-600" />, text: profile?.email, href: profile?.email ? `mailto:${profile.email}` : "#" },
-    { key: "phone", show: profile?.phone, icon: <Phone size={13} className="text-emerald-600" />, text: profile?.phone, href: profile?.phone ? `tel:${profile.phone.replace(/\s+/g, "")}` : "#" },
-    { key: "location", show: profile?.location, icon: <MapPin size={13} className="text-emerald-600" />, text: profile?.location, href: profile?.location ? mapPinHref(profile.location) : "#" },
-    { key: "linkedin", show: profile?.linkedin, icon: <Globe size={13} className="text-emerald-600" />, text: profile?.linkedin?.replace(/^https?:\/\//, ""), href: profile?.linkedin || "#" },
+    { key: "email", show: profile?.email, icon: <Mail size={13} className="text-emerald-700" />, text: profile?.email, href: profile?.email ? `mailto:${profile.email}` : "#" },
+    { key: "phone", show: profile?.phone, icon: <Phone size={13} className="text-emerald-700" />, text: profile?.phone, href: profile?.phone ? `tel:${profile.phone.replace(/\s+/g, "")}` : "#" },
+    { key: "location", show: profile?.location, icon: <MapPin size={13} className="text-emerald-700" />, text: profile?.location, href: profile?.location ? mapPinHref(profile.location) : "#" },
+    { key: "linkedin", show: profile?.linkedin, icon: <Globe size={13} className="text-emerald-700" />, text: profile?.linkedin?.replace(/^https?:\/\//, ""), href: profile?.linkedin || "#" },
   ];
 
   return (
@@ -178,13 +178,13 @@ export default function CVPage() {
         <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] print:block">
 
           {/* Left sidebar */}
-          <aside className="px-5 py-6 md:px-10 md:py-10 bg-emerald-50/50 dark:bg-muted border-r-0 md:border-r border-border dark:border-border print:float-left print:w-[65mm] print:bg-emerald-50/50 print:border-r print:border-border print:px-[6mm] print:py-[8mm]"
+          <aside className="px-5 py-6 md:px-10 md:py-10 bg-slate-100/50 dark:bg-muted border-r-0 md:border-r border-border dark:border-border print:float-left print:w-[65mm] print:bg-slate-100/50 print:border-r print:border-border print:px-[6mm] print:py-[8mm]"
             style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}>
 
             {/* Skills */}
             {techSkills.length > 0 && (
               <section className="mb-6 md:mb-8 print:mb-4">
-                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-3 pb-2 border-b border-emerald-500">{t("cv.skills")}</h2>
+                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-3 pb-2 border-b border-emerald-700">{t("cv.skills")}</h2>
                 <div className="space-y-3">
                   {Array.from(new Map(techSkills.map((s: any) => [s.category, s])).entries()).map(([cat]: [string, any]) => cat).filter(Boolean).map((cat: string) => {
                     const catSkills = techSkills.filter((s: any) => s.category === cat);
@@ -196,10 +196,10 @@ export default function CVPage() {
                             <div key={skill.id}>
                               <div className="flex items-center justify-between text-sm md:text-xs mb-0.5">
                                 <span className="text-primary dark:text-foreground font-medium">{skill.name}</span>
-                                <span className="text-sm md:text-xs font-semibold text-emerald-600">{skill.level}%</span>
+                                <span className="text-sm md:text-xs font-semibold text-emerald-700">{skill.level}%</span>
                               </div>
                               <div className="h-1.5 md:h-1 bg-primary/10 dark:bg-foreground/10 rounded-full overflow-hidden">
-                                <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${skill.level}%`, printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }} />
+                                <div className="h-full bg-emerald-700 rounded-full" style={{ width: `${skill.level}%`, printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }} />
                               </div>
                             </div>
                           ))}
@@ -214,12 +214,12 @@ export default function CVPage() {
             {/* Languages */}
             {languages.length > 0 && (
               <section className="mb-6 md:mb-8 print:mb-4">
-                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-3 pb-2 border-b border-emerald-500">
+                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-3 pb-2 border-b border-emerald-700">
                   {locale === "fr" ? "Langues" : locale === "en" ? "Languages" : "اللغات"}
                 </h2>
                 <div className="flex flex-wrap gap-1.5">
                   {languages.map((lang: any) => (
-                    <span key={lang.id} className="inline-block text-sm md:text-xs px-2 py-0.5 rounded-sm border border-emerald-500/30 dark:border-foreground/30 text-primary dark:text-foreground font-medium">
+                    <span key={lang.id} className="inline-block text-sm md:text-xs px-2 py-0.5 rounded-sm border border-emerald-700/30 dark:border-foreground/30 text-primary dark:text-foreground font-medium">
                       {lang.name} · {lang.level}%
                     </span>
                   ))}
@@ -230,12 +230,12 @@ export default function CVPage() {
             {/* Education */}
             {education.length > 0 && (
               <section className="mb-6 md:mb-8 print:mb-4">
-                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-3 pb-2 border-b border-emerald-500">{t("cv.education")}</h2>
+                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-3 pb-2 border-b border-emerald-700">{t("cv.education")}</h2>
                 <div className="space-y-4 print:space-y-3">
                   {education.map((edu: any) => (
                     <div key={edu.id} className="break-inside-avoid">
                       <h3 className="font-bold text-sm md:text-xs text-primary dark:text-foreground leading-snug">{edu.degree}</h3>
-                      <p className="text-sm md:text-xs text-emerald-600 font-semibold mt-0.5">
+                      <p className="text-sm md:text-xs text-emerald-700 font-semibold mt-0.5">
                         {edu.school}{edu.location ? ` — ${edu.location}` : ""}
                         {edu.url && (
                           <a href={edu.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 text-primary hover:underline">
@@ -260,12 +260,12 @@ export default function CVPage() {
             {/* Interests */}
             {interests && interests.length > 0 && (
               <section>
-                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-3 pb-2 border-b border-emerald-500">
+                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-3 pb-2 border-b border-emerald-700">
                   {locale === "fr" ? "Centres d’intérêt" : locale === "en" ? "Interests" : "الاهتمامات"}
                 </h2>
                 <div className="flex flex-wrap gap-1.5">
                   {interests.map((interest: any) => (
-                    <span key={interest.id} className="inline-block text-sm md:text-xs px-2 py-0.5 rounded-sm bg-emerald-100/50 dark:bg-emerald-500/10 text-primary dark:text-foreground font-medium"
+                    <span key={interest.id} className="inline-block text-sm md:text-xs px-2 py-0.5 rounded-sm bg-emerald-100/50 dark:bg-emerald-900/20 text-primary dark:text-foreground font-medium"
                       style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}>
                       {interest.name}
                     </span>
@@ -281,7 +281,7 @@ export default function CVPage() {
             {/* Profile */}
             {getBio() && (
               <section className="mb-6 md:mb-8 break-inside-avoid">
-                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-3 pb-2 border-b border-emerald-500">{t("cv.profile")}</h2>
+                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-3 pb-2 border-b border-emerald-700">{t("cv.profile")}</h2>
                 <p className="text-base md:text-sm leading-relaxed text-foreground">{getBio()}</p>
               </section>
             )}
@@ -289,7 +289,7 @@ export default function CVPage() {
             {/* Experience Main */}
             {mainExperiences.length > 0 && (
               <section className="mb-6 md:mb-8 print:mb-4">
-                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-4 pb-2 border-b border-emerald-500">{t("cv.experience")}</h2>
+                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-4 pb-2 border-b border-emerald-700">{t("cv.experience")}</h2>
                 <div className="space-y-6 print:space-y-3">
                   {mainExperiences.map((exp: any) => {
                     const bullets = toBullets(exp.description);
@@ -301,7 +301,7 @@ export default function CVPage() {
                             {formatDate(exp.startDate, false)} — {exp.current ? t("experience.present") : formatDate(exp.endDate, false)}
                           </span>
                         </div>
-                        <p className="text-base md:text-sm font-semibold text-emerald-600 mt-1">
+                        <p className="text-base md:text-sm font-semibold text-emerald-700 mt-1">
                           {exp.company}{exp.location ? ` — ${exp.location}` : ""}
                           {exp.url && (
                             <a href={exp.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 text-primary hover:underline">
@@ -318,7 +318,7 @@ export default function CVPage() {
                           <ul className="mt-2.5 space-y-1.5">
                             {bullets.map((b, i) => (
                               <li key={i} className="text-base md:text-sm text-muted-foreground leading-relaxed flex items-start gap-2.5">
-                                <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-emerald-500" />
+                                <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-emerald-700" />
                                 <span>{b}</span>
                               </li>
                             ))}
@@ -336,7 +336,7 @@ export default function CVPage() {
             {/* Experience Other */}
             {otherExperiences.length > 0 && (
               <section className="mb-6 md:mb-8 print:mb-4">
-                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-3 pb-2 border-b border-emerald-500">
+                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-3 pb-2 border-b border-emerald-700">
                   {locale === "fr" ? "Autres expériences" : locale === "en" ? "Other Experience" : "خبرات أخرى"}
                 </h2>
                 <div className="space-y-4 print:space-y-3">
@@ -346,7 +346,7 @@ export default function CVPage() {
                       <div key={exp.id}>
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5">
                           <p className="text-sm md:text-xs font-semibold text-primary dark:text-foreground">
-                            {exp.title} — <span className="text-emerald-600">{exp.company}</span>
+                            {exp.title} — <span className="text-emerald-700">{exp.company}</span>
                             {exp.url && (
                               <a href={exp.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 text-primary hover:underline">
                                 <ExternalLink size={10} /> Attestation
@@ -366,7 +366,7 @@ export default function CVPage() {
                           <ul className="mt-2 space-y-1">
                             {bullets.map((b, i) => (
                               <li key={i} className="text-sm md:text-xs text-foreground/80 dark:text-foreground/80 leading-relaxed flex items-start gap-2">
-                                <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-emerald-500" />
+                                <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-emerald-700" />
                                 <span>{b}</span>
                               </li>
                             ))}
@@ -384,7 +384,7 @@ export default function CVPage() {
             {/* Projects */}
             {featuredProjects.length > 0 && (
               <section>
-                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-4 pb-2 border-b border-emerald-500">{t("projects.title")}</h2>
+                <h2 className="text-base md:text-sm font-bold uppercase tracking-[0.14em] text-primary dark:text-foreground mb-4 pb-2 border-b border-emerald-700">{t("projects.title")}</h2>
                 <div className="space-y-4 print:space-y-3">
                   {featuredProjects.map((project: any) => (
                     <div key={project.id}>
@@ -392,7 +392,7 @@ export default function CVPage() {
                       <p className="text-base md:text-sm text-muted-foreground mt-1.5 leading-relaxed">{project.description}</p>
                       <div className="flex flex-wrap gap-1.5 mt-2">
                         {project.technologies.slice(0, 6).map((tech: string) => (
-                          <span key={tech} className="text-sm md:text-xs px-1.5 py-0.5 rounded-sm bg-emerald-100/50 dark:bg-emerald-500/10 text-primary dark:text-foreground font-medium">{tech}</span>
+                          <span key={tech} className="text-sm md:text-xs px-1.5 py-0.5 rounded-sm bg-emerald-100/50 dark:bg-emerald-900/10 text-primary dark:text-foreground font-medium">{tech}</span>
                         ))}
                       </div>
                     </div>
@@ -495,7 +495,7 @@ export default function CVPage() {
                         <ul className="mt-1 space-y-0.5">
                           {toBullets(exp.description).map((b: string, i: number) => (
                             <li key={i} className="text-[9pt] text-primary/80 leading-snug flex items-start gap-1.5">
-                              <span className="mt-1 shrink-0 w-1 h-1 rounded-full bg-emerald-500" />
+                              <span className="mt-1 shrink-0 w-1 h-1 rounded-full bg-emerald-700" />
                               <span>{b}</span>
                             </li>
                           ))}
