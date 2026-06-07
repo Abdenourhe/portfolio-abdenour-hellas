@@ -230,10 +230,10 @@ function HomeClient() {
             >
               {/* BADGE VERT DISCRET - seul élément vert vif */}
               <motion.div variants={heroItem} className="mb-4">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-secondary/40 bg-secondary/15 text-[#8B6914] dark:text-secondary text-xs tracking-wide">
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#059669]/30 bg-[#ECFDF5] text-[#065F46] dark:text-[#34D399] text-xs tracking-wide">
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary" />
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#059669] opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#059669]" />
                   </span>
                   {locale === "fr" ? "Disponible pour de nouvelles opportunités" : locale === "ar" ? "متاح لفرص جديدة" : "Open to new opportunities"}
                 </span>
