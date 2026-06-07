@@ -26,6 +26,7 @@
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --font-serif: var(--font-serif), Georgia, "Times New Roman", serif;
+  --font-bauhaus: var(--font-comfortaa), system-ui, sans-serif;
 }
 
 :root {
