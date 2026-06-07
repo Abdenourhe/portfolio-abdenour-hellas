@@ -100,8 +100,8 @@ export default function CVPage() {
     return (
       <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
         <div className="max-w-[210mm] mx-auto animate-pulse space-y-6">
-          <div className="h-32 bg-slate-100/50 dark:bg-muted rounded-xl" />
-          <div className="h-96 bg-slate-100/50 dark:bg-muted rounded-xl" />
+          <div className="h-32 bg-muted dark:bg-muted rounded-xl" />
+          <div className="h-96 bg-muted dark:bg-muted rounded-xl" />
         </div>
       </div>
     );
@@ -178,7 +178,7 @@ export default function CVPage() {
         <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] print:block">
 
           {/* Left sidebar */}
-          <aside className="px-5 py-6 md:px-10 md:py-10 bg-slate-100/50 dark:bg-muted border-r-0 md:border-r border-border dark:border-border print:float-left print:w-[65mm] print:bg-slate-100/50 print:border-r print:border-border print:px-[6mm] print:py-[8mm]"
+          <aside className="px-5 py-6 md:px-10 md:py-10 bg-muted dark:bg-muted border-r-0 md:border-r border-border dark:border-border print:float-left print:w-[65mm] print:bg-muted print:border-r print:border-border print:px-[6mm] print:py-[8mm]"
             style={{ printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}>
 
             {/* Skills */}

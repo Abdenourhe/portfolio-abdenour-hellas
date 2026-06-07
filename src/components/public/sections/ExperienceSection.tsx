@@ -91,7 +91,7 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
               className="group"
             >
               <ElectricCard className="rounded-xl h-full">
-                <div className={`bg-slate-50/50 dark:bg-card hover:shadow-lg transition-all h-full rounded-xl ${compact ? "p-4" : "p-5"}`}>
+                <div className={`bg-card dark:bg-card hover:shadow-lg transition-all h-full rounded-xl ${compact ? "p-4" : "p-5"}`}>
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary bg-primary/15 px-2 py-0.5 rounded-md">
                       <Briefcase size={11} />

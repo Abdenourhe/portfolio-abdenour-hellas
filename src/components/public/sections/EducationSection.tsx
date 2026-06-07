@@ -51,7 +51,7 @@ export default function EducationSection({ data, compact = false, limit }: Educa
     return (
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="rounded-xl border border-border bg-slate-50/50 dark:bg-card p-5 space-y-3">
+          <div key={i} className="rounded-xl border border-border bg-card dark:bg-card p-5 space-y-3">
             <SkeletonList count={1} />
           </div>
         ))}
@@ -79,7 +79,7 @@ export default function EducationSection({ data, compact = false, limit }: Educa
             className="group"
           >
             <ElectricCard className="rounded-xl h-full">
-              <div className={`bg-slate-50/50 dark:bg-card hover:shadow-lg transition-all h-full rounded-xl ${compact ? "p-4" : "p-5"}`}>
+              <div className={`bg-card dark:bg-card hover:shadow-lg transition-all h-full rounded-xl ${compact ? "p-4" : "p-5"}`}>
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-primary/15 flex items-center justify-center mt-0.5">
                     <GraduationCap className="w-4 h-4 text-primary/70" />
