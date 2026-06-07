@@ -241,7 +241,7 @@ function HomeClient() {
 
               <motion.p
                 variants={heroItem}
-                className="font-[family-name:var(--font-serif)] text-sm font-medium text-secondary tracking-[0.15em] uppercase mb-4"
+                className="text-lg font-light italic text-secondary tracking-wide mb-4"
               >
                 {t("hero.greeting")}
               </motion.p>
