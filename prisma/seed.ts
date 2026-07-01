@@ -27,7 +27,7 @@ async function main() {
       title: "Spécialiste en génie électrique & développement web",
       titleEn: "Electrical Engineering Specialist & Web Developer",
       titleAr: "أخصائي في الهندسة الكهربائية وتطوير الويب",
-      email: "contact@abdenour-hellas.online",
+      email: "abdenour.hellas@uqat.ca",
       phone: "+1 418-350-5686",
       location: "Baker-Brook, NB, Canada, E7A 1T9",
       bio: "Spécialiste en génie électrique avec double compétence en développement web, orienté vers la conception de systèmes électriques collaboratifs et l'automatisation industrielle. 5+ ans d'expérience internationale (Algérie, Canada) en maintenance, supervision et conception. Passionné par l'innovation énergétique et les solutions numériques. Recherche des opportunités en Canada, Europe et à l'international.",
