@@ -148,7 +148,7 @@ async function main() {
 
   const educations = [
     {
-      degree: "M.D. Génie Électrique",
+      degree: "M.Eng. Génie Électrique",
       school: "UQAT",
       location: "Rouyn-Noranda, QC",
       startDate: new Date("2023-05-01"),
@@ -210,14 +210,14 @@ async function main() {
       degree: "ASP Construction (Santé & Sécurité)",
       school: "Centre Polymétier",
       location: "Rouyn-Noranda, QC",
-      startDate: new Date("2024-09-01"),
+      startDate: new Date("2024-08-01"),
       endDate: new Date("2024-10-01"),
       current: false,
       description: "Santé et sécurité générale sur les chantiers de construction",
       order: 6,
     },
     {
-      degree: "Licence Sciences Expérimentales",
+      degree: "Baccalauréat Sciences Expérimentales",
       school: "Lycée Kser Bellazma",
       location: "Algérie",
       startDate: new Date("2012-09-01"),
@@ -232,22 +232,26 @@ async function main() {
   }
 
   const skills = [
-    { name: "Microsoft Office", category: "logiciel", level: 90, icon: "FileText", order: 0 },
+    { name: "Excel avancé", category: "logiciel", level: 90, icon: "FileText", order: 0 },
     { name: "Proteus 8", category: "logiciel", level: 85, icon: "Cpu", order: 1 },
     { name: "SolidWorks", category: "logiciel", level: 80, icon: "Box", order: 2 },
     { name: "MATLAB", category: "logiciel", level: 75, icon: "BarChart3", order: 3 },
-    { name: "Génie Électrique", category: "technique", level: 90, icon: "Zap", order: 4 },
-    { name: "Électromécanique", category: "technique", level: 85, icon: "Settings", order: 5 },
-    { name: "Réseaux Informatiques", category: "technique", level: 80, icon: "Network", order: 6 },
-    { name: "Maintenance Industrielle", category: "technique", level: 85, icon: "Wrench", order: 7 },
-    { name: "Systèmes Radar", category: "technique", level: 80, icon: "Radar", order: 8 },
-    { name: "Arabe", category: "langue", level: 100, icon: "Globe", order: 9 },
-    { name: "Français", category: "langue", level: 85, icon: "Globe", order: 10 },
-    { name: "Anglais", category: "langue", level: 60, icon: "Globe", order: 11 },
-    { name: "Leadership", category: "soft", level: 90, icon: "Users", order: 12 },
-    { name: "Autonomie", category: "soft", level: 95, icon: "UserCheck", order: 13 },
-    { name: "Travail d'équipe", category: "soft", level: 85, icon: "UsersRound", order: 14 },
-    { name: "Rigueur", category: "soft", level: 90, icon: "ShieldCheck", order: 15 },
+    { name: "AutoCAD", category: "logiciel", level: 75, icon: "Box", order: 4 },
+    { name: "Génie Électrique", category: "technique", level: 90, icon: "Zap", order: 5 },
+    { name: "Électromécanique", category: "technique", level: 85, icon: "Settings", order: 6 },
+    { name: "Instrumentation & Systèmes Embarqués", category: "technique", level: 85, icon: "Cpu", order: 7 },
+    { name: "Réseaux Informatiques", category: "technique", level: 80, icon: "Network", order: 8 },
+    { name: "Maintenance Industrielle", category: "technique", level: 85, icon: "Wrench", order: 9 },
+    { name: "Normes CQE / CEC / NFPA 70", category: "technique", level: 80, icon: "ShieldCheck", order: 10 },
+    { name: "Next.js / React / TypeScript", category: "technique", level: 85, icon: "Code", order: 11 },
+    { name: "Git / GitHub", category: "logiciel", level: 80, icon: "Code", order: 12 },
+    { name: "Arabe", category: "langue", level: 100, icon: "Globe", order: 13 },
+    { name: "Français", category: "langue", level: 90, icon: "Globe", order: 14 },
+    { name: "Anglais", category: "langue", level: 80, icon: "Globe", order: 15 },
+    { name: "Leadership", category: "soft", level: 90, icon: "Users", order: 16 },
+    { name: "Autonomie", category: "soft", level: 95, icon: "UserCheck", order: 17 },
+    { name: "Travail d'équipe", category: "soft", level: 85, icon: "UsersRound", order: 18 },
+    { name: "Rigueur", category: "soft", level: 90, icon: "ShieldCheck", order: 19 },
   ];
 
   for (const skill of skills) {
@@ -257,17 +261,24 @@ async function main() {
   const projects = [
     {
       title: "TAHFIDZ",
-      description: "Plateforme SaaS complète pour la gestion des écoles coraniques. Système multi-utilisateurs (admin, enseignant, parent, élève) avec suivi de mémorisation, évaluations, présences, certificats et notifications.",
+      description: "Plateforme SaaS complète pour la gestion des écoles coraniques. Système multi-utilisateurs (admin, enseignant, parent, élève) avec suivi de mémorisation, évaluations, présences, certificats et notifications. Développé depuis 2024.",
       technologies: ["Next.js 15", "TypeScript", "Prisma", "PostgreSQL", "Tailwind CSS", "NextAuth.js", "i18n"],
       featured: true,
       order: 0,
     },
     {
-      title: "Radar Avancé",
-      description: "Projet de fin d'études à l'UQAT. Conception et réalisation d'un système radar avancé pour applications de détection et de surveillance.",
-      technologies: ["Électronique", "Signal Processing", "MATLAB"],
+      title: "CCI Montmagny",
+      description: "Conception et développement complet du site web pour le Centre Culturel Islamique de Montmagny. Site vitrine communautaire avec présentation institutionnelle, horaires de prière, actualités et événements. Projet livré en 2026.",
+      technologies: ["Next.js 15", "React", "TypeScript", "Tailwind CSS", "Prisma", "PostgreSQL", "Vercel"],
       featured: true,
       order: 1,
+    },
+    {
+      title: "Radar Avancé",
+      description: "Projet de fin d'études à l'UQAT (2024-2025). Conception et réalisation d'un système radar avancé pour applications de détection et de surveillance.",
+      technologies: ["Électronique", "Signal Processing", "MATLAB"],
+      featured: true,
+      order: 2,
     },
     {
       title: "Radar PIC",
