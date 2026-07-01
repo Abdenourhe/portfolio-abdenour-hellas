@@ -23,7 +23,8 @@ export function middleware(request: NextRequest) {
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
     pathname.startsWith("/images") ||
-    pathname.startsWith("/uploads")
+    pathname.startsWith("/uploads") ||
+    pathname.startsWith("/cv/")
   ) {
     return NextResponse.next();
   }
@@ -65,5 +66,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next|favicon|images|uploads).*)"],
+  matcher: ["/((?!api|_next|favicon|images|uploads|cv).*)]"],
 };
