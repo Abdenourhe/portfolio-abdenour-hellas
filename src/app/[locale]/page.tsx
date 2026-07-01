@@ -84,9 +84,8 @@ function HomeClient() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type: "cv_download" }),
     });
-    if (profile?.cvUrl) {
-      window.open(profile.cvUrl, "_blank");
-    }
+    const cvUrl = profile?.cvUrl || "/cv/Abdenour_Hellas_CV.pdf";
+    window.open(cvUrl, "_blank");
   };
 
   const getBio = useCallback(() => {

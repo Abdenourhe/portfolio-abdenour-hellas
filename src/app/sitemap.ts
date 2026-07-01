@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://portfolio-abdenour-hellas.vercel.app";
+  const baseUrl = "https://abdenour-hellas.online";
   const locales = ["fr", "en", "ar"];
   const routes = ["", "about", "cv", "contact", "blog", "experience", "education", "skills", "projects", "testimonials"];
 

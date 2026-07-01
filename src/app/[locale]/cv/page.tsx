@@ -71,7 +71,8 @@ export default function CVPage() {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type: "cv_download" }),
     });
-    window.print();
+    const cvUrl = profile?.cvUrl || "/cv/Abdenour_Hellas_CV.pdf";
+    window.open(cvUrl, "_blank");
   };
 
   const formatDate = (date: string | null, current: boolean) => {

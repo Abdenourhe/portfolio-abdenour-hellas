@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin", "/api"],
     },
-    sitemap: "https://portfolio-abdenour-hellas.vercel.app/sitemap.xml",
+    sitemap: "https://abdenour-hellas.online/sitemap.xml",
   };
 }

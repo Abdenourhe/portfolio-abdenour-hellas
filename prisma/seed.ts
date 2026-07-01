@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  const adminEmail = (process.env.ADMIN_EMAIL || "abdenour.hellas@uqat.ca").toLowerCase().trim();
+  const adminEmail = (process.env.ADMIN_EMAIL || "contact@abdenour-hellas.online").toLowerCase().trim();
   const adminPassword = process.env.ADMIN_PASSWORD || "Abdenour2026!";
   const hashedPassword = await bcrypt.hash(adminPassword, 10);
   await prisma.user.upsert({
@@ -24,17 +24,17 @@ async function main() {
     create: {
       id: "1",
       fullName: "Abdenour Hellas",
-      title: "Ingénieur en Génie Électrique",
-      titleEn: "Electrical Engineer",
-      titleAr: "مهندس كهرباء",
-      email: "Abdenour.Hellas@uqat.ca",
-      phone: "418-350-5686",
-      location: "3490 Rue Principale, Baker-Brook, NB E7A 1Z6",
-      bio: "Déterminé, sérieux, autonome et conscient du travail qui m'attend, je suis persuadé que je serais un élément moteur au sein de votre structure !",
-      bioEn: "Determined, serious, autonomous and aware of the work ahead of me, I am convinced that I would be a driving force within your organization!",
-      bioAr: "مصمم وجاد ومستقل وواعٍ بالعمل الذي ينتظرني، أنا مقتنع بأنني سأكون عنصرًا محركًا داخل مؤسستك!",
-      linkedin: "https://linkedin.com",
-      github: "https://github.com",
+      title: "Spécialiste en génie électrique & développement web",
+      titleEn: "Electrical Engineering Specialist & Web Developer",
+      titleAr: "أخصائي في الهندسة الكهربائية وتطوير الويب",
+      email: "contact@abdenour-hellas.online",
+      phone: "+1 418-350-5686",
+      location: "Baker-Brook, NB, Canada, E7A 1T9",
+      bio: "Spécialiste en génie électrique avec double compétence en développement web, orienté vers la conception de systèmes électriques collaboratifs et l'automatisation industrielle. 5+ ans d'expérience internationale (Algérie, Canada) en maintenance, supervision et conception. Passionné par l'innovation énergétique et les solutions numériques. Recherche des opportunités en Canada, Europe et à l'international.",
+      bioEn: "Electrical engineering specialist with dual expertise in web development, focused on collaborative electrical systems design and industrial automation. 5+ years of international experience (Algeria, Canada) in maintenance, supervision and design. Passionate about energy innovation and digital solutions. Seeking opportunities in Canada, Europe and internationally.",
+      bioAr: "أخصائي في الهندسة الكهربائية بخبرة مزدوجة في تطوير الويب، موجه نحو تصميم الأنظمة الكهربائية التعاونية والأتمتة الصناعية. أكثر من 5 سنوات من الخبرة الدولية (الجزائر، كندا) في الصيانة والإشراف والتصميم. شغوف بالابتكار الطاقي والحلول الرقمية. أبحث عن فرص في كندا وأوروبا وعالمياً.",
+      linkedin: "https://www.linkedin.com/in/abdenour-hellas/",
+      github: "https://github.com/Abdenourhe",
       twitter: "https://twitter.com",
       facebook: "https://facebook.com",
     },

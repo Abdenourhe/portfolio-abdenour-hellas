@@ -31,14 +31,14 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const titles: Record<string, string> = {
-    fr: "Abdenour Hellas — Ingénieur en Génie Électrique",
-    en: "Abdenour Hellas — Electrical Engineer",
-    ar: "عبد النور حلاس — مهندس كهربائي",
+    fr: "Abdenour Hellas — Spécialiste en génie électrique & développement web",
+    en: "Abdenour Hellas — Electrical Engineering Specialist & Web Developer",
+    ar: "عبد النور حلاس — أخصائي في الهندسة الكهربائية وتطوير الويب",
   };
   const descriptions: Record<string, string> = {
-    fr: "Portfolio d'Abdenour Hellas, ingénieur en génie électrique spécialisé en automatisation, supervision et systèmes embarqués.",
-    en: "Portfolio of Abdenour Hellas, electrical engineer specialized in automation, supervision and embedded systems.",
-    ar: "محفظة عبد النور حلاس، مهندس كهربائي متخصص في الأتمتة والإشراف والأنظمة المدمجة.",
+    fr: "Portfolio d'Abdenour Hellas, spécialiste en génie électrique et développement web, spécialisé en automatisation, supervision et systèmes embarqués.",
+    en: "Portfolio of Abdenour Hellas, electrical engineering specialist and web developer specialized in automation, supervision and embedded systems.",
+    ar: "محفظة عبد النور حلاس، أخصائي في الهندسة الكهربائية وتطوير الويب، متخصص في الأتمتة والإشراف والأنظمة المدمجة.",
   };
 
   return {

@@ -118,7 +118,8 @@ export default function ContactPage() {
           <SocialIcons />
 
           <a
-            href={cvPath}
+            href="/cv/Abdenour_Hellas_CV.pdf"
+            download
             onClick={handleDownloadCV}
             className="mt-8 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary border border-primary/20 rounded-lg hover:bg-primary/5 transition-colors"
           >
