@@ -146,7 +146,7 @@ export default function CVPage() {
         <button onClick={handleDownload} className="inline-flex items-center gap-2 px-5 py-3 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors min-h-[48px]">
           <Download size={16} /> {t("cv.download")}
         </button>
-        <button onClick={() => window.print()} className="inline-flex items-center gap-2 px-5 py-3 border border-border text-foreground rounded-lg text-sm font-medium hover:border-primary/30 hover:bg-primary/[0.02] transition-colors min-h-[48px]">
+        <button onClick={handleDownload} className="inline-flex items-center gap-2 px-5 py-3 border border-border text-foreground rounded-lg text-sm font-medium hover:border-primary/30 hover:bg-primary/[0.02] transition-colors min-h-[48px]">
           <Printer size={16} /> {t("cv.print")}
         </button>
       </div>
