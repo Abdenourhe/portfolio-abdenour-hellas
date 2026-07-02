@@ -56,11 +56,11 @@ function languageLevel(level: number): string {
 }
 
 const SKILL_CATEGORY_LABELS: Record<string, string> = {
-  électrique: "ÉLECTRIQUE & INDUSTRIEL",
-  normes: "NORMES",
-  web: "DÉVELOPPEMENT WEB",
-  logiciel: "LOGICIELS",
-  soft: "SOFT SKILLS",
+  électrique: "Techniques",
+  normes: "Normes",
+  web: "Développement web",
+  logiciel: "Logiciels",
+  soft: "Soft skills",
 };
 
 export default function CVPrintTemplate({
@@ -98,20 +98,20 @@ export default function CVPrintTemplate({
         minHeight: "297mm",
         maxHeight: "297mm",
         overflow: "hidden",
-        padding: "15mm",
+        padding: "12mm 14mm 12mm 14mm",
         fontFamily: '"Inter", "Calibri", "Segoe UI", sans-serif',
-        fontSize: "10pt",
-        lineHeight: 1.25,
+        fontSize: "9.5pt",
+        lineHeight: 1.2,
         color: THEME.text,
         backgroundColor: THEME.bg,
         boxSizing: "border-box",
       }}
     >
       {/* Header */}
-      <header style={{ borderBottom: `1.5px solid ${THEME.primary}`, paddingBottom: "10px", marginBottom: "10px" }}>
+      <header style={{ borderBottom: `1.5px solid ${THEME.primary}`, paddingBottom: "8px", marginBottom: "8px" }}>
         <h1
           style={{
-            fontSize: "22pt",
+            fontSize: "20pt",
             fontWeight: 800,
             color: THEME.primary,
             margin: 0,
@@ -122,10 +122,10 @@ export default function CVPrintTemplate({
         </h1>
         <p
           style={{
-            fontSize: "11.5pt",
+            fontSize: "11pt",
             fontWeight: 600,
             color: THEME.primary,
-            margin: "3px 0 0 0",
+            margin: "2px 0 0 0",
             opacity: 0.9,
           }}
         >
@@ -135,9 +135,9 @@ export default function CVPrintTemplate({
           style={{
             display: "flex",
             flexWrap: "wrap",
-            gap: "12px",
-            marginTop: "6px",
-            fontSize: "9.5pt",
+            gap: "10px",
+            marginTop: "4px",
+            fontSize: "9pt",
             color: THEME.muted,
           }}
         >
@@ -150,27 +150,27 @@ export default function CVPrintTemplate({
       </header>
 
       {/* Profile */}
-      <section style={{ marginBottom: "10px" }}>
-        <SectionTitle>Profil professionnel</SectionTitle>
-        <p style={{ textAlign: "justify", margin: 0, fontSize: "10pt", color: THEME.text }}>
+      <section style={{ marginBottom: "8px" }}>
+        <SectionTitle>Profil</SectionTitle>
+        <p style={{ textAlign: "justify", margin: 0, fontSize: "9.5pt", color: THEME.text }}>
           {profile.bio}
         </p>
       </section>
 
       {/* Experiences */}
       {experiences.length > 0 && (
-        <section style={{ marginBottom: "10px" }}>
+        <section style={{ marginBottom: "8px" }}>
           <SectionTitle>Expériences professionnelles</SectionTitle>
-          <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
             {experiences.map((exp) => (
               <div key={exp.id}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                  <span style={{ fontWeight: 700, fontSize: "10.5pt", color: THEME.text }}>
+                  <span style={{ fontWeight: 700, fontSize: "10pt", color: THEME.text }}>
                     {exp.title}
                   </span>
                   <span
                     style={{
-                      fontSize: "9pt",
+                      fontSize: "8.5pt",
                       color: THEME.muted,
                       whiteSpace: "nowrap",
                       flexShrink: 0,
@@ -179,7 +179,7 @@ export default function CVPrintTemplate({
                     {formatDateRange(exp.startDate, exp.endDate, exp.current)}
                   </span>
                 </div>
-                <div style={{ fontSize: "9.5pt", fontWeight: 600, color: THEME.muted, marginBottom: "2px" }}>
+                <div style={{ fontSize: "9pt", fontWeight: 600, color: THEME.muted, marginBottom: "1px" }}>
                   {exp.company} — {exp.location}
                 </div>
                 <BulletList items={toBullets(exp.description)} />
@@ -189,146 +189,141 @@ export default function CVPrintTemplate({
         </section>
       )}
 
-      {/* Skills */}
-      {skillCategories.length > 0 && (
-        <section style={{ marginBottom: "10px" }}>
-          <SectionTitle>Compétences</SectionTitle>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-            {skillCategories.map((cat) => (
-              <div key={cat} style={{ display: "flex", gap: "8px" }}>
-                <span
-                  style={{
-                    fontSize: "9pt",
-                    fontWeight: 700,
-                    color: THEME.primary,
-                    minWidth: "150px",
-                    flexShrink: 0,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {SKILL_CATEGORY_LABELS[cat] || cat}
-                </span>
-                <span style={{ fontSize: "9.5pt", color: THEME.text }}>
-                  {skillGroups[cat].map((s) => s.name).join(" | ")}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Languages */}
-      {languages.length > 0 && (
-        <section style={{ marginBottom: "10px" }}>
-          <SectionTitle>Langues</SectionTitle>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
-            {languages.map((lang) => (
-              <span key={lang.id} style={{ fontSize: "10pt", color: THEME.text }}>
-                <strong>{lang.name}</strong> — {languageLevel(lang.level)}
-              </span>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Education */}
-      {education.length > 0 && (
-        <section style={{ marginBottom: "10px" }}>
-          <SectionTitle>Formation</SectionTitle>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-            {education.map((edu) => (
-              <div key={edu.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                <div>
-                  <span style={{ fontWeight: 700, fontSize: "10pt", color: THEME.text }}>
-                    {edu.degree}
-                  </span>
-                  <span style={{ fontSize: "9.5pt", color: THEME.muted, marginLeft: "6px" }}>
-                    — {edu.school}, {edu.location}
-                  </span>
-                </div>
-                <span style={{ fontSize: "9pt", color: THEME.muted, whiteSpace: "nowrap", flexShrink: 0 }}>
-                  {formatYearRange(edu.startDate, edu.endDate, edu.current)}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Projects */}
-      {projects.length > 0 && (
-        <section style={{ marginBottom: "10px" }}>
-          <SectionTitle>Projets</SectionTitle>
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            {projects.map((project) => (
-              <div key={project.id}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                  <span style={{ fontWeight: 700, fontSize: "10pt", color: THEME.text }}>
-                    {project.title}
-                  </span>
-                </div>
-                <p style={{ margin: "1px 0 2px 0", fontSize: "9.5pt", color: THEME.text }}>
-                  {project.description}
-                </p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
-                  {project.technologies.map((tech) => (
-                    <span
-                      key={tech}
+      {/* Two columns */}
+      <div style={{ display: "flex", gap: "12px" }}>
+        {/* Left column */}
+        <div style={{ width: "72mm", flexShrink: 0 }}>
+          {/* Skills */}
+          {skillCategories.length > 0 && (
+            <section style={{ marginBottom: "8px" }}>
+              <SectionTitle>Compétences</SectionTitle>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                {skillCategories.map((cat) => (
+                  <div key={cat}>
+                    <div
                       style={{
                         fontSize: "8.5pt",
+                        fontWeight: 700,
                         color: THEME.primary,
-                        backgroundColor: "#eef3fa",
-                        padding: "1px 5px",
-                        borderRadius: "3px",
+                        textTransform: "uppercase",
+                        marginBottom: "1px",
                       }}
                     >
-                      {tech}
+                      {SKILL_CATEGORY_LABELS[cat] || cat}
+                    </div>
+                    <div style={{ fontSize: "9pt", color: THEME.text, textAlign: "justify" }}>
+                      {skillGroups[cat].map((s) => s.name).join(", ")}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Languages */}
+          {languages.length > 0 && (
+            <section style={{ marginBottom: "8px" }}>
+              <SectionTitle>Langues</SectionTitle>
+              <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
+                {languages.map((lang) => (
+                  <div
+                    key={lang.id}
+                    style={{ display: "flex", justifyContent: "space-between", fontSize: "9.5pt", color: THEME.text }}
+                  >
+                    <span>{lang.name}</span>
+                    <span>
+                      {lang.level}% — {languageLevel(lang.level)}
                     </span>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
-      )}
+            </section>
+          )}
+        </div>
 
-      {/* Certifications */}
-      {certifications.length > 0 && (
-        <section style={{ marginBottom: "10px" }}>
-          <SectionTitle>Certifications</SectionTitle>
-          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-            {certifications.map((cert) => (
-              <div key={cert.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                <div>
-                  <span style={{ fontWeight: 700, fontSize: "10pt", color: THEME.text }}>
-                    {cert.degree}
-                  </span>
-                  <span style={{ fontSize: "9.5pt", color: THEME.muted, marginLeft: "6px" }}>
-                    — {cert.school}, {cert.location}
-                  </span>
-                </div>
-                <span style={{ fontSize: "9pt", color: THEME.muted, whiteSpace: "nowrap", flexShrink: 0 }}>
-                  {formatDateRange(cert.startDate, cert.endDate, cert.current)}
-                </span>
+        {/* Right column */}
+        <div style={{ flex: 1 }}>
+          {/* Education */}
+          {education.length > 0 && (
+            <section style={{ marginBottom: "8px" }}>
+              <SectionTitle>Formation</SectionTitle>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                {education.map((edu) => (
+                  <div key={edu.id}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
+                      <span style={{ fontWeight: 700, fontSize: "9.5pt", color: THEME.text }}>
+                        {edu.degree}
+                      </span>
+                      <span style={{ fontSize: "8.5pt", color: THEME.muted, whiteSpace: "nowrap", flexShrink: 0 }}>
+                        {formatYearRange(edu.startDate, edu.endDate, edu.current)}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: "9pt", color: THEME.muted }}>
+                      {edu.school}, {edu.location}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
-      )}
+            </section>
+          )}
 
-      {/* Footer */}
-      <footer
-        style={{
-          marginTop: "auto",
-          paddingTop: "8px",
-          borderTop: `1px solid ${THEME.border}`,
-          fontSize: "8pt",
-          color: THEME.muted,
-          textAlign: "center",
-        }}
-      >
-        CV généré le {new Date().toLocaleDateString("fr-CA")} — {profile.fullName}
-      </footer>
+          {/* Projects */}
+          {projects.length > 0 && (
+            <section style={{ marginBottom: "8px" }}>
+              <SectionTitle>Projets</SectionTitle>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                {projects.map((project) => (
+                  <div key={project.id}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
+                      <span style={{ fontWeight: 700, fontSize: "9.5pt", color: THEME.text }}>
+                        {project.title}
+                      </span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: "9pt", color: THEME.text, textAlign: "justify" }}>
+                      {project.description}
+                    </p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "3px", marginTop: "1px" }}>
+                      {project.technologies.map((tech) => (
+                        <span
+                          key={tech}
+                          style={{
+                            fontSize: "8pt",
+                            color: THEME.primary,
+                            backgroundColor: "#eef3fa",
+                            padding: "0.5px 4px",
+                            borderRadius: "2px",
+                          }}
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Certifications */}
+          {certifications.length > 0 && (
+            <section style={{ marginBottom: "8px" }}>
+              <SectionTitle>Certifications</SectionTitle>
+              <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+                {certifications.map((cert) => (
+                  <div key={cert.id}>
+                    <div style={{ fontWeight: 700, fontSize: "9.5pt", color: THEME.text }}>
+                      {cert.degree}
+                    </div>
+                    <div style={{ fontSize: "9pt", color: THEME.muted }}>
+                      {cert.school}, {cert.location} — {formatDateRange(cert.startDate, cert.endDate, cert.current)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -337,14 +332,14 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <h2
       style={{
-        fontSize: "10.5pt",
+        fontSize: "10pt",
         fontWeight: 700,
         textTransform: "uppercase",
         letterSpacing: "0.04em",
         color: THEME.primary,
         borderBottom: `1px solid ${THEME.border}`,
         paddingBottom: "2px",
-        marginBottom: "5px",
+        marginBottom: "4px",
         marginTop: 0,
       }}
     >
@@ -355,12 +350,12 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 function BulletList({ items }: { items: string[] }) {
   if (items.length <= 1) {
-    return <p style={{ margin: 0, fontSize: "9.5pt", color: THEME.text }}>{items[0] || ""}</p>;
+    return <p style={{ margin: 0, fontSize: "9pt", color: THEME.text, textAlign: "justify" }}>{items[0] || ""}</p>;
   }
   return (
-    <ul style={{ margin: "2px 0 0 0", paddingLeft: "14px", fontSize: "9.5pt", color: THEME.text }}>
+    <ul style={{ margin: "1px 0 0 0", paddingLeft: "12px", fontSize: "9pt", color: THEME.text }}>
       {items.map((item, i) => (
-        <li key={i} style={{ marginBottom: "1px" }}>
+        <li key={i} style={{ marginBottom: "0.5px", textAlign: "justify" }}>
           {item}
         </li>
       ))}
