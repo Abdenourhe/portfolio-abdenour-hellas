@@ -113,13 +113,15 @@ export default function CVPrintTemplate({
         minHeight: "297mm",
         maxHeight: "297mm",
         overflow: "hidden",
-        padding: "8mm 10mm 8mm 10mm",
+        padding: "10mm 10mm 10mm 10mm",
         fontFamily: '"Inter", "Calibri", "Segoe UI", sans-serif',
         fontSize: "8.5pt",
-        lineHeight: 1.1,
+        lineHeight: 1.15,
         color: THEME.text,
         backgroundColor: THEME.bg,
         boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       {/* Header */}
@@ -165,7 +167,7 @@ export default function CVPrintTemplate({
       </header>
 
       {/* Profile */}
-      <section style={{ marginBottom: "7px" }}>
+      <section style={{ marginBottom: "9px" }}>
         <SectionTitle>Profil</SectionTitle>
         <p style={{ textAlign: "justify", margin: 0, fontSize: "8pt", color: THEME.text }}>
           {profile.bio}
@@ -174,9 +176,9 @@ export default function CVPrintTemplate({
 
       {/* Experiences */}
       {experiences.length > 0 && (
-        <section style={{ marginBottom: "7px" }}>
+        <section style={{ marginBottom: "9px" }}>
           <SectionTitle>Expériences professionnelles</SectionTitle>
-          <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
             {experiences.map((exp) => (
               <div key={exp.id}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "6px" }}>
@@ -205,14 +207,14 @@ export default function CVPrintTemplate({
       )}
 
       {/* Two columns */}
-      <div style={{ display: "flex", gap: "8px" }}>
+      <div style={{ display: "flex", gap: "10px", flex: 1 }}>
         {/* Left column */}
         <div style={{ width: "80mm", flexShrink: 0 }}>
           {/* Skills */}
           {skillCategories.length > 0 && (
-            <section style={{ marginBottom: "5px" }}>
+            <section style={{ marginBottom: "7px" }}>
               <SectionTitle>Compétences</SectionTitle>
-              <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
                 {skillCategories.map((cat) => (
                   <div key={cat}>
                     <div
@@ -237,7 +239,7 @@ export default function CVPrintTemplate({
 
           {/* Languages */}
           {languages.length > 0 && (
-            <section style={{ marginBottom: "5px" }}>
+            <section style={{ marginBottom: "7px" }}>
               <SectionTitle>Langues</SectionTitle>
               <div style={{ display: "flex", flexDirection: "column", gap: "0.5px" }}>
                 {languages.map((lang) => (
@@ -260,9 +262,9 @@ export default function CVPrintTemplate({
         <div style={{ flex: 1 }}>
           {/* Education */}
           {education.length > 0 && (
-            <section style={{ marginBottom: "5px" }}>
+            <section style={{ marginBottom: "7px" }}>
               <SectionTitle>Formation</SectionTitle>
-              <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
                 {education.map((edu) => (
                   <div key={edu.id}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "6px" }}>
@@ -284,9 +286,9 @@ export default function CVPrintTemplate({
 
           {/* Projects */}
           {projects.length > 0 && (
-            <section style={{ marginBottom: "5px" }}>
+            <section style={{ marginBottom: "7px" }}>
               <SectionTitle>Projets</SectionTitle>
-              <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
                 {projects.map((project) => (
                   <div key={project.id}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "6px" }}>
@@ -321,9 +323,9 @@ export default function CVPrintTemplate({
 
           {/* Certifications */}
           {certifications.length > 0 && (
-            <section style={{ marginBottom: "5px" }}>
+            <section style={{ marginBottom: "7px" }}>
               <SectionTitle>Certifications</SectionTitle>
-              <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 {certifications.map((cert) => (
                   <div key={cert.id}>
                     <div style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
@@ -339,6 +341,20 @@ export default function CVPrintTemplate({
           )}
         </div>
       </div>
+
+      {/* Footer */}
+      <footer
+        style={{
+          marginTop: "auto",
+          paddingTop: "8px",
+          borderTop: `1px solid ${THEME.border}`,
+          fontSize: "7.5pt",
+          color: THEME.muted,
+          textAlign: "center",
+        }}
+      >
+        {profile.fullName} — CV généré le {new Date().toLocaleDateString("fr-CA", { timeZone: "UTC" })}
+      </footer>
     </div>
   );
 }

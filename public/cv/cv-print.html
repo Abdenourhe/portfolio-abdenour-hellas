@@ -4,20 +4,25 @@
   <meta charset="UTF-8">
   <title>CV — Abdenour Hellas</title>
   <style>
-    @page { size: A4; margin: 8mm 10mm; }
+    @page { size: A4; margin: 10mm; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: "Inter", "Calibri", "Segoe UI", sans-serif;
       color: #1f2937;
-      font-size: 8pt;
-      line-height: 1.05;
+      font-size: 8.5pt;
+      line-height: 1.15;
       background: #fff;
     }
-    .page { width: 190mm; }
+    .page {
+      width: 190mm;
+      min-height: 277mm;
+      display: flex;
+      flex-direction: column;
+    }
     header {
       border-bottom: 1.5px solid #1e3a5f;
       padding-bottom: 4px;
-      margin-bottom: 5px;
+      margin-bottom: 9px;
     }
     .name { font-size: 17pt; font-weight: 800; color: #1e3a5f; letter-spacing: -0.3px; }
     .title { font-size: 9.5pt; font-weight: 600; color: #1e3a5f; margin-top: 1px; opacity: 0.9; }
@@ -40,7 +45,7 @@
       margin-bottom: 2px;
       margin-top: 0;
     }
-    section { margin-bottom: 7px; }
+    section { margin-bottom: 9px; }
     .profile { text-align: justify; font-size: 8pt; color: #1f2937; }
     .item { margin-bottom: 3px; }
     .item-header { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
@@ -50,10 +55,10 @@
     .item-desc { font-size: 8pt; color: #1f2937; margin-top: 0.5px; text-align: justify; }
     .item-desc ul { margin: 0.5px 0 0 0; padding-left: 10px; }
     .item-desc li { margin-bottom: 0.5px; text-align: justify; }
-    .two-col { display: flex; gap: 10px; }
+    .two-col { display: flex; gap: 10px; flex: 1; }
     .col-left { width: 80mm; flex-shrink: 0; }
     .col-right { flex: 1; }
-    .skill-group { margin-bottom: 2px; }
+    .skill-group { margin-bottom: 3px; }
     .skill-group h3 {
       font-size: 7.5pt;
       font-weight: 700;
@@ -73,6 +78,14 @@
       margin-right: 2px;
       margin-bottom: 1px;
     }
+    footer {
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px solid #d1d5db;
+      font-size: 7.5pt;
+      color: #4b5563;
+      text-align: center;
+    }
     a { color: inherit; text-decoration: none; }
   </style>
 </head>
@@ -82,7 +95,7 @@
       <div class="name">Abdenour Hellas</div>
       <div class="title">Spécialiste en génie électrique & développement web</div>
       <div class="contact">
-        <span>abdenour.hellas@gmail.com</span>
+        <span>abdenour.hellas@uqat.ca</span>
         <span>+1 418-350-5686</span>
         <span>Nouveau-Brunswick, Canada</span>
         <span>linkedin.com/in/abdenour-hellas</span>
@@ -120,7 +133,7 @@
       <div class="item">
         <div class="item-header">
           <span class="item-title">Superviseur Département Électroménagers</span>
-          <span class="item-date">Avr. 2024 — Nov. 2025</span>
+          <span class="item-date">Mars 2024 — Nov. 2025</span>
         </div>
         <div class="item-sub">RONA — Rouyn-Noranda, QC</div>
         <div class="item-desc">
@@ -219,14 +232,14 @@
               <span class="item-title">Master Électromécanique</span>
               <span class="item-date">2018 — 2020</span>
             </div>
-            <div class="item-sub">Université de Batna 2, Algérie</div>
+            <div class="item-sub">Université de Batna 2, Batna, Algérie</div>
           </div>
           <div class="item">
             <div class="item-header">
               <span class="item-title">Licence Électromécanique</span>
               <span class="item-date">2015 — 2018</span>
             </div>
-            <div class="item-sub">Université de Batna 2, Algérie</div>
+            <div class="item-sub">Université de Batna 2, Batna, Algérie</div>
           </div>
           <div class="item">
             <div class="item-header">
@@ -282,6 +295,13 @@
         </section>
       </div>
     </div>
+
+    <footer>
+      Abdenour Hellas — CV généré le <span id="date"></span>
+    </footer>
   </div>
+  <script>
+    document.getElementById('date').textContent = new Date().toLocaleDateString('fr-CA', { timeZone: 'UTC' });
+  </script>
 </body>
 </html>
