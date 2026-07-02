@@ -66,8 +66,14 @@ model Experience {
   updatedAt   DateTime @updatedAt
 }
 
+enum EducationType {
+  DEGREE
+  CERTIFICATE
+  DIPLOMA
+}
+
 model Education {
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   degree      String
   degreeEn    String?
   degreeAr    String?
@@ -75,15 +81,16 @@ model Education {
   location    String
   startDate   DateTime
   endDate     DateTime?
-  current     Boolean  @default(false)
-  description String?  @db.Text
-  descriptionEn String? @db.Text
-  descriptionAr String? @db.Text
+  current     Boolean      @default(false)
+  description String?      @db.Text
+  descriptionEn String?    @db.Text
+  descriptionAr String?    @db.Text
   url         String?
   certificateImage String?
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  type        EducationType @default(DEGREE)
+  order       Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 model Skill {

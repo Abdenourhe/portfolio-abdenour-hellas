@@ -209,6 +209,7 @@ export default function AdminCVPrintPage() {
                 education={data.education || []}
                 skills={data.skills || []}
                 projects={data.projects || []}
+                certifications={data.certifications || []}
               />
             </div>
           </div>
@@ -245,7 +246,7 @@ export default function AdminCVPrintPage() {
               <li>Utilisez une photo professionnelle sur fond neutre.</li>
               <li>Gardez le profil sous 5 lignes et orienté vers le poste visé.</li>
               <li>Privilégiez les chiffres dans les expériences (ex. : « supervision de X techniciens »).</li>
-              <li>Classez les compétences dans les catégories : <strong>technique, logiciel, web, soft, langue</strong>.</li>
+              <li>Classez les compétences dans les catégories : <strong>électrique, normes, web, logiciel, soft, langue</strong>.</li>
               <li>Limitez le CV à 2 pages maximum.</li>
             </ul>
           </div>

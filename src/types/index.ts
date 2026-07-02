@@ -56,6 +56,7 @@ export interface Education {
   descriptionAr?: string | null;
   url?: string | null;
   certificateImage?: string | null;
+  type: "DEGREE" | "CERTIFICATE" | "DIPLOMA";
   order: number;
   createdAt: Date;
   updatedAt: Date;

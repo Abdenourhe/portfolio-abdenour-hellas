@@ -8,12 +8,21 @@ interface CVPrintTemplateProps {
   education: Education[];
   skills: Skill[];
   projects: Project[];
+  certifications?: Education[];
 }
+
+const THEME = {
+  primary: "#1e3a5f",
+  text: "#1f2937",
+  muted: "#4b5563",
+  border: "#d1d5db",
+  bg: "#ffffff",
+};
 
 function toBullets(text: string): string[] {
   if (!text) return [];
   return text
-    .split(/\. (?=[A-ZÀ-ÖØ-öø-ÿ0-9])/)
+    .split(/\. (?=[A-ZÀ-ÖØ-öø-ÿ0-9•])/)
     .map((s) => s.trim())
     .filter(Boolean)
     .map((s) => (s.endsWith(".") ? s : s + "."));
@@ -25,355 +34,336 @@ function formatDate(date: string | Date | null | undefined): string {
   return d.toLocaleDateString("fr-CA", { month: "short", year: "numeric" });
 }
 
+function formatDateRange(start: string | Date, end?: string | Date | null, current?: boolean): string {
+  const s = formatDate(start);
+  const e = current ? "Présent" : formatDate(end);
+  return `${s} ${e ? `— ${e}` : ""}`;
+}
+
+function formatYearRange(start: string | Date, end?: string | Date | null, current?: boolean): string {
+  if (!start) return "";
+  const s = new Date(start).getFullYear();
+  const e = current ? "Présent" : end ? new Date(end).getFullYear() : "";
+  return `${s}${e ? ` — ${e}` : ""}`;
+}
+
+function languageLevel(level: number): string {
+  if (level >= 100) return "Natif";
+  if (level >= 90) return "Courant";
+  if (level >= 75) return "Professionnel";
+  if (level >= 60) return "Intermédiaire";
+  return "Débutant";
+}
+
+const SKILL_CATEGORY_LABELS: Record<string, string> = {
+  électrique: "ÉLECTRIQUE & INDUSTRIEL",
+  normes: "NORMES",
+  web: "DÉVELOPPEMENT WEB",
+  logiciel: "LOGICIELS",
+  soft: "SOFT SKILLS",
+};
+
 export default function CVPrintTemplate({
   profile,
   experiences,
   education,
   skills,
   projects,
+  certifications = [],
 }: CVPrintTemplateProps) {
   if (!profile) {
     return (
-      <div className="p-10 text-center text-muted-foreground">
-        Aucun profil trouvé. Veuillez compléter votre profil d'abord.
+      <div style={{ padding: "40px", textAlign: "center", color: THEME.muted }}>
+        Aucun profil trouvé.
       </div>
     );
   }
 
-  const groupedSkills = skills.reduce((acc, skill) => {
+  const skillGroups = skills.reduce((acc, skill) => {
     if (!acc[skill.category]) acc[skill.category] = [];
     acc[skill.category].push(skill);
     return acc;
   }, {} as Record<string, Skill[]>);
 
-  const technicalSkills = groupedSkills["technique"] || [];
-  const softwareSkills = groupedSkills["logiciel"] || [];
-  const webSkills = groupedSkills["web"] || [];
-  const softSkills = groupedSkills["soft"] || [];
-  const languageSkills = groupedSkills["langue"] || [];
-
-  const mainExperiences = experiences.filter(
-    (e) => !["caissier", "service omni", "préposé"].some((ot) => e.title.toLowerCase().includes(ot))
-  );
-  const otherExperiences = experiences.filter(
-    (e) => ["caissier", "service omni", "préposé"].some((ot) => e.title.toLowerCase().includes(ot))
+  const languages = skillGroups["langue"] || [];
+  const skillCategories = ["électrique", "normes", "web", "logiciel", "soft"].filter(
+    (cat) => skillGroups[cat]?.length
   );
 
   return (
     <div
       id="cv-print-content"
-      className="bg-white text-[#1a1a1a] p-[9mm_10mm_10mm_10mm]"
       style={{
         width: "210mm",
         minHeight: "297mm",
-        fontFamily: '"Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-        fontSize: "9pt",
-        lineHeight: 1.3,
+        maxHeight: "297mm",
+        overflow: "hidden",
+        padding: "15mm",
+        fontFamily: '"Inter", "Calibri", "Segoe UI", sans-serif',
+        fontSize: "10pt",
+        lineHeight: 1.25,
+        color: THEME.text,
+        backgroundColor: THEME.bg,
+        boxSizing: "border-box",
       }}
     >
       {/* Header */}
-      <header
-        className="flex items-center gap-3 pb-2 mb-3"
-        style={{ borderBottom: "2px solid #1E3A5F" }}
-      >
-        <div className="text-center shrink-0">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="42"
-            height="42"
-            viewBox="0 0 31 31"
-            shapeRendering="crispEdges"
-          >
-            <path fill="#FFFFFF" d="M0 0h31v31H0z" />
-            <path
-              stroke="#1E3A5F"
-              d="M1 1.5h7m5 0h2m2 0h1m2 0h1m2 0h7M1 2.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h3m2 0h2m1 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m2 0h3m1 0h2m1 0h1m3 0h1m1 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m3 0h6m3 0h1m2 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h2m4 0h1m2 0h3m2 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m3 0h1m1 0h2m4 0h2m2 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M10 8.5h1m2 0h3m1 0h2m1 0h2M1 9.5h1m1 0h1m1 0h1m1 0h1m3 0h1m1 0h1m1 0h2m1 0h1m1 0h2m3 0h1m2 0h1M2 10.5h1m1 0h1m4 0h1m3 0h1m1 0h2m4 0h3m2 0h1m2 0h1M1 11.5h1m2 0h1m2 0h2m2 0h1m1 0h2m3 0h1m2 0h2m1 0h2m1 0h3M1 12.5h1m2 0h1m1 0h1m1 0h2m1 0h2m3 0h1m1 0h6m4 0h1M3 13.5h1m1 0h1m1 0h1m2 0h1m6 0h2m1 0h4m2 0h1m1 0h2M2 14.5h1m1 0h1m3 0h1m1 0h5m1 0h2m3 0h3m2 0h1m2 0h1M1 15.5h1m1 0h3m1 0h1m1 0h2m1 0h1m2 0h4m3 0h1m2 0h2m1 0h2M2 16.5h1m2 0h1m3 0h2m1 0h4m1 0h2m1 0h2m1 0h1m2 0h1m1 0h1M1 17.5h2m1 0h1m1 0h2m2 0h1m1 0h2m1 0h2m1 0h1m2 0h3m2 0h1m1 0h2M2 18.5h1m1 0h1m3 0h1m1 0h1m1 0h1m2 0h2m4 0h1m1 0h1m2 0h2m1 0h1M1 19.5h1m4 0h2m2 0h1m2 0h2m6 0h3m4 0h2M2 20.5h1m1 0h1m3 0h1m2 0h2m3 0h1m1 0h1m1 0h1m3 0h1m1 0h1m1 0h1M1 21.5h1m1 0h2m2 0h3m1 0h1m5 0h2m1 0h6M9 22.5h1m1 0h1m1 0h2m1 0h2m2 0h2m3 0h1m1 0h3M1 23.5h7m2 0h1m1 0h2m1 0h3m1 0h3m1 0h1m1 0h2m1 0h2M1 24.5h1m5 0h1m2 0h1m3 0h2m1 0h3m1 0h1m3 0h2m1 0h2M1 25.5h1m1 0h3m1 0h1m1 0h1m1 0h3m1 0h4m2 0h5m2 0h1M1 26.5h1m1 0h3m1 0h1m7 0h2m7 0h2m1 0h1M1 27.5h1m1 0h3m1 0h1m1 0h5m4 0h1m1 0h1m1 0h1m1 0h3m2 0h1M1 28.5h1m5 0h1m4 0h1m1 0h1m1 0h3m1 0h3m5 0h1M1 29.5h7m1 0h2m3 0h2m1 0h2m2 0h1m3 0h1m2 0h2"
-            />
-          </svg>
+      <header style={{ borderBottom: `1.5px solid ${THEME.primary}`, paddingBottom: "10px", marginBottom: "10px" }}>
+        <h1
+          style={{
+            fontSize: "22pt",
+            fontWeight: 800,
+            color: THEME.primary,
+            margin: 0,
+            letterSpacing: "-0.3px",
+          }}
+        >
+          {profile.fullName}
+        </h1>
+        <p
+          style={{
+            fontSize: "11.5pt",
+            fontWeight: 600,
+            color: THEME.primary,
+            margin: "3px 0 0 0",
+            opacity: 0.9,
+          }}
+        >
+          {profile.title}
+        </p>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "12px",
+            marginTop: "6px",
+            fontSize: "9.5pt",
+            color: THEME.muted,
+          }}
+        >
+          <span>{profile.email}</span>
+          <span>{profile.phone}</span>
+          <span>{profile.location}</span>
+          <span>{profile.linkedin?.replace(/^https?:\/\//, "")}</span>
+          <span>abdenour-hellas.online</span>
         </div>
-        <div className="flex-1 min-w-0">
-          <div style={{ fontSize: "21pt", fontWeight: 700, color: "#1E3A5F", letterSpacing: "-0.5px" }}>
-            {profile.fullName}
-          </div>
-          <div style={{ fontSize: "10.5pt", color: "#4a6fa5", fontWeight: 600, marginTop: "2px" }}>
-            {profile.title}
-          </div>
-          <div className="flex flex-wrap gap-2 mt-1" style={{ fontSize: "8.5pt", color: "#333" }}>
-            <span>📧 {profile.email}</span>
-            <span>📱 {profile.phone}</span>
-            <span>📍 {profile.location}</span>
-            <span>🔗 {profile.linkedin?.replace(/^https?:\/\//, "")}</span>
-            <span>🌐 abdenour-hellas.online</span>
-          </div>
-        </div>
-
       </header>
 
       {/* Profile */}
-      <section>
-        <h2
-          style={{
-            fontSize: "9.5pt",
-            textTransform: "uppercase",
-            letterSpacing: "0.07em",
-            color: "#1E3A5F",
-            borderBottom: "1px solid #c9d6e8",
-            paddingBottom: "2px",
-            marginTop: "9px",
-            marginBottom: "5px",
-          }}
-        >
-          Profil
-        </h2>
-        <p style={{ textAlign: "justify", fontSize: "8.8pt", color: "#222" }}>{profile.bio}</p>
+      <section style={{ marginBottom: "10px" }}>
+        <SectionTitle>Profil professionnel</SectionTitle>
+        <p style={{ textAlign: "justify", margin: 0, fontSize: "10pt", color: THEME.text }}>
+          {profile.bio}
+        </p>
       </section>
 
       {/* Experiences */}
-      <section>
-        <h2
-          style={{
-            fontSize: "9.5pt",
-            textTransform: "uppercase",
-            letterSpacing: "0.07em",
-            color: "#1E3A5F",
-            borderBottom: "1px solid #c9d6e8",
-            paddingBottom: "2px",
-            marginTop: "9px",
-            marginBottom: "5px",
-          }}
-        >
-          Expériences professionnelles
-        </h2>
-
-        {mainExperiences.map((exp) => (
-          <div key={exp.id} style={{ marginBottom: "5px" }}>
-            <div className="flex justify-between items-baseline">
-              <span style={{ fontWeight: 700, fontSize: "9.5pt", color: "#1E3A5F" }}>{exp.title}</span>
-              <span style={{ fontSize: "8pt", color: "#555", whiteSpace: "nowrap" }}>
-                {formatDate(exp.startDate)} — {exp.current ? "Présent" : formatDate(exp.endDate)}
-              </span>
-            </div>
-            <div style={{ fontSize: "8.5pt", color: "#444", fontWeight: 600 }}>
-              {exp.company} — {exp.location}
-            </div>
-            {toBullets(exp.description).length > 1 ? (
-              <ul style={{ margin: 0, paddingLeft: "13px", fontSize: "8.3pt", color: "#333" }}>
-                {toBullets(exp.description).map((b, i) => (
-                  <li key={i} style={{ marginBottom: "0.5px" }}>
-                    {b}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p style={{ fontSize: "8.3pt", color: "#333", marginTop: "1.5px" }}>{exp.description}</p>
-            )}
-          </div>
-        ))}
-
-        {otherExperiences.length > 0 && (
-          <div style={{ marginBottom: "5px" }}>
-            <div className="flex justify-between items-baseline">
-              <span style={{ fontWeight: 700, fontSize: "9.5pt", color: "#1E3A5F" }}>
-                {otherExperiences.map((e) => e.title).join(" / ")}
-              </span>
-              <span style={{ fontSize: "8pt", color: "#555", whiteSpace: "nowrap" }}>
-                {formatDate(otherExperiences[0].startDate)} —{" "}
-                {otherExperiences[otherExperiences.length - 1].endDate
-                  ? formatDate(otherExperiences[otherExperiences.length - 1].endDate)
-                  : "Présent"}
-              </span>
-            </div>
-            <div style={{ fontSize: "8.5pt", color: "#444", fontWeight: 600 }}>
-              {Array.from(new Set(otherExperiences.map((e) => e.company))).join(" / ")} —{" "}
-              {otherExperiences[0].location}
-            </div>
-            <p style={{ fontSize: "8.3pt", color: "#333", marginTop: "1.5px" }}>
-              {otherExperiences.map((e) => e.description).join(" ")}
-            </p>
-          </div>
-        )}
-      </section>
-
-      {/* Two columns */}
-      <div className="flex gap-3">
-        <div style={{ width: "64mm", flexShrink: 0 }}>
-          {/* Skills */}
-          <section>
-            <h2
-              style={{
-                fontSize: "9.5pt",
-                textTransform: "uppercase",
-                letterSpacing: "0.07em",
-                color: "#1E3A5F",
-                borderBottom: "1px solid #c9d6e8",
-                paddingBottom: "2px",
-                marginTop: "9px",
-                marginBottom: "5px",
-              }}
-            >
-              Compétences
-            </h2>
-            {technicalSkills.length > 0 && (
-              <div style={{ marginBottom: "3px" }}>
-                <h3 style={{ fontSize: "7.5pt", textTransform: "uppercase", color: "#555", marginBottom: "1px" }}>
-                  Techniques
-                </h3>
-                <div style={{ fontSize: "8.2pt", color: "#222" }}>
-                  {technicalSkills.map((s) => s.name).join(", ")}
-                </div>
-              </div>
-            )}
-            {webSkills.length > 0 && (
-              <div style={{ marginBottom: "3px" }}>
-                <h3 style={{ fontSize: "7.5pt", textTransform: "uppercase", color: "#555", marginBottom: "1px" }}>
-                  Développement web
-                </h3>
-                <div style={{ fontSize: "8.2pt", color: "#222" }}>{webSkills.map((s) => s.name).join(", ")}</div>
-              </div>
-            )}
-            {softwareSkills.length > 0 && (
-              <div style={{ marginBottom: "3px" }}>
-                <h3 style={{ fontSize: "7.5pt", textTransform: "uppercase", color: "#555", marginBottom: "1px" }}>
-                  Logiciels
-                </h3>
-                <div style={{ fontSize: "8.2pt", color: "#222" }}>
-                  {softwareSkills.map((s) => s.name).join(", ")}
-                </div>
-              </div>
-            )}
-            {softSkills.length > 0 && (
-              <div style={{ marginBottom: "3px" }}>
-                <h3 style={{ fontSize: "7.5pt", textTransform: "uppercase", color: "#555", marginBottom: "1px" }}>
-                  Soft skills
-                </h3>
-                <div style={{ fontSize: "8.2pt", color: "#222" }}>{softSkills.map((s) => s.name).join(", ")}</div>
-              </div>
-            )}
-          </section>
-
-          {/* Languages */}
-          {languageSkills.length > 0 && (
-            <section>
-              <h2
-                style={{
-                  fontSize: "9.5pt",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.07em",
-                  color: "#1E3A5F",
-                  borderBottom: "1px solid #c9d6e8",
-                  paddingBottom: "2px",
-                  marginTop: "9px",
-                  marginBottom: "5px",
-                }}
-              >
-                Langues
-              </h2>
-              {languageSkills.map((lang) => (
-                <div key={lang.id} className="flex justify-between" style={{ fontSize: "8.5pt", marginBottom: "1px" }}>
-                  <span>{lang.name}</span>
-                  <span>
-                    {lang.level}% —{" "}
-                    {lang.level >= 100 ? "Natif" : lang.level >= 90 ? "Courant" : "Professionnel"}
+      {experiences.length > 0 && (
+        <section style={{ marginBottom: "10px" }}>
+          <SectionTitle>Expériences professionnelles</SectionTitle>
+          <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
+            {experiences.map((exp) => (
+              <div key={exp.id}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
+                  <span style={{ fontWeight: 700, fontSize: "10.5pt", color: THEME.text }}>
+                    {exp.title}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "9pt",
+                      color: THEME.muted,
+                      whiteSpace: "nowrap",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {formatDateRange(exp.startDate, exp.endDate, exp.current)}
                   </span>
                 </div>
-              ))}
-            </section>
-          )}
-        </div>
+                <div style={{ fontSize: "9.5pt", fontWeight: 600, color: THEME.muted, marginBottom: "2px" }}>
+                  {exp.company} — {exp.location}
+                </div>
+                <BulletList items={toBullets(exp.description)} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
-        <div style={{ flex: 1 }}>
-          {/* Education */}
-          <section>
-            <h2
-              style={{
-                fontSize: "9.5pt",
-                textTransform: "uppercase",
-                letterSpacing: "0.07em",
-                color: "#1E3A5F",
-                borderBottom: "1px solid #c9d6e8",
-                paddingBottom: "2px",
-                marginTop: "9px",
-                marginBottom: "5px",
-              }}
-            >
-              Formation
-            </h2>
+      {/* Skills */}
+      {skillCategories.length > 0 && (
+        <section style={{ marginBottom: "10px" }}>
+          <SectionTitle>Compétences</SectionTitle>
+          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+            {skillCategories.map((cat) => (
+              <div key={cat} style={{ display: "flex", gap: "8px" }}>
+                <span
+                  style={{
+                    fontSize: "9pt",
+                    fontWeight: 700,
+                    color: THEME.primary,
+                    minWidth: "150px",
+                    flexShrink: 0,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {SKILL_CATEGORY_LABELS[cat] || cat}
+                </span>
+                <span style={{ fontSize: "9.5pt", color: THEME.text }}>
+                  {skillGroups[cat].map((s) => s.name).join(" | ")}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Languages */}
+      {languages.length > 0 && (
+        <section style={{ marginBottom: "10px" }}>
+          <SectionTitle>Langues</SectionTitle>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+            {languages.map((lang) => (
+              <span key={lang.id} style={{ fontSize: "10pt", color: THEME.text }}>
+                <strong>{lang.name}</strong> — {languageLevel(lang.level)}
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Education */}
+      {education.length > 0 && (
+        <section style={{ marginBottom: "10px" }}>
+          <SectionTitle>Formation</SectionTitle>
+          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
             {education.map((edu) => (
-              <div key={edu.id} style={{ marginBottom: "5px" }}>
-                <div className="flex justify-between items-baseline">
-                  <span style={{ fontWeight: 700, fontSize: "9.5pt", color: "#1E3A5F" }}>{edu.degree}</span>
-                  <span style={{ fontSize: "8pt", color: "#555", whiteSpace: "nowrap" }}>
-                    {formatDate(edu.startDate)} — {edu.current ? "Présent" : formatDate(edu.endDate)}
+              <div key={edu.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
+                <div>
+                  <span style={{ fontWeight: 700, fontSize: "10pt", color: THEME.text }}>
+                    {edu.degree}
+                  </span>
+                  <span style={{ fontSize: "9.5pt", color: THEME.muted, marginLeft: "6px" }}>
+                    — {edu.school}, {edu.location}
                   </span>
                 </div>
-                <div style={{ fontSize: "8.5pt", color: "#444", fontWeight: 600 }}>
-                  {edu.school} — {edu.location}
+                <span style={{ fontSize: "9pt", color: THEME.muted, whiteSpace: "nowrap", flexShrink: 0 }}>
+                  {formatYearRange(edu.startDate, edu.endDate, edu.current)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Projects */}
+      {projects.length > 0 && (
+        <section style={{ marginBottom: "10px" }}>
+          <SectionTitle>Projets</SectionTitle>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            {projects.map((project) => (
+              <div key={project.id}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
+                  <span style={{ fontWeight: 700, fontSize: "10pt", color: THEME.text }}>
+                    {project.title}
+                  </span>
+                </div>
+                <p style={{ margin: "1px 0 2px 0", fontSize: "9.5pt", color: THEME.text }}>
+                  {project.description}
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                  {project.technologies.map((tech) => (
+                    <span
+                      key={tech}
+                      style={{
+                        fontSize: "8.5pt",
+                        color: THEME.primary,
+                        backgroundColor: "#eef3fa",
+                        padding: "1px 5px",
+                        borderRadius: "3px",
+                      }}
+                    >
+                      {tech}
+                    </span>
+                  ))}
                 </div>
               </div>
             ))}
-          </section>
+          </div>
+        </section>
+      )}
 
-          {/* Projects */}
-          {projects.length > 0 && (
-            <section>
-              <h2
-                style={{
-                  fontSize: "9.5pt",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.07em",
-                  color: "#1E3A5F",
-                  borderBottom: "1px solid #c9d6e8",
-                  paddingBottom: "2px",
-                  marginTop: "9px",
-                  marginBottom: "5px",
-                }}
-              >
-                Projets
-              </h2>
-              {projects.map((project) => (
-                <div key={project.id} style={{ marginBottom: "4px" }}>
-                  <div className="flex justify-between items-baseline">
-                    <span style={{ fontWeight: 700, fontSize: "8.8pt", color: "#1E3A5F" }}>{project.title}</span>
-                  </div>
-                  <p style={{ fontSize: "8pt", color: "#333" }}>{project.description}</p>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {project.technologies.slice(0, 6).map((tech) => (
-                      <span
-                        key={tech}
-                        style={{
-                          display: "inline-block",
-                          background: "#eef3fa",
-                          color: "#1E3A5F",
-                          padding: "0.5px 4px",
-                          borderRadius: "2px",
-                          fontSize: "7.5pt",
-                        }}
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
+      {/* Certifications */}
+      {certifications.length > 0 && (
+        <section style={{ marginBottom: "10px" }}>
+          <SectionTitle>Certifications</SectionTitle>
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            {certifications.map((cert) => (
+              <div key={cert.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
+                <div>
+                  <span style={{ fontWeight: 700, fontSize: "10pt", color: THEME.text }}>
+                    {cert.degree}
+                  </span>
+                  <span style={{ fontSize: "9.5pt", color: THEME.muted, marginLeft: "6px" }}>
+                    — {cert.school}, {cert.location}
+                  </span>
                 </div>
-              ))}
-            </section>
-          )}
-        </div>
-      </div>
+                <span style={{ fontSize: "9pt", color: THEME.muted, whiteSpace: "nowrap", flexShrink: 0 }}>
+                  {formatDateRange(cert.startDate, cert.endDate, cert.current)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Footer */}
       <footer
-        className="flex justify-between"
         style={{
-          marginTop: "8px",
-          paddingTop: "4px",
-          borderTop: "1px solid #c9d6e8",
-          fontSize: "7.5pt",
-          color: "#666",
+          marginTop: "auto",
+          paddingTop: "8px",
+          borderTop: `1px solid ${THEME.border}`,
+          fontSize: "8pt",
+          color: THEME.muted,
+          textAlign: "center",
         }}
       >
-        <span>{profile.fullName}</span>
-        <span>CV généré le {new Date().toLocaleDateString("fr-CA")}</span>
+        CV généré le {new Date().toLocaleDateString("fr-CA")} — {profile.fullName}
       </footer>
     </div>
+  );
+}
+
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h2
+      style={{
+        fontSize: "10.5pt",
+        fontWeight: 700,
+        textTransform: "uppercase",
+        letterSpacing: "0.04em",
+        color: THEME.primary,
+        borderBottom: `1px solid ${THEME.border}`,
+        paddingBottom: "2px",
+        marginBottom: "5px",
+        marginTop: 0,
+      }}
+    >
+      {children}
+    </h2>
+  );
+}
+
+function BulletList({ items }: { items: string[] }) {
+  if (items.length <= 1) {
+    return <p style={{ margin: 0, fontSize: "9.5pt", color: THEME.text }}>{items[0] || ""}</p>;
+  }
+  return (
+    <ul style={{ margin: "2px 0 0 0", paddingLeft: "14px", fontSize: "9.5pt", color: THEME.text }}>
+      {items.map((item, i) => (
+        <li key={i} style={{ marginBottom: "1px" }}>
+          {item}
+        </li>
+      ))}
+    </ul>
   );
 }

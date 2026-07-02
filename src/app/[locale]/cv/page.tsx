@@ -10,6 +10,7 @@ interface CVData {
   profile: any;
   experiences: any[];
   education: any[];
+  certifications: any[];
   skills: any[];
   projects: any[];
 }
@@ -23,8 +24,8 @@ export default function CVPage() {
   useEffect(() => {
     fetch("/api/homepage")
       .then((r) => r.json())
-      .then(({ profile, experiences, education, skills, projects }) => {
-        setData({ profile, experiences, education, skills, projects });
+      .then(({ profile, experiences, education, certifications, skills, projects }) => {
+        setData({ profile, experiences, education, certifications, skills, projects });
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -62,7 +63,7 @@ export default function CVPage() {
     );
   }
 
-  const { profile, experiences, education, skills, projects } = data;
+  const { profile, experiences, education, certifications, skills, projects } = data;
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-10 md:py-16 print:p-0 print:m-0">
@@ -96,6 +97,7 @@ export default function CVPage() {
             education={education || []}
             skills={skills || []}
             projects={projects || []}
+            certifications={certifications || []}
           />
         </div>
       </motion.div>

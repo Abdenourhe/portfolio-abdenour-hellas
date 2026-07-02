@@ -23,10 +23,14 @@ export async function GET() {
       prisma.interest.findMany({ orderBy: { order: "asc" } }),
     ]);
 
+    const degrees = education?.filter((e) => e.type !== "CERTIFICATE") || [];
+    const certifications = education?.filter((e) => e.type === "CERTIFICATE") || [];
+
     return NextResponse.json({
       profile,
       experiences,
-      education,
+      education: degrees,
+      certifications,
       skills,
       projects,
       testimonials,

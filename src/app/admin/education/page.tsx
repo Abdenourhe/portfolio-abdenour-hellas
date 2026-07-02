@@ -87,13 +87,24 @@ export default function EducationPage() {
             <div className="space-y-1">
               <input
                 type="text"
-                placeholder="Diplôme"
+                placeholder="Diplôme / Certification"
                 value={form.degree || ""}
                 onChange={(e) => setForm({ ...form, degree: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
                 required
               />
               <SpellCheck text={form.degree || ""} onApply={(v) => setForm({ ...form, degree: v })} />
+            </div>
+            <div className="space-y-1">
+              <select
+                value={form.type || "DEGREE"}
+                onChange={(e) => setForm({ ...form, type: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+              >
+                <option value="DEGREE">Formation (Diplôme)</option>
+                <option value="CERTIFICATE">Certification</option>
+                <option value="DIPLOMA">Diplôme d'études</option>
+              </select>
             </div>
             <div className="space-y-1">
               <input
@@ -207,7 +218,12 @@ export default function EducationPage() {
           >
             <GripVertical className="text-muted-foreground cursor-move" size={18} />
             <div className="flex-1">
-              <h3 className="font-medium">{edu.degree}</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-medium">{edu.degree}</h3>
+                {edu.type === "CERTIFICATE" && (
+                  <span className="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-400">Certification</span>
+                )}
+              </div>
               <p className="text-sm text-muted-foreground">{edu.school} · {edu.location}{edu.url ? " · " : ""}{edu.url && <a href={edu.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Certificat ↗</a>}{edu.certificateImage && <span className="inline-flex items-center gap-1 ml-2 text-xs text-[#8B6914]"><ImageIcon size={12} /> Image</span>}</p>
             </div>
             <div className="flex items-center gap-2">
