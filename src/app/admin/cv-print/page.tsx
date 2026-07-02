@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Download, Loader2, FileText, ExternalLink } from "lucide-react";
-import CVPrintTemplate from "@/components/admin/CVPrintTemplate";
+import CVPrintTemplate from "@/components/public/CVPrintTemplate";
 
 async function getHtml2Pdf() {
   const mod = await import("html2pdf.js");
