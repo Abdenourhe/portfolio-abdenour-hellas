@@ -42,8 +42,8 @@ function formatDateRange(start: string | Date, end?: string | Date | null, curre
 
 function formatYearRange(start: string | Date, end?: string | Date | null, current?: boolean): string {
   if (!start) return "";
-  const s = new Date(start).getFullYear();
-  const e = current ? "Présent" : end ? new Date(end).getFullYear() : "";
+  const s = (typeof start === "string" ? new Date(start) : start).getUTCFullYear();
+  const e = current ? "Présent" : end ? (typeof end === "string" ? new Date(end) : end).getUTCFullYear() : "";
   return `${s}${e ? ` — ${e}` : ""}`;
 }
 
@@ -56,7 +56,7 @@ function formatExperienceRange(start: string | Date, end?: string | Date | null,
     : current
     ? Infinity
     : 0;
-  if (durationYears > 1.5 && !current) {
+  if (durationYears > 2.5 && !current) {
     return formatYearRange(start, end, current);
   }
   return formatDateRange(start, end, current);
@@ -159,7 +159,7 @@ export default function CVPrintTemplate({
           <span>{profile.email}</span>
           <span>{profile.phone}</span>
           <span>{profile.location}</span>
-          <span>{profile.linkedin?.replace(/^https?:\/\//, "")}</span>
+          <span>{profile.linkedin?.replace(/^https?:\/\/(www\.)?/, "")}</span>
           <span>abdenour-hellas.online</span>
         </div>
       </header>
