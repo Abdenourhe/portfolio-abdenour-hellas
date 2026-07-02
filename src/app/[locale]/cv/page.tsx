@@ -66,7 +66,15 @@ export default function CVPage() {
   const { profile, experiences, education, certifications, skills, projects } = data;
 
   return (
-    <div className="container mx-auto px-4 lg:px-8 py-10 md:py-16 print:p-0 print:m-0">
+    <>
+      <style>{`
+        @media print {
+          @page { size: A4; margin: 0; }
+          body { margin: 0; padding: 0; background: white; }
+          #cv-print-content { box-shadow: none !important; }
+        }
+      `}</style>
+      <div className="container mx-auto px-4 lg:px-8 py-10 md:py-16 print:p-0 print:m-0">
       {/* Actions */}
       <div className="max-w-[210mm] mx-auto mb-6 flex flex-wrap justify-center gap-3 print:hidden">
         <button
@@ -102,5 +110,6 @@ export default function CVPage() {
         </div>
       </motion.div>
     </div>
+    </>
   );
 }

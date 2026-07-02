@@ -31,7 +31,7 @@ function toBullets(text: string): string[] {
 function formatDate(date: string | Date | null | undefined): string {
   if (!date) return "";
   const d = typeof date === "string" ? new Date(date) : date;
-  return d.toLocaleDateString("fr-CA", { month: "short", year: "numeric" });
+  return d.toLocaleDateString("fr-CA", { month: "short", year: "numeric", timeZone: "UTC" });
 }
 
 function formatDateRange(start: string | Date, end?: string | Date | null, current?: boolean): string {
@@ -95,23 +95,22 @@ export default function CVPrintTemplate({
       id="cv-print-content"
       style={{
         width: "210mm",
-        minHeight: "297mm",
-        maxHeight: "297mm",
+        height: "297mm",
         overflow: "hidden",
-        padding: "12mm 14mm 12mm 14mm",
+        padding: "6mm 8mm 6mm 8mm",
         fontFamily: '"Inter", "Calibri", "Segoe UI", sans-serif',
-        fontSize: "9.5pt",
-        lineHeight: 1.2,
+        fontSize: "8pt",
+        lineHeight: 1.05,
         color: THEME.text,
         backgroundColor: THEME.bg,
         boxSizing: "border-box",
       }}
     >
       {/* Header */}
-      <header style={{ borderBottom: `1.5px solid ${THEME.primary}`, paddingBottom: "8px", marginBottom: "8px" }}>
+      <header style={{ borderBottom: `1.5px solid ${THEME.primary}`, paddingBottom: "4px", marginBottom: "5px" }}>
         <h1
           style={{
-            fontSize: "20pt",
+            fontSize: "17pt",
             fontWeight: 800,
             color: THEME.primary,
             margin: 0,
@@ -122,10 +121,10 @@ export default function CVPrintTemplate({
         </h1>
         <p
           style={{
-            fontSize: "11pt",
+            fontSize: "9.5pt",
             fontWeight: 600,
             color: THEME.primary,
-            margin: "2px 0 0 0",
+            margin: "1px 0 0 0",
             opacity: 0.9,
           }}
         >
@@ -135,9 +134,9 @@ export default function CVPrintTemplate({
           style={{
             display: "flex",
             flexWrap: "wrap",
-            gap: "10px",
-            marginTop: "4px",
-            fontSize: "9pt",
+            gap: "6px",
+            marginTop: "2px",
+            fontSize: "7.5pt",
             color: THEME.muted,
           }}
         >
@@ -150,27 +149,27 @@ export default function CVPrintTemplate({
       </header>
 
       {/* Profile */}
-      <section style={{ marginBottom: "8px" }}>
+      <section style={{ marginBottom: "5px" }}>
         <SectionTitle>Profil</SectionTitle>
-        <p style={{ textAlign: "justify", margin: 0, fontSize: "9.5pt", color: THEME.text }}>
+        <p style={{ textAlign: "justify", margin: 0, fontSize: "8pt", color: THEME.text }}>
           {profile.bio}
         </p>
       </section>
 
       {/* Experiences */}
       {experiences.length > 0 && (
-        <section style={{ marginBottom: "8px" }}>
+        <section style={{ marginBottom: "5px" }}>
           <SectionTitle>Expériences professionnelles</SectionTitle>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
             {experiences.map((exp) => (
               <div key={exp.id}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                  <span style={{ fontWeight: 700, fontSize: "10pt", color: THEME.text }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "6px" }}>
+                  <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
                     {exp.title}
                   </span>
                   <span
                     style={{
-                      fontSize: "8.5pt",
+                      fontSize: "7.5pt",
                       color: THEME.muted,
                       whiteSpace: "nowrap",
                       flexShrink: 0,
@@ -179,7 +178,7 @@ export default function CVPrintTemplate({
                     {formatDateRange(exp.startDate, exp.endDate, exp.current)}
                   </span>
                 </div>
-                <div style={{ fontSize: "9pt", fontWeight: 600, color: THEME.muted, marginBottom: "1px" }}>
+                <div style={{ fontSize: "8pt", fontWeight: 600, color: THEME.muted, marginBottom: "0.5px" }}>
                   {exp.company} — {exp.location}
                 </div>
                 <BulletList items={toBullets(exp.description)} />
@@ -190,28 +189,28 @@ export default function CVPrintTemplate({
       )}
 
       {/* Two columns */}
-      <div style={{ display: "flex", gap: "12px" }}>
+      <div style={{ display: "flex", gap: "8px" }}>
         {/* Left column */}
         <div style={{ width: "72mm", flexShrink: 0 }}>
           {/* Skills */}
           {skillCategories.length > 0 && (
-            <section style={{ marginBottom: "8px" }}>
+            <section style={{ marginBottom: "5px" }}>
               <SectionTitle>Compétences</SectionTitle>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 {skillCategories.map((cat) => (
                   <div key={cat}>
                     <div
                       style={{
-                        fontSize: "8.5pt",
+                        fontSize: "7.5pt",
                         fontWeight: 700,
                         color: THEME.primary,
                         textTransform: "uppercase",
-                        marginBottom: "1px",
+                        marginBottom: "0.5px",
                       }}
                     >
                       {SKILL_CATEGORY_LABELS[cat] || cat}
                     </div>
-                    <div style={{ fontSize: "9pt", color: THEME.text, textAlign: "justify" }}>
+                    <div style={{ fontSize: "8pt", color: THEME.text, textAlign: "justify" }}>
                       {skillGroups[cat].map((s) => s.name).join(", ")}
                     </div>
                   </div>
@@ -222,13 +221,13 @@ export default function CVPrintTemplate({
 
           {/* Languages */}
           {languages.length > 0 && (
-            <section style={{ marginBottom: "8px" }}>
+            <section style={{ marginBottom: "5px" }}>
               <SectionTitle>Langues</SectionTitle>
-              <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.5px" }}>
                 {languages.map((lang) => (
                   <div
                     key={lang.id}
-                    style={{ display: "flex", justifyContent: "space-between", fontSize: "9.5pt", color: THEME.text }}
+                    style={{ display: "flex", justifyContent: "space-between", fontSize: "8pt", color: THEME.text }}
                   >
                     <span>{lang.name}</span>
                     <span>
@@ -245,20 +244,20 @@ export default function CVPrintTemplate({
         <div style={{ flex: 1 }}>
           {/* Education */}
           {education.length > 0 && (
-            <section style={{ marginBottom: "8px" }}>
+            <section style={{ marginBottom: "5px" }}>
               <SectionTitle>Formation</SectionTitle>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 {education.map((edu) => (
                   <div key={edu.id}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                      <span style={{ fontWeight: 700, fontSize: "9.5pt", color: THEME.text }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "6px" }}>
+                      <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
                         {edu.degree}
                       </span>
-                      <span style={{ fontSize: "8.5pt", color: THEME.muted, whiteSpace: "nowrap", flexShrink: 0 }}>
+                      <span style={{ fontSize: "7.5pt", color: THEME.muted, whiteSpace: "nowrap", flexShrink: 0 }}>
                         {formatYearRange(edu.startDate, edu.endDate, edu.current)}
                       </span>
                     </div>
-                    <div style={{ fontSize: "9pt", color: THEME.muted }}>
+                    <div style={{ fontSize: "8pt", color: THEME.muted }}>
                       {edu.school}, {edu.location}
                     </div>
                   </div>
@@ -269,28 +268,28 @@ export default function CVPrintTemplate({
 
           {/* Projects */}
           {projects.length > 0 && (
-            <section style={{ marginBottom: "8px" }}>
+            <section style={{ marginBottom: "5px" }}>
               <SectionTitle>Projets</SectionTitle>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 {projects.map((project) => (
                   <div key={project.id}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                      <span style={{ fontWeight: 700, fontSize: "9.5pt", color: THEME.text }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "6px" }}>
+                      <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
                         {project.title}
                       </span>
                     </div>
-                    <p style={{ margin: 0, fontSize: "9pt", color: THEME.text, textAlign: "justify" }}>
+                    <p style={{ margin: 0, fontSize: "8pt", color: THEME.text, textAlign: "justify" }}>
                       {project.description}
                     </p>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "3px", marginTop: "1px" }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "2px", marginTop: "0.5px" }}>
                       {project.technologies.map((tech) => (
                         <span
                           key={tech}
                           style={{
-                            fontSize: "8pt",
+                            fontSize: "7pt",
                             color: THEME.primary,
                             backgroundColor: "#eef3fa",
-                            padding: "0.5px 4px",
+                            padding: "0.5px 3px",
                             borderRadius: "2px",
                           }}
                         >
@@ -306,15 +305,15 @@ export default function CVPrintTemplate({
 
           {/* Certifications */}
           {certifications.length > 0 && (
-            <section style={{ marginBottom: "8px" }}>
+            <section style={{ marginBottom: "5px" }}>
               <SectionTitle>Certifications</SectionTitle>
-              <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
                 {certifications.map((cert) => (
                   <div key={cert.id}>
-                    <div style={{ fontWeight: 700, fontSize: "9.5pt", color: THEME.text }}>
+                    <div style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
                       {cert.degree}
                     </div>
-                    <div style={{ fontSize: "9pt", color: THEME.muted }}>
+                    <div style={{ fontSize: "8pt", color: THEME.muted }}>
                       {cert.school}, {cert.location} — {formatDateRange(cert.startDate, cert.endDate, cert.current)}
                     </div>
                   </div>
@@ -332,14 +331,14 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <h2
       style={{
-        fontSize: "10pt",
+        fontSize: "8.5pt",
         fontWeight: 700,
         textTransform: "uppercase",
         letterSpacing: "0.04em",
         color: THEME.primary,
         borderBottom: `1px solid ${THEME.border}`,
-        paddingBottom: "2px",
-        marginBottom: "4px",
+        paddingBottom: "1px",
+        marginBottom: "2px",
         marginTop: 0,
       }}
     >
@@ -350,10 +349,10 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 function BulletList({ items }: { items: string[] }) {
   if (items.length <= 1) {
-    return <p style={{ margin: 0, fontSize: "9pt", color: THEME.text, textAlign: "justify" }}>{items[0] || ""}</p>;
+    return <p style={{ margin: 0, fontSize: "8pt", color: THEME.text, textAlign: "justify" }}>{items[0] || ""}</p>;
   }
   return (
-    <ul style={{ margin: "1px 0 0 0", paddingLeft: "12px", fontSize: "9pt", color: THEME.text }}>
+    <ul style={{ margin: "0.5px 0 0 0", paddingLeft: "10px", fontSize: "8pt", color: THEME.text }}>
       {items.map((item, i) => (
         <li key={i} style={{ marginBottom: "0.5px", textAlign: "justify" }}>
           {item}
