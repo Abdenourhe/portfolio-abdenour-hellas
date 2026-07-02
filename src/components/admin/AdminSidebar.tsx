@@ -19,6 +19,7 @@ import {
   Menu,
   X,
   ArrowUpRight,
+  Printer,
 } from "lucide-react";
 
 const navItems = [
@@ -28,6 +29,7 @@ const navItems = [
   { href: "/admin/education", label: "Formations", icon: GraduationCap },
   { href: "/admin/skills", label: "Compétences", icon: Wrench },
   { href: "/admin/projects", label: "Projets", icon: FolderOpen },
+  { href: "/admin/cv-print", label: "CV Print", icon: Printer },
   { href: "/admin/testimonials", label: "Témoignages", icon: Quote },
   { href: "/admin/articles", label: "Articles", icon: FileText },
   { href: "/admin/messages", label: "Messages", icon: MessageSquare },
