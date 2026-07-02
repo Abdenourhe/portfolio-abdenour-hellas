@@ -47,6 +47,21 @@ function formatYearRange(start: string | Date, end?: string | Date | null, curre
   return `${s}${e ? ` — ${e}` : ""}`;
 }
 
+function formatExperienceRange(start: string | Date, end?: string | Date | null, current?: boolean): string {
+  if (!start) return "";
+  const startDate = typeof start === "string" ? new Date(start) : start;
+  const endDate = end ? (typeof end === "string" ? new Date(end) : end) : null;
+  const durationYears = endDate
+    ? (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 365)
+    : current
+    ? Infinity
+    : 0;
+  if (durationYears > 1.5 && !current) {
+    return formatYearRange(start, end, current);
+  }
+  return formatDateRange(start, end, current);
+}
+
 function languageLevel(level: number): string {
   if (level >= 100) return "Natif";
   if (level >= 90) return "Courant";
@@ -95,12 +110,13 @@ export default function CVPrintTemplate({
       id="cv-print-content"
       style={{
         width: "210mm",
-        height: "297mm",
+        minHeight: "297mm",
+        maxHeight: "297mm",
         overflow: "hidden",
-        padding: "6mm 8mm 6mm 8mm",
+        padding: "8mm 10mm 8mm 10mm",
         fontFamily: '"Inter", "Calibri", "Segoe UI", sans-serif',
-        fontSize: "8pt",
-        lineHeight: 1.05,
+        fontSize: "8.5pt",
+        lineHeight: 1.1,
         color: THEME.text,
         backgroundColor: THEME.bg,
         boxSizing: "border-box",
@@ -149,7 +165,7 @@ export default function CVPrintTemplate({
       </header>
 
       {/* Profile */}
-      <section style={{ marginBottom: "5px" }}>
+      <section style={{ marginBottom: "7px" }}>
         <SectionTitle>Profil</SectionTitle>
         <p style={{ textAlign: "justify", margin: 0, fontSize: "8pt", color: THEME.text }}>
           {profile.bio}
@@ -158,9 +174,9 @@ export default function CVPrintTemplate({
 
       {/* Experiences */}
       {experiences.length > 0 && (
-        <section style={{ marginBottom: "5px" }}>
+        <section style={{ marginBottom: "7px" }}>
           <SectionTitle>Expériences professionnelles</SectionTitle>
-          <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
             {experiences.map((exp) => (
               <div key={exp.id}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "6px" }}>
@@ -175,7 +191,7 @@ export default function CVPrintTemplate({
                       flexShrink: 0,
                     }}
                   >
-                    {formatDateRange(exp.startDate, exp.endDate, exp.current)}
+                    {formatExperienceRange(exp.startDate, exp.endDate, exp.current)}
                   </span>
                 </div>
                 <div style={{ fontSize: "8pt", fontWeight: 600, color: THEME.muted, marginBottom: "0.5px" }}>
@@ -191,7 +207,7 @@ export default function CVPrintTemplate({
       {/* Two columns */}
       <div style={{ display: "flex", gap: "8px" }}>
         {/* Left column */}
-        <div style={{ width: "72mm", flexShrink: 0 }}>
+        <div style={{ width: "80mm", flexShrink: 0 }}>
           {/* Skills */}
           {skillCategories.length > 0 && (
             <section style={{ marginBottom: "5px" }}>
