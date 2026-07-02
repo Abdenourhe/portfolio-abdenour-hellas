@@ -106,22 +106,7 @@ export default function CVPrintTemplate({
             <span>🌐 abdenour-hellas.online</span>
           </div>
         </div>
-        {profile.photoUrl && (
-          <div className="shrink-0">
-            <img
-              src={profile.photoUrl}
-              alt={profile.fullName}
-              className="object-cover"
-              style={{
-                width: "28mm",
-                height: "28mm",
-                borderRadius: "50%",
-                border: "2px solid #1E3A5F",
-                backgroundColor: "#fff",
-              }}
-            />
-          </div>
-        )}
+
       </header>
 
       {/* Profile */}
