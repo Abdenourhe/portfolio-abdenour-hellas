@@ -5,7 +5,7 @@ import { Trophy, Bike, Waves, Plane, MapPin, Mail, Phone } from "lucide-react";
 import SocialIcons from "@/components/public/SocialIcons";
 import SectionHeader from "@/components/public/SectionHeader";
 import { useT } from "@/components/public/I18nProvider";
-import { useLocale } from "@/components/public/useLocale";
+import { useLocale } from "@/hooks/useLocale";
 
 interface AboutPageClientProps {
   profile: any;

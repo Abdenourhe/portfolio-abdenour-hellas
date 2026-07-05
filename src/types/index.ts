@@ -94,15 +94,6 @@ export interface Project {
   updatedAt: Date;
 }
 
-export interface Interest {
-  id: string;
-  name: string;
-  nameEn?: string | null;
-  nameAr?: string | null;
-  icon?: string | null;
-  order: number;
-}
-
 export interface Testimonial {
   id: string;
   name: string;

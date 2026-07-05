@@ -21,7 +21,7 @@ import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 import { ThemeProvider } from "@/components/public/ThemeProvider";
 import { I18nProvider } from "@/components/public/I18nProvider";
-import BlueprintBackground from "@/components/public/BlueprintBackground";
+import NetworkCanvas from "@/components/public/NetworkCanvas";
 import ReadingProgress from "@/components/public/ReadingProgress";
 import CustomCursor from "@/components/public/CustomCursor";
 
@@ -151,7 +151,7 @@ export default async function LocaleLayout({
             dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
           />
         )}
-        <BlueprintBackground />
+        <NetworkCanvas />
         <div lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={`min-h-screen flex flex-col relative z-10 ${playfair.variable} ${amiri.variable}`}>
           <ReadingProgress />
           <CustomCursor />

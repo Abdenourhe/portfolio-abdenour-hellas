@@ -7,7 +7,7 @@ import { z } from "zod";
 import SocialIcons from "@/components/public/SocialIcons";
 import SectionHeader from "@/components/public/SectionHeader";
 import { useT } from "@/components/public/I18nProvider";
-import { useLocale, useLocalizedPath } from "@/components/public/useLocale";
+import { useLocale, useLocalizedPath } from "@/hooks/useLocale";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Nom trop court"),

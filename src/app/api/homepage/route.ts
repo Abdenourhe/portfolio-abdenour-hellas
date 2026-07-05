@@ -1,27 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-
-const DEFAULT_SECTIONS_ORDER = [
-  "stats",
-  "experience",
-  "education",
-  "skills",
-  "projects",
-  "testimonials",
-  "blog",
-];
-
-const DEFAULT_SECTIONS_VISIBILITY = {
-  stats: true,
-  experience: true,
-  education: true,
-  skills: true,
-  projects: true,
-  testimonials: true,
-  blog: true,
-};
-
-const DEFAULT_VISIBLE_STATS = ["years_exp", "projects", "education", "skills"];
+import { getDefaultHomepageSettings } from "@/lib/homepageDefaults";
 
 export async function GET() {
   try {
@@ -50,24 +29,6 @@ export async function GET() {
     const degrees = education?.filter((e) => e.type !== "CERTIFICATE") || [];
     const certifications = education?.filter((e) => e.type === "CERTIFICATE") || [];
 
-    const settings = homepageSettings || {
-      id: "1",
-      sectionsOrder: DEFAULT_SECTIONS_ORDER,
-      sectionsVisibility: DEFAULT_SECTIONS_VISIBILITY,
-      visibleStatsTypes: DEFAULT_VISIBLE_STATS,
-      featuredProjectIds: [],
-      typewriterPhrasesFr: [],
-      typewriterPhrasesEn: [],
-      typewriterPhrasesAr: [],
-      heroTitle: null,
-      heroTitleEn: null,
-      heroTitleAr: null,
-      heroSubtitle: null,
-      heroSubtitleEn: null,
-      heroSubtitleAr: null,
-      updatedAt: new Date(),
-    };
-
     return NextResponse.json({
       profile,
       experiences,
@@ -78,7 +39,7 @@ export async function GET() {
       testimonials,
       articles,
       interests,
-      homepageSettings: settings,
+      homepageSettings: homepageSettings || getDefaultHomepageSettings(),
     });
   } catch (error) {
     console.error("Failed to fetch homepage data:", error);

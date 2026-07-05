@@ -7,7 +7,7 @@ import { Article } from "@/types";
 import { Calendar, ArrowRight, FileText } from "lucide-react";
 import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
-import { useLocale } from "@/components/public/useLocale";
+import { useLocale } from "@/hooks/useLocale";
 import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
 import ElectricCard from "@/components/public/ElectricCard";
 

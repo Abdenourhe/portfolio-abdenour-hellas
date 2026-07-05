@@ -48,6 +48,8 @@ C:\Users\heabd\OneDrive\Desktop\projet\mon port-folio
 │   │   ├── [locale]/       # Routes publiques i18n (fr/en/ar)
 │   │   ├── admin/          # Pages du tableau de bord admin
 │   │   ├── api/            # Routes API Next.js
+│   ├── hooks/              # Hooks React personnalisés
+│   │   └── useLocale.ts    # Hook de gestion de la locale
 │   │   ├── globals.css     # Tokens CSS + thèmes light/dark
 │   │   ├── layout.tsx      # Layout racine
 │   │   ├── robots.ts
@@ -191,8 +193,7 @@ Le layout admin (`src/app/admin/layout.tsx`) affiche `AdminSidebar` uniquement s
 - **Session :** Stratégie JWT ; rôle attaché au token et à la session via callbacks.
 - **Secret :** `NEXTAUTH_SECRET`.
 - **Middleware :** Vérifie les cookies `next-auth.session-token` / `__Secure-next-auth.session-token` ; redirige les utilisateurs non authentifiés de `/admin/*` vers `/admin/login`, et les utilisateurs authentifiés loin de la page login.
-- **Setup :** `/api/admin/setup?secret=...` crée/met à jour l'utilisateur admin. Valeurs par défaut via `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
-- **Seed :** `prisma/seed.ts` crée également l'admin avec mot de passe hashé.
+- **Seed :** `prisma/seed.ts` crée l'admin avec mot de passe hashé.
 
 ---
 
@@ -284,9 +285,9 @@ Le fichier statique `public/cv/cv-print.html` est un CV HTML autonome utilisé p
 - `Footer.tsx` — Copyright, liens sociaux, lien admin.
 - `ThemeProvider.tsx` — Contexte light/dark.
 - `I18nProvider.tsx` + `useT()` — Contexte de traduction.
-- `useLocale.ts` — Lit `params.locale` et construit les chemins localisés.
+- `useLocale.ts` (dans `src/hooks/`) — Lit `params.locale` et construit les chemins localisés.
 - `LanguageSwitcher.tsx` — Change de locale en réécrivant le segment du pathname.
-- `BlueprintBackground.tsx` — Toile de fond avec réseau de particules.
+- `NetworkCanvas.tsx` (anciennement `BlueprintBackground.tsx`) — Toile de fond avec réseau de particules.
 - `CustomCursor.tsx` — Curseur personnalisé Framer Motion (desktop).
 - `ReadingProgress.tsx` — Barre de progression de scroll en haut.
 
@@ -357,5 +358,6 @@ Les derniers commits ont principalement concerné l'affinage du layout et de l'e
 
 - Le fichier `public/cv/cv-print.html` est un **duplicata statique** du design du CV. Après toute modification de `CVPrintTemplate.tsx`, pensez à mettre à jour `cv-print.html` et à régénérer le PDF avec `npm run generate:cv`.
 - Le seed (`prisma/seed.ts`) utilise `upsert` avec `update: {}` pour le profil : une fois le profil créé en production, le seed ne mettra pas à jour les champs existants. Utilisez l'admin `/admin/profile` pour modifier le profil, ou un script one-off.
+- Les constantes par défaut de la page d'accueil sont centralisées dans `src/lib/homepageDefaults.ts`.
 - Les uploads d'images en base64 peuvent alourdir la base PostgreSQL ; surveillez la taille des colonnes `photoUrl`, `cvUrl`, `certificateImage`, `imageUrl`.
 - Le middleware protège `/admin/*` côté edge, mais chaque route API mutante vérifie également la session côté serveur.

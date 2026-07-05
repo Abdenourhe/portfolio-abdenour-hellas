@@ -12,14 +12,6 @@ export const fadeUpItem: Variants = {
   },
 };
 
-export const fadeInItem: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-  },
-};
-
 export const staggerContainer = (stagger = 0.1, delay = 0): Variants => ({
   hidden: {},
   visible: {

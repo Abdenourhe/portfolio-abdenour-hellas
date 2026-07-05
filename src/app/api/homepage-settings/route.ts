@@ -1,29 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-
-const DEFAULT_SECTIONS_ORDER = [
-  "stats",
-  "experience",
-  "education",
-  "skills",
-  "projects",
-  "testimonials",
-  "blog",
-];
-
-const DEFAULT_SECTIONS_VISIBILITY = {
-  stats: true,
-  experience: true,
-  education: true,
-  skills: true,
-  projects: true,
-  testimonials: true,
-  blog: true,
-};
-
-const DEFAULT_VISIBLE_STATS = ["years_exp", "projects", "education", "skills"];
+import { getServerSession } from "next-auth";
+import {
+  DEFAULT_SECTIONS_ORDER,
+  DEFAULT_SECTIONS_VISIBILITY,
+  DEFAULT_VISIBLE_STATS,
+  getDefaultHomepageSettings,
+} from "@/lib/homepageDefaults";
 
 export async function GET() {
   try {
@@ -32,14 +16,8 @@ export async function GET() {
     if (!settings) {
       settings = await prisma.homepageSettings.create({
         data: {
-          id: "1",
-          sectionsOrder: DEFAULT_SECTIONS_ORDER,
-          sectionsVisibility: DEFAULT_SECTIONS_VISIBILITY,
-          visibleStatsTypes: DEFAULT_VISIBLE_STATS,
-          featuredProjectIds: [],
-          typewriterPhrasesFr: [],
-          typewriterPhrasesEn: [],
-          typewriterPhrasesAr: [],
+          ...getDefaultHomepageSettings(),
+          updatedAt: new Date(),
         },
       });
     }

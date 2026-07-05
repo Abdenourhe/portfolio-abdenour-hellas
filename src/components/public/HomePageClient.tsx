@@ -6,7 +6,7 @@ import { FileText, Send, Download, ArrowRight, Calendar, Briefcase, GraduationCa
 import { useState, useRef, useCallback, useEffect } from "react";
 import SocialIcons from "@/components/public/SocialIcons";
 import { useT } from "@/components/public/I18nProvider";
-import { useLocale, useLocalizedPath } from "@/components/public/useLocale";
+import { useLocale, useLocalizedPath } from "@/hooks/useLocale";
 import SectionHeader from "@/components/public/SectionHeader";
 import TypeWriter from "@/components/public/TypeWriter";
 import TypeWriterPhrases from "@/components/public/TypeWriterPhrases";
