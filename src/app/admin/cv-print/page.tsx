@@ -5,21 +5,15 @@ import {
   Download,
   Loader2,
   FileText,
-  ExternalLink,
   Monitor,
   Printer,
   CheckCircle2,
-  AlertCircle,
-  User,
-  Briefcase,
-  GraduationCap,
-  Wrench,
-  FolderKanban,
-  ImageIcon,
+  AlertTriangle,
   RefreshCw,
   History,
   Settings2,
-  AlertTriangle,
+  ShieldCheck,
+  AlertCircle,
 } from "lucide-react";
 import CVPrintTemplate from "@/components/public/CVPrintTemplate";
 
@@ -30,17 +24,12 @@ async function getHtml2Pdf() {
 
 type ViewMode = "screen" | "print";
 
-const SECTIONS = [
-  { href: "/admin/profile", label: "Profil & photo", icon: User },
-  { href: "/admin/experiences", label: "Expériences", icon: Briefcase },
-  { href: "/admin/education", label: "Formations", icon: GraduationCap },
-  { href: "/admin/skills", label: "Compétences", icon: Wrench },
-  { href: "/admin/projects", label: "Projets", icon: FolderKanban },
-];
-
 interface CvStatus {
   status: "synchronized" | "desynchronized";
-  htmlOutdated: boolean;
+  reason: string | null;
+  templateHash: string | null;
+  htmlHash: string | null;
+  hashesMatch: boolean;
   pdfOutdated: boolean;
   templateMtime: string | null;
   htmlMtime: string | null;
@@ -61,6 +50,17 @@ interface CvLog {
   error: string | null;
 }
 
+function formatDate(dateStr: string | null): string {
+  if (!dateStr) return "—";
+  return new Date(dateStr).toLocaleString("fr-CA", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export default function AdminCVPrintPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -70,7 +70,7 @@ export default function AdminCVPrintPage() {
   const [status, setStatus] = useState<CvStatus | null>(null);
   const [logs, setLogs] = useState<CvLog[]>([]);
   const [logsLoading, setLogsLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
   const cvRef = useRef<HTMLDivElement>(null);
 
   const fetchStatus = async () => {
@@ -107,6 +107,11 @@ export default function AdminCVPrintPage() {
     fetchLogs();
   }, []);
 
+  const showMessage = (text: string, type: "success" | "error") => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage(null), 5000);
+  };
+
   const handleDownloadHtml2Pdf = async () => {
     if (!cvRef.current) return;
     setGenerating(true);
@@ -132,10 +137,10 @@ export default function AdminCVPrintPage() {
 
     try {
       await html2pdf().set(opt).from(element).save();
-      setMessage("PDF téléchargé avec html2pdf.js");
+      showMessage("PDF téléchargé avec succès (html2pdf.js)", "success");
     } catch (error) {
       console.error("Erreur lors de la génération du PDF:", error);
-      setMessage("Erreur lors de la génération du PDF.");
+      showMessage("Erreur lors du téléchargement du PDF.", "error");
     } finally {
       setGenerating(false);
     }
@@ -143,7 +148,6 @@ export default function AdminCVPrintPage() {
 
   const handleRegenerateHeadless = async () => {
     setRegenerating(true);
-    setMessage("");
     try {
       const res = await fetch("/api/cv/generate", {
         method: "POST",
@@ -152,14 +156,14 @@ export default function AdminCVPrintPage() {
       });
       const result = await res.json();
       if (res.ok) {
-        setMessage(`PDF régénéré avec succès (${result.fileSizeKb} Ko)`);
+        showMessage(`PDF régénéré avec succès (${result.fileSizeKb} Ko)`, "success");
         fetchStatus();
         fetchLogs();
       } else {
-        setMessage("Erreur : " + (result.error || "Échec de la régénération"));
+        showMessage("Erreur : " + (result.error || "Échec de la régénération"), "error");
       }
     } catch (error) {
-      setMessage("Erreur réseau lors de la régénération.");
+      showMessage("Erreur réseau lors de la régénération.", "error");
     } finally {
       setRegenerating(false);
     }
@@ -178,16 +182,20 @@ export default function AdminCVPrintPage() {
       });
       if (res.ok) {
         setStatus((prev) => (prev ? { ...prev, cvGenerationMode: newMode } : null));
-        setMessage(`Mode de génération par défaut : ${newMode === "HEADLESS" ? "Headless" : "html2pdf.js"}`);
+        showMessage(
+          `Mode de génération par défaut : ${newMode === "HEADLESS" ? "Headless" : "html2pdf.js"}`,
+          "success"
+        );
       }
     } catch (error) {
       console.error("Failed to update generation mode:", error);
+      showMessage("Erreur lors de la mise à jour du mode.", "error");
     }
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex items-center justify-center h-96">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
@@ -202,130 +210,91 @@ export default function AdminCVPrintPage() {
     );
   }
 
-  const hasPhoto = !!data.profile?.photoUrl;
-  const skillCategories = Array.from(new Set((data.skills || []).map((s: any) => s.category).filter(Boolean)));
-  const hasCategories = ["technique", "logiciel", "web", "soft", "langue"].every((cat) =>
-    skillCategories.includes(cat)
-  );
+  const isSynchronized = status?.status === "synchronized";
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 max-w-[1600px] mx-auto space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-border">
         <div>
           <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
             <FileText size={26} />
             Générateur de CV
           </h1>
-          <p className="text-muted-foreground mt-1 max-w-xl">
-            Prévisualisez, ajustez et exportez votre CV. Les modifications se font via les sections du dashboard, une seule photo est utilisée pour l’écran et le PDF.
+          <p className="text-muted-foreground mt-1">
+            Prévisualisez votre CV et générez le fichier PDF prêt à être imprimé ou partagé.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <a
-            href="/admin/profile"
-            className="inline-flex items-center gap-2 px-4 py-2 border border-border rounded-lg text-sm hover:bg-muted transition-colors"
-          >
-            <ImageIcon size={16} />
-            Modifier la photo
-          </a>
-          <button
-            onClick={handleDownloadHtml2Pdf}
-            disabled={generating}
-            className="inline-flex items-center gap-2 px-5 py-2 border border-primary text-primary rounded-lg text-sm font-medium hover:bg-primary/10 transition-colors disabled:opacity-50"
-          >
-            {generating ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-            {generating ? "Génération..." : "Télécharger le PDF"}
-          </button>
-          <button
-            onClick={handlePrint}
-            className="inline-flex items-center gap-2 px-5 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
-          >
-            <Printer size={16} />
-            Imprimer
-          </button>
-        </div>
-      </div>
-
-      {/* Status pills */}
-      <div className="flex flex-wrap gap-3">
-        <div
-          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border ${
-            hasPhoto
-              ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900"
-              : "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950/30 dark:text-yellow-400 dark:border-yellow-900"
-          }`}
-        >
-          {hasPhoto ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-          {hasPhoto ? "Photo de profil présente" : "Aucune photo de profil"}
-        </div>
-        <div
-          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border ${
-            hasCategories
-              ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900"
-              : "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950/30 dark:text-yellow-400 dark:border-yellow-900"
-          }`}
-        >
-          {hasCategories ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-          {hasCategories ? "Catégories de compétences OK" : "Catégories de compétences incomplètes"}
-        </div>
-        {status && (
+        <div className="flex items-center gap-3">
           <div
             className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border ${
-              status.status === "synchronized"
+              isSynchronized
                 ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900"
                 : "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900"
             }`}
           >
-            {status.status === "synchronized" ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}
-            {status.status === "synchronized" ? "CV synchronisé" : "CV désynchronisé"}
+            {isSynchronized ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}
+            {isSynchronized ? "CV synchronisé" : "CV désynchronisé"}
           </div>
-        )}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border bg-muted/50 text-muted-foreground">
+            <History size={14} />
+            {status?.lastCvGeneratedAt
+              ? `Dernière gén. ${formatDate(status.lastCvGeneratedAt)}`
+              : "Jamais généré"}
+          </div>
+        </div>
       </div>
 
+      {/* Alert message */}
       {message && (
-        <p
-          className={`text-sm ${message.includes("succès") || message.includes("téléchargé") || message.includes("régénéré") ? "text-secondary" : "text-destructive"}`}
+        <div
+          className={`rounded-lg px-4 py-3 text-sm flex items-center gap-2 ${
+            message.type === "success"
+              ? "bg-green-50 text-green-800 border border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900"
+              : "bg-red-50 text-red-800 border border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900"
+          }`}
         >
-          {message}
-        </p>
+          {message.type === "success" ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+          {message.text}
+        </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
-        {/* Preview */}
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-8 items-start">
+        {/* Preview zone */}
         <div className="space-y-4">
-          {/* Tabs */}
-          <div className="inline-flex bg-muted rounded-lg p-1 border border-border">
-            <button
-              onClick={() => setMode("screen")}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                mode === "screen"
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Monitor size={16} />
-              Aperçu écran
-            </button>
-            <button
-              onClick={() => setMode("print")}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                mode === "print"
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Printer size={16} />
-              Aperçu print / PDF
-            </button>
+          {/* Preview tabs */}
+          <div className="flex items-center justify-between">
+            <div className="inline-flex bg-muted rounded-lg p-1 border border-border">
+              <button
+                onClick={() => setMode("screen")}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  mode === "screen"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Monitor size={16} />
+                Aperçu écran
+              </button>
+              <button
+                onClick={() => setMode("print")}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  mode === "print"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Printer size={16} />
+                Aperçu print / PDF
+              </button>
+            </div>
+            <span className="text-xs text-muted-foreground">
+              {mode === "screen" ? "Zoom confortable" : "Taille réelle A4"}
+            </span>
           </div>
 
           {/* Canvas */}
-          <div
-            className={`overflow-auto bg-gray-100 dark:bg-muted rounded-xl border border-border flex justify-center min-h-[600px] ${
-              mode === "screen" ? "p-6" : "p-4"
-            }`}
-          >
+          <div className="overflow-auto bg-gray-100 dark:bg-muted rounded-xl border border-border flex justify-center min-h-[600px] p-4">
             <div
               ref={cvRef}
               className={`shadow-lg ${mode === "screen" ? "scale-[0.92] origin-top" : ""}`}
@@ -343,124 +312,137 @@ export default function AdminCVPrintPage() {
           </div>
         </div>
 
-        {/* Sidebar */}
-        <div className="space-y-4">
-          {/* Synchronization status */}
-          <div className="bg-card border border-border rounded-xl p-4">
-            <h2 className="font-semibold text-primary mb-3 flex items-center gap-2">
-              <AlertCircle size={16} />
-              Statut de synchronisation
+        {/* Control panel */}
+        <div className="space-y-5">
+          {/* Status card */}
+          <section className="bg-card border border-border rounded-xl p-5">
+            <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+              <ShieldCheck size={18} className="text-primary" />
+              Statut du CV
             </h2>
-            {status ? (
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">État</span>
-                  <span
-                    className={`font-medium ${
-                      status.status === "synchronized" ? "text-green-600" : "text-red-600"
-                    }`}
-                  >
-                    {status.status === "synchronized" ? "Synchronisé" : "Désynchronisé"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Template React</span>
-                  <span>{status.templateMtime ? new Date(status.templateMtime).toLocaleString("fr-CA") : "—"}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">cv-print.html</span>
-                  <span>{status.htmlMtime ? new Date(status.htmlMtime).toLocaleString("fr-CA") : "—"}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">PDF</span>
-                  <span>{status.pdfMtime ? new Date(status.pdfMtime).toLocaleString("fr-CA") : "—"}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Dernière synchro</span>
-                  <span>{status.cvLastSyncedAt ? new Date(status.cvLastSyncedAt).toLocaleString("fr-CA") : "—"}</span>
-                </div>
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">Chargement du statut...</p>
-            )}
-          </div>
-
-          {/* Generation controls */}
-          <div className="bg-card border border-border rounded-xl p-4">
-            <h2 className="font-semibold text-primary mb-3 flex items-center gap-2">
-              <Settings2 size={16} />
-              Génération PDF
-            </h2>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Mode par défaut</label>
-                <select
-                  value={status?.cvGenerationMode || "HEADLESS"}
-                  onChange={(e) => handleModeChange(e.target.value as "HEADLESS" | "HTML2PDF")}
-                  className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm"
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">État</span>
+                <span
+                  className={`inline-flex items-center gap-1.5 font-medium ${
+                    isSynchronized ? "text-green-600" : "text-red-600"
+                  }`}
                 >
-                  <option value="HEADLESS">Headless (Edge/Chrome serveur)</option>
-                  <option value="HTML2PDF">html2pdf.js (navigateur client)</option>
-                </select>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Headless donne un PDF identique au template HTML statique. html2pdf.js fonctionne partout.
-                </p>
+                  {isSynchronized ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}
+                  {isSynchronized ? "Synchronisé" : "Désynchronisé"}
+                </span>
               </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Template React</span>
+                <span className="font-mono text-xs text-muted-foreground">
+                  {status?.templateHash ? status.templateHash.slice(0, 8) : "—"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">HTML statique</span>
+                <span className="font-mono text-xs text-muted-foreground">
+                  {status?.htmlHash ? status.htmlHash.slice(0, 8) : "—"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Dernière synchro</span>
+                <span className="text-muted-foreground">{formatDate(status?.cvLastSyncedAt || null)}</span>
+              </div>
+              {!isSynchronized && status?.reason && (
+                <p className="text-xs text-red-600 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-lg p-3">
+                  {status.reason}
+                </p>
+              )}
+            </div>
+          </section>
+
+          {/* Actions card */}
+          <section className="bg-card border border-border rounded-xl p-5">
+            <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+              <FileText size={18} className="text-primary" />
+              Actions PDF
+            </h2>
+            <div className="space-y-3">
+              <button
+                onClick={handleDownloadHtml2Pdf}
+                disabled={generating}
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+              >
+                {generating ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+                {generating ? "Génération..." : "Télécharger le PDF"}
+              </button>
+
+              <button
+                onClick={handlePrint}
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-border bg-background text-foreground rounded-lg text-sm font-medium hover:bg-muted transition-colors"
+              >
+                <Printer size={16} />
+                Imprimer
+              </button>
 
               <button
                 onClick={handleRegenerateHeadless}
                 disabled={regenerating}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-primary text-primary bg-primary/5 rounded-lg text-sm font-medium hover:bg-primary/10 transition-colors disabled:opacity-50"
               >
                 {regenerating ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
-                {regenerating ? "Génération..." : "Régénérer le PDF"}
+                {regenerating ? "Régénération..." : "Régénérer le PDF (headless)"}
               </button>
-
-              {status?.cvUrl && (
-                <a
-                  href={status.cvUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 border border-primary text-primary rounded-lg text-sm font-medium hover:bg-primary/10 transition-colors"
-                >
-                  <Download size={16} />
-                  Télécharger le PDF actuel
-                </a>
-              )}
             </div>
-          </div>
+          </section>
 
-          {/* Logs history */}
-          <div className="bg-card border border-border rounded-xl p-4">
-            <h2 className="font-semibold text-primary mb-3 flex items-center gap-2">
-              <History size={16} />
-              Historique
+          {/* Settings card */}
+          <section className="bg-card border border-border rounded-xl p-5">
+            <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Settings2 size={18} className="text-primary" />
+              Paramètres
+            </h2>
+            <div>
+              <label className="block text-sm font-medium mb-2">Mode de génération par défaut</label>
+              <select
+                value={status?.cvGenerationMode || "HEADLESS"}
+                onChange={(e) => handleModeChange(e.target.value as "HEADLESS" | "HTML2PDF")}
+                className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm"
+              >
+                <option value="HEADLESS">Headless (Edge/Chrome serveur)</option>
+                <option value="HTML2PDF">html2pdf.js (navigateur client)</option>
+              </select>
+              <p className="text-xs text-muted-foreground mt-2">
+                Headless produit un PDF identique au template HTML statique. html2pdf.js fonctionne partout.
+              </p>
+            </div>
+          </section>
+
+          {/* History card */}
+          <section className="bg-card border border-border rounded-xl p-5">
+            <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+              <History size={18} className="text-primary" />
+              Historique des générations
             </h2>
             {logsLoading ? (
               <p className="text-sm text-muted-foreground">Chargement...</p>
             ) : logs.length === 0 ? (
               <p className="text-sm text-muted-foreground">Aucune génération enregistrée.</p>
             ) : (
-              <div className="space-y-2 max-h-64 overflow-y-auto">
+              <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
                 {logs.map((log) => (
                   <div
                     key={log.id}
-                    className={`p-2 rounded-lg text-xs border ${
+                    className={`p-3 rounded-lg text-xs border ${
                       log.success
-                        ? "bg-green-50 border-green-200 dark:bg-green-950/30 dark:border-green-900"
-                        : "bg-red-50 border-red-200 dark:bg-red-950/30 dark:border-red-900"
+                        ? "bg-green-50/50 border-green-200 dark:bg-green-950/20 dark:border-green-900"
+                        : "bg-red-50/50 border-red-200 dark:bg-red-950/20 dark:border-red-900"
                     }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium">{log.method === "HEADLESS" ? "Headless" : "html2pdf.js"}</span>
-                      <span className={log.success ? "text-green-700" : "text-red-700"}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-medium">
+                        {log.method === "HEADLESS" ? "Headless" : "html2pdf.js"}
+                      </span>
+                      <span className={log.success ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}>
                         {log.success ? "Succès" : "Échec"}
                       </span>
                     </div>
-                    <div className="text-muted-foreground mt-1">
-                      {new Date(log.generatedAt).toLocaleString("fr-CA")}
-                    </div>
+                    <div className="text-muted-foreground">{formatDate(log.generatedAt)}</div>
                     {log.fileSizeKb ? (
                       <div className="text-muted-foreground">{log.fileSizeKb} Ko</div>
                     ) : null}
@@ -469,38 +451,7 @@ export default function AdminCVPrintPage() {
                 ))}
               </div>
             )}
-          </div>
-
-          <div className="bg-card border border-border rounded-xl p-4">
-            <h2 className="font-semibold text-primary mb-3">Modifier le contenu</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              Cet espace est dédié à la gestion du CV imprimable / PDF. Modifiez une section ci-dessous pour mettre à jour le contenu du CV.
-            </p>
-            <div className="space-y-2">
-              {SECTIONS.map((section) => {
-                const Icon = section.icon;
-                return (
-                  <a
-                    key={section.href}
-                    href={section.href}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-muted transition-colors group"
-                  >
-                    <Icon size={16} className="text-muted-foreground group-hover:text-primary transition-colors" />
-                    <span className="flex-1">{section.label}</span>
-                    <ExternalLink size={12} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </a>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-xl p-4">
-            <h2 className="font-semibold text-blue-800 dark:text-blue-400 mb-2">À propos des deux aperçus</h2>
-            <p className="text-sm text-blue-700 dark:text-blue-500">
-              <strong>Écran</strong> : zoom confortable pour relire le contenu.<br />
-              <strong>Print / PDF</strong> : taille réelle A4, c’est ce qui sera imprimé ou téléchargé.
-            </p>
-          </div>
+          </section>
         </div>
       </div>
     </div>
