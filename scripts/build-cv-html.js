@@ -56,7 +56,7 @@ function replaceConditional(template, key, value) {
 function formatDate(date) {
   if (!date) return "";
   const d = typeof date === "string" ? new Date(date) : date;
-  return d.toLocaleDateString("fr-CA", { month: "short", year: "numeric", timeZone: "UTC" });
+  return d.toLocaleDateString("fr-CA", { month: "long", year: "numeric", timeZone: "UTC" });
 }
 
 function formatDateRange(start, end, current) {

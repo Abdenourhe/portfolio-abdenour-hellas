@@ -120,7 +120,7 @@ function toBullets(text: string): string[] {
 function formatDate(date: string | Date | null | undefined): string {
   if (!date) return "";
   const d = typeof date === "string" ? new Date(date) : date;
-  return d.toLocaleDateString("fr-CA", { month: "short", year: "numeric", timeZone: "UTC" });
+  return d.toLocaleDateString("fr-CA", { month: "long", year: "numeric", timeZone: "UTC" });
 }
 
 function formatDateRange(start: string | Date, end?: string | Date | null, current?: boolean): string {
