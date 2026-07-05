@@ -331,6 +331,30 @@ async function main() {
     await prisma.article.create({ data: article });
   }
 
+  // Initialise les paramètres de la page d'accueil
+  await prisma.homepageSettings.upsert({
+    where: { id: "1" },
+    update: {},
+    create: {
+      id: "1",
+      sectionsOrder: ["stats", "experience", "education", "skills", "projects", "testimonials", "blog"],
+      sectionsVisibility: {
+        stats: true,
+        experience: true,
+        education: true,
+        skills: true,
+        projects: true,
+        testimonials: true,
+        blog: true,
+      },
+      visibleStatsTypes: ["visit", "cv_download"],
+      featuredProjectIds: [],
+      typewriterPhrasesFr: [],
+      typewriterPhrasesEn: [],
+      typewriterPhrasesAr: [],
+    },
+  });
+
   console.log("Seed completed successfully!");
 }
 

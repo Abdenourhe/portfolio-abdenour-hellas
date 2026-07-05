@@ -21,6 +21,11 @@ enum Role {
   ADMIN
 }
 
+enum CvGenerationMethod {
+  HEADLESS
+  HTML2PDF
+}
+
 model Profile {
   id           String   @id @default(cuid())
   fullName     String
@@ -33,10 +38,14 @@ model Profile {
   bio          String   @db.Text
   bioEn        String?  @db.Text
   bioAr        String?  @db.Text
-  photoUrl     String?
-  cvUrl        String?
-  cvFileName   String?
-  linkedin     String?
+  photoUrl          String?
+  cvUrl             String?
+  cvFileName        String?
+  lastCvGeneratedAt DateTime?
+  cvTemplateHash    String?
+  cvLastSyncedAt    DateTime?
+  cvGenerationMode  CvGenerationMethod @default(HEADLESS)
+  linkedin          String?
   github       String?
   twitter      String?
   facebook     String?
@@ -177,4 +186,37 @@ model Stat {
   date        DateTime @default(now())
   ipAddress   String?
   userAgent   String?
+}
+
+model HomepageSettings {
+  id                  String   @id @default(cuid())
+
+  heroTitle           String?
+  heroTitleEn         String?
+  heroTitleAr         String?
+
+  heroSubtitle        String?
+  heroSubtitleEn      String?
+  heroSubtitleAr      String?
+
+  typewriterPhrasesFr String[]
+  typewriterPhrasesEn String[]
+  typewriterPhrasesAr String[]
+
+  sectionsOrder       String[]
+  sectionsVisibility  Json?
+
+  featuredProjectIds  String[]
+  visibleStatsTypes   String[]
+
+  updatedAt           DateTime @updatedAt
+}
+
+model CvGenerationLog {
+  id          String           @id @default(cuid())
+  generatedAt DateTime         @default(now())
+  method      CvGenerationMethod
+  fileSizeKb  Int?
+  success     Boolean
+  error       String?
 }
