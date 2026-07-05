@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
+import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { CvGenerationMethod } from "@prisma/client";
 import { getServerSession } from "next-auth";
@@ -19,6 +20,11 @@ export async function POST(request: NextRequest) {
 
     const pdfPath = path.resolve(process.cwd(), "public/cv/Abdenour_Hellas_CV.pdf");
     const relativeUrl = "/cv/Abdenour_Hellas_CV.pdf";
+
+    const templatePath = path.resolve(process.cwd(), "src/components/public/CVPrintTemplate.tsx");
+    const templateHash = fs.existsSync(templatePath)
+      ? crypto.createHash("md5").update(fs.readFileSync(templatePath, "utf-8")).digest("hex")
+      : null;
 
     let success = false;
     let fileSizeKb = 0;
@@ -55,6 +61,8 @@ export async function POST(request: NextRequest) {
           cvUrl: relativeUrl,
           cvFileName: "Abdenour_Hellas_CV.pdf",
           lastCvGeneratedAt: new Date(),
+          cvLastSyncedAt: new Date(),
+          cvTemplateHash: templateHash,
         },
       });
     }

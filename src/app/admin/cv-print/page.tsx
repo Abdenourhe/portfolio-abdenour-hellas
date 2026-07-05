@@ -474,7 +474,7 @@ export default function AdminCVPrintPage() {
           <div className="bg-card border border-border rounded-xl p-4">
             <h2 className="font-semibold text-primary mb-3">Modifier le contenu</h2>
             <p className="text-sm text-muted-foreground mb-4">
-              Le CV écran et le CV print partagent les mêmes données. Modifiez une section ci-dessous pour mettre à jour les deux.
+              Cet espace est dédié à la gestion du CV imprimable / PDF. Modifiez une section ci-dessous pour mettre à jour le contenu du CV.
             </p>
             <div className="space-y-2">
               {SECTIONS.map((section) => {
