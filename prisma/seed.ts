@@ -347,7 +347,7 @@ async function main() {
         testimonials: true,
         blog: true,
       },
-      visibleStatsTypes: ["visit", "cv_download"],
+      visibleStatsTypes: ["years_exp", "projects", "education", "skills"],
       featuredProjectIds: [],
       typewriterPhrasesFr: [],
       typewriterPhrasesEn: [],

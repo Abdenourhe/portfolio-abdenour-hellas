@@ -20,10 +20,12 @@ import {
   X,
   ArrowUpRight,
   Printer,
+  Home,
 } from "lucide-react";
 
 const navItems = [
   { href: "/admin/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
+  { href: "/admin/homepage", label: "Accueil", icon: Home },
   { href: "/admin/profile", label: "Profil", icon: User },
   { href: "/admin/experiences", label: "Expériences", icon: Briefcase },
   { href: "/admin/education", label: "Formations", icon: GraduationCap },

@@ -22,9 +22,10 @@ interface ProjectsSectionProps {
   data?: Project[];
   compact?: boolean;
   limit?: number;
+  featuredIds?: string[];
 }
 
-export default function ProjectsSection({ data, compact = false, limit }: ProjectsSectionProps) {
+export default function ProjectsSection({ data, compact = false, limit, featuredIds }: ProjectsSectionProps) {
   const t = useT();
   const [projects, setProjects] = useState<Project[]>(data || []);
   const [activeFilter, setActiveFilter] = useState<string>("Tous");
@@ -37,7 +38,15 @@ export default function ProjectsSection({ data, compact = false, limit }: Projec
     ? projects
     : projects.filter((p) => p.category === activeFilter);
 
-  const displayProjects = limit ? filteredProjects.slice(0, limit) : filteredProjects;
+  const sortedProjects = [...filteredProjects].sort((a, b) => {
+    const aFeatured = a.featured || featuredIds?.includes(a.id);
+    const bFeatured = b.featured || featuredIds?.includes(b.id);
+    if (aFeatured && !bFeatured) return -1;
+    if (!aFeatured && bFeatured) return 1;
+    return 0;
+  });
+
+  const displayProjects = limit ? sortedProjects.slice(0, limit) : sortedProjects;
 
   useEffect(() => {
     if (data) return;
@@ -134,7 +143,7 @@ export default function ProjectsSection({ data, compact = false, limit }: Projec
               <h3 className="text-lg font-semibold text-primary group-hover:text-primary/80 transition-colors">
                 {project.title}
               </h3>
-              {project.featured && (
+              {(project.featured || featuredIds?.includes(project.id)) && (
                 <Star className="w-3.5 h-3.5 text-secondary fill-secondary flex-shrink-0 ml-2 mt-0.5" />
               )}
             </div>

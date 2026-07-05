@@ -16,6 +16,10 @@ import {
   Wrench,
   FolderKanban,
   ImageIcon,
+  RefreshCw,
+  History,
+  Settings2,
+  AlertTriangle,
 } from "lucide-react";
 import CVPrintTemplate from "@/components/public/CVPrintTemplate";
 
@@ -34,12 +38,61 @@ const SECTIONS = [
   { href: "/admin/projects", label: "Projets", icon: FolderKanban },
 ];
 
+interface CvStatus {
+  status: "synchronized" | "desynchronized";
+  htmlOutdated: boolean;
+  pdfOutdated: boolean;
+  templateMtime: string | null;
+  htmlMtime: string | null;
+  pdfMtime: string | null;
+  cvLastSyncedAt: string | null;
+  lastCvGeneratedAt: string | null;
+  cvUrl: string | null;
+  cvFileName: string | null;
+  cvGenerationMode: "HEADLESS" | "HTML2PDF";
+}
+
+interface CvLog {
+  id: string;
+  generatedAt: string;
+  method: "HEADLESS" | "HTML2PDF";
+  fileSizeKb: number | null;
+  success: boolean;
+  error: string | null;
+}
+
 export default function AdminCVPrintPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [generating, setGenerating] = useState(false);
   const [mode, setMode] = useState<ViewMode>("print");
+  const [generating, setGenerating] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
+  const [status, setStatus] = useState<CvStatus | null>(null);
+  const [logs, setLogs] = useState<CvLog[]>([]);
+  const [logsLoading, setLogsLoading] = useState(false);
+  const [message, setMessage] = useState("");
   const cvRef = useRef<HTMLDivElement>(null);
+
+  const fetchStatus = async () => {
+    try {
+      const res = await fetch("/api/cv/status");
+      if (res.ok) setStatus(await res.json());
+    } catch (error) {
+      console.error("Failed to fetch CV status:", error);
+    }
+  };
+
+  const fetchLogs = async () => {
+    setLogsLoading(true);
+    try {
+      const res = await fetch("/api/cv/logs");
+      if (res.ok) setLogs(await res.json());
+    } catch (error) {
+      console.error("Failed to fetch CV logs:", error);
+    } finally {
+      setLogsLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetch("/api/homepage")
@@ -49,9 +102,12 @@ export default function AdminCVPrintPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+
+    fetchStatus();
+    fetchLogs();
   }, []);
 
-  const handleGeneratePDF = async () => {
+  const handleDownloadHtml2Pdf = async () => {
     if (!cvRef.current) return;
     setGenerating(true);
 
@@ -76,11 +132,56 @@ export default function AdminCVPrintPage() {
 
     try {
       await html2pdf().set(opt).from(element).save();
+      setMessage("PDF téléchargé avec html2pdf.js");
     } catch (error) {
       console.error("Erreur lors de la génération du PDF:", error);
-      alert("Erreur lors de la génération du PDF. Veuillez réessayer.");
+      setMessage("Erreur lors de la génération du PDF.");
     } finally {
       setGenerating(false);
+    }
+  };
+
+  const handleRegenerateHeadless = async () => {
+    setRegenerating(true);
+    setMessage("");
+    try {
+      const res = await fetch("/api/cv/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ method: "HEADLESS" }),
+      });
+      const result = await res.json();
+      if (res.ok) {
+        setMessage(`PDF régénéré avec succès (${result.fileSizeKb} Ko)`);
+        fetchStatus();
+        fetchLogs();
+      } else {
+        setMessage("Erreur : " + (result.error || "Échec de la régénération"));
+      }
+    } catch (error) {
+      setMessage("Erreur réseau lors de la régénération.");
+    } finally {
+      setRegenerating(false);
+    }
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleModeChange = async (newMode: "HEADLESS" | "HTML2PDF") => {
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cvGenerationMode: newMode }),
+      });
+      if (res.ok) {
+        setStatus((prev) => (prev ? { ...prev, cvGenerationMode: newMode } : null));
+        setMessage(`Mode de génération par défaut : ${newMode === "HEADLESS" ? "Headless" : "html2pdf.js"}`);
+      }
+    } catch (error) {
+      console.error("Failed to update generation mode:", error);
     }
   };
 
@@ -129,12 +230,19 @@ export default function AdminCVPrintPage() {
             Modifier la photo
           </a>
           <button
-            onClick={handleGeneratePDF}
+            onClick={handleDownloadHtml2Pdf}
             disabled={generating}
-            className="inline-flex items-center gap-2 px-5 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-5 py-2 border border-primary text-primary rounded-lg text-sm font-medium hover:bg-primary/10 transition-colors disabled:opacity-50"
           >
             {generating ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
             {generating ? "Génération..." : "Télécharger le PDF"}
+          </button>
+          <button
+            onClick={handlePrint}
+            className="inline-flex items-center gap-2 px-5 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            <Printer size={16} />
+            Imprimer
           </button>
         </div>
       </div>
@@ -161,7 +269,27 @@ export default function AdminCVPrintPage() {
           {hasCategories ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
           {hasCategories ? "Catégories de compétences OK" : "Catégories de compétences incomplètes"}
         </div>
+        {status && (
+          <div
+            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border ${
+              status.status === "synchronized"
+                ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900"
+                : "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900"
+            }`}
+          >
+            {status.status === "synchronized" ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}
+            {status.status === "synchronized" ? "CV synchronisé" : "CV désynchronisé"}
+          </div>
+        )}
       </div>
+
+      {message && (
+        <p
+          className={`text-sm ${message.includes("succès") || message.includes("téléchargé") || message.includes("régénéré") ? "text-secondary" : "text-destructive"}`}
+        >
+          {message}
+        </p>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
         {/* Preview */}
@@ -217,6 +345,132 @@ export default function AdminCVPrintPage() {
 
         {/* Sidebar */}
         <div className="space-y-4">
+          {/* Synchronization status */}
+          <div className="bg-card border border-border rounded-xl p-4">
+            <h2 className="font-semibold text-primary mb-3 flex items-center gap-2">
+              <AlertCircle size={16} />
+              Statut de synchronisation
+            </h2>
+            {status ? (
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">État</span>
+                  <span
+                    className={`font-medium ${
+                      status.status === "synchronized" ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {status.status === "synchronized" ? "Synchronisé" : "Désynchronisé"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Template React</span>
+                  <span>{status.templateMtime ? new Date(status.templateMtime).toLocaleString("fr-CA") : "—"}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">cv-print.html</span>
+                  <span>{status.htmlMtime ? new Date(status.htmlMtime).toLocaleString("fr-CA") : "—"}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">PDF</span>
+                  <span>{status.pdfMtime ? new Date(status.pdfMtime).toLocaleString("fr-CA") : "—"}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Dernière synchro</span>
+                  <span>{status.cvLastSyncedAt ? new Date(status.cvLastSyncedAt).toLocaleString("fr-CA") : "—"}</span>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">Chargement du statut...</p>
+            )}
+          </div>
+
+          {/* Generation controls */}
+          <div className="bg-card border border-border rounded-xl p-4">
+            <h2 className="font-semibold text-primary mb-3 flex items-center gap-2">
+              <Settings2 size={16} />
+              Génération PDF
+            </h2>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Mode par défaut</label>
+                <select
+                  value={status?.cvGenerationMode || "HEADLESS"}
+                  onChange={(e) => handleModeChange(e.target.value as "HEADLESS" | "HTML2PDF")}
+                  className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm"
+                >
+                  <option value="HEADLESS">Headless (Edge/Chrome serveur)</option>
+                  <option value="HTML2PDF">html2pdf.js (navigateur client)</option>
+                </select>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Headless donne un PDF identique au template HTML statique. html2pdf.js fonctionne partout.
+                </p>
+              </div>
+
+              <button
+                onClick={handleRegenerateHeadless}
+                disabled={regenerating}
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+              >
+                {regenerating ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+                {regenerating ? "Génération..." : "Régénérer le PDF"}
+              </button>
+
+              {status?.cvUrl && (
+                <a
+                  href={status.cvUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 border border-primary text-primary rounded-lg text-sm font-medium hover:bg-primary/10 transition-colors"
+                >
+                  <Download size={16} />
+                  Télécharger le PDF actuel
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Logs history */}
+          <div className="bg-card border border-border rounded-xl p-4">
+            <h2 className="font-semibold text-primary mb-3 flex items-center gap-2">
+              <History size={16} />
+              Historique
+            </h2>
+            {logsLoading ? (
+              <p className="text-sm text-muted-foreground">Chargement...</p>
+            ) : logs.length === 0 ? (
+              <p className="text-sm text-muted-foreground">Aucune génération enregistrée.</p>
+            ) : (
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {logs.map((log) => (
+                  <div
+                    key={log.id}
+                    className={`p-2 rounded-lg text-xs border ${
+                      log.success
+                        ? "bg-green-50 border-green-200 dark:bg-green-950/30 dark:border-green-900"
+                        : "bg-red-50 border-red-200 dark:bg-red-950/30 dark:border-red-900"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium">{log.method === "HEADLESS" ? "Headless" : "html2pdf.js"}</span>
+                      <span className={log.success ? "text-green-700" : "text-red-700"}>
+                        {log.success ? "Succès" : "Échec"}
+                      </span>
+                    </div>
+                    <div className="text-muted-foreground mt-1">
+                      {new Date(log.generatedAt).toLocaleString("fr-CA")}
+                    </div>
+                    {log.fileSizeKb ? (
+                      <div className="text-muted-foreground">{log.fileSizeKb} Ko</div>
+                    ) : null}
+                    {log.error ? <div className="text-red-600 mt-1">{log.error}</div> : null}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           <div className="bg-card border border-border rounded-xl p-4">
             <h2 className="font-semibold text-primary mb-3">Modifier le contenu</h2>
             <p className="text-sm text-muted-foreground mb-4">
@@ -238,17 +492,6 @@ export default function AdminCVPrintPage() {
                 );
               })}
             </div>
-          </div>
-
-          <div className="bg-card border border-border rounded-xl p-4">
-            <h2 className="font-semibold text-primary mb-3">Conseils pour un CV optimal</h2>
-            <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside">
-              <li>Utilisez une photo professionnelle sur fond neutre.</li>
-              <li>Gardez le profil sous 5 lignes et orienté vers le poste visé.</li>
-              <li>Privilégiez les chiffres dans les expériences (ex. : « supervision de X techniciens »).</li>
-              <li>Classez les compétences dans les catégories : <strong>électrique, normes, web, logiciel, soft, langue</strong>.</li>
-              <li>Limitez le CV à 2 pages maximum.</li>
-            </ul>
           </div>
 
           <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-xl p-4">

@@ -21,7 +21,7 @@ const DEFAULT_SECTIONS_VISIBILITY = {
   blog: true,
 };
 
-const DEFAULT_VISIBLE_STATS = ["visit", "cv_download"];
+const DEFAULT_VISIBLE_STATS = ["years_exp", "projects", "education", "skills"];
 
 export async function GET() {
   try {
