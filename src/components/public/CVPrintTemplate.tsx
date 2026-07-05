@@ -117,10 +117,27 @@ function toBullets(text: string): string[] {
     .map((s) => (s.endsWith(".") ? s : s + "."));
 }
 
+const MONTH_LABELS = [
+  "jan",
+  "fév",
+  "mars",
+  "avr",
+  "mai",
+  "juin",
+  "juill",
+  "août",
+  "sept",
+  "oct",
+  "nov",
+  "déc",
+];
+
 function formatDate(date: string | Date | null | undefined): string {
   if (!date) return "";
   const d = typeof date === "string" ? new Date(date) : date;
-  return d.toLocaleDateString("fr-CA", { month: "long", year: "numeric", timeZone: "UTC" });
+  const month = MONTH_LABELS[d.getUTCMonth()];
+  const year = d.getUTCFullYear();
+  return `${month} ${year}`;
 }
 
 function formatDateRange(start: string | Date, end?: string | Date | null, current?: boolean): string {

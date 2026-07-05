@@ -53,10 +53,27 @@ function replaceConditional(template, key, value) {
   return template.replace(regex, escaped ? `$1` : "");
 }
 
+const MONTH_LABELS = [
+  "jan",
+  "fév",
+  "mars",
+  "avr",
+  "mai",
+  "juin",
+  "juill",
+  "août",
+  "sept",
+  "oct",
+  "nov",
+  "déc",
+];
+
 function formatDate(date) {
   if (!date) return "";
   const d = typeof date === "string" ? new Date(date) : date;
-  return d.toLocaleDateString("fr-CA", { month: "long", year: "numeric", timeZone: "UTC" });
+  const month = MONTH_LABELS[d.getUTCMonth()];
+  const year = d.getUTCFullYear();
+  return `${month} ${year}`;
 }
 
 function formatDateRange(start, end, current) {
