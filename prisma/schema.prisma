@@ -45,6 +45,17 @@ model Profile {
   cvTemplateHash    String?
   cvLastSyncedAt    DateTime?
   cvGenerationMode  CvGenerationMethod @default(HEADLESS)
+
+  // CV print specific content (optional overrides)
+  cvPrintFullName   String?
+  cvPrintTitle      String?
+  cvPrintEmail      String?
+  cvPrintPhone      String?
+  cvPrintLocation   String?
+  cvPrintBio        String?  @db.Text
+  cvPrintLinkedin   String?
+  cvPrintWebsite    String?
+
   linkedin          String?
   github       String?
   twitter      String?

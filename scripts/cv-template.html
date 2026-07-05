@@ -97,21 +97,21 @@
 <body>
   <div class="page">
     <header>
-      <div class="name">Abdenour Hellas</div>
-      <div class="title">Spécialiste en génie électrique &amp; développement web</div>
+      <div class="name">{{fullName}}</div>
+      <div class="title">{{title}}</div>
       <div class="contact">
-        <span><svg class="icon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 8.97 5.7a1.94 1.94 0 0 0 2.06 0L22 7"/></svg>abdenour.hellas@uqat.ca</span>
-        <span><svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>+1 418-350-5686</span>
-        <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Nouveau-Brunswick, Canada</span>
-        <span><svg class="icon" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>linkedin.com/in/abdenour-hellas/</span>
-        <span><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>abdenour-hellas.online</span>
+        {{#if email}}<span><svg class="icon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 8.97 5.7a1.94 1.94 0 0 0 2.06 0L22 7"/></svg>{{email}}</span>{{/if}}
+        {{#if phone}}<span><svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>{{phone}}</span>{{/if}}
+        {{#if location}}<span><svg class="icon" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>{{location}}</span>{{/if}}
+        {{#if linkedin}}<span><svg class="icon" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>{{linkedin}}</span>{{/if}}
+        {{#if website}}<span><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>{{website}}</span>{{/if}}
       </div>
       <div class="header-line"></div>
     </header>
 
     <section>
       <h2>Profil<span class="line"></span></h2>
-      <p class="profile">Spécialiste en génie électrique avec double compétence en développement web, orienté vers la conception de systèmes électriques collaboratifs et l&#039;automatisation industrielle. 5+ ans d&#039;expérience internationale (Algérie, Canada) en maintenance, supervision et conception. Passionné par l&#039;innovation énergétique et les solutions numériques. Recherche des opportunités à l&#039;international.</p>
+      <p class="profile">{{bio}}</p>
     </section>
 
     <section>
@@ -301,7 +301,7 @@
     </div>
 
     <footer>
-      Abdenour Hellas — CV généré le 2026-07-05
+      {{fullName}} — CV généré le {{generatedDate}}
     </footer>
   </div>
 </body>

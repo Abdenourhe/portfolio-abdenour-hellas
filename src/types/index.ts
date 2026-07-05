@@ -17,6 +17,14 @@ export interface Profile {
   github?: string | null;
   twitter?: string | null;
   facebook?: string | null;
+  cvPrintFullName?: string | null;
+  cvPrintTitle?: string | null;
+  cvPrintEmail?: string | null;
+  cvPrintPhone?: string | null;
+  cvPrintLocation?: string | null;
+  cvPrintLinkedin?: string | null;
+  cvPrintWebsite?: string | null;
+  cvPrintBio?: string | null;
   updatedAt: Date;
 }
 

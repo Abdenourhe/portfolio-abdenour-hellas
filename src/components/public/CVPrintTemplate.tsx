@@ -123,12 +123,21 @@ export default function CVPrintTemplate({
     (cat) => skillGroups[cat]?.length
   );
 
+  const cvFullName = profile.cvPrintFullName || profile.fullName;
+  const cvTitle = profile.cvPrintTitle || profile.title;
+  const cvEmail = profile.cvPrintEmail || profile.email;
+  const cvPhone = profile.cvPrintPhone || profile.phone;
+  const cvLocation = profile.cvPrintLocation || profile.location;
+  const cvBio = profile.cvPrintBio || profile.bio;
+  const cvLinkedin = profile.cvPrintLinkedin || profile.linkedin;
+  const cvWebsite = profile.cvPrintWebsite || "abdenour-hellas.online";
+
   const headerContacts = [
-    { icon: <MailIcon />, text: profile.email },
-    { icon: <PhoneIcon />, text: profile.phone },
-    { icon: <MapPinIcon />, text: profile.location },
-    { icon: <LinkedInIcon />, text: profile.linkedin?.replace(/^https?:\/\/(www\.)?/, "") },
-    { icon: <GlobeIcon />, text: "abdenour-hellas.online" },
+    { icon: <MailIcon />, text: cvEmail },
+    { icon: <PhoneIcon />, text: cvPhone },
+    { icon: <MapPinIcon />, text: cvLocation },
+    { icon: <LinkedInIcon />, text: cvLinkedin?.replace(/^https?:\/\/(www\.)?/, "") },
+    { icon: <GlobeIcon />, text: cvWebsite },
   ].filter((c) => c.text);
 
   return (
@@ -161,7 +170,7 @@ export default function CVPrintTemplate({
             letterSpacing: "-0.3px",
           }}
         >
-          {profile.fullName}
+          {cvFullName}
         </h1>
         <p
           style={{
@@ -171,7 +180,7 @@ export default function CVPrintTemplate({
             margin: "2px 0 0 0",
           }}
         >
-          {profile.title}
+          {cvTitle}
         </p>
         <div
           style={{
@@ -197,7 +206,7 @@ export default function CVPrintTemplate({
       <section style={{ marginBottom: "8px" }}>
         <SectionTitle>Profil</SectionTitle>
         <p style={{ textAlign: "justify", margin: 0, fontSize: "8pt", color: THEME.text }}>
-          {profile.bio}
+          {cvBio}
         </p>
       </section>
 
@@ -381,7 +390,7 @@ export default function CVPrintTemplate({
           textAlign: "center",
         }}
       >
-        {profile.fullName} — CV généré le {new Date().toLocaleDateString("fr-CA", { timeZone: "UTC" })}
+        {cvFullName} — CV généré le {new Date().toLocaleDateString("fr-CA", { timeZone: "UTC" })}
       </footer>
     </div>
   );

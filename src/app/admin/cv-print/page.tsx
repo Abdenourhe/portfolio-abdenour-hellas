@@ -14,8 +14,22 @@ import {
   Settings2,
   ShieldCheck,
   AlertCircle,
+  Save,
+  Pencil,
+  RotateCcw,
 } from "lucide-react";
 import CVPrintTemplate from "@/components/public/CVPrintTemplate";
+
+interface CvPrintFormData {
+  cvPrintFullName: string;
+  cvPrintTitle: string;
+  cvPrintEmail: string;
+  cvPrintPhone: string;
+  cvPrintLocation: string;
+  cvPrintLinkedin: string;
+  cvPrintWebsite: string;
+  cvPrintBio: string;
+}
 
 async function getHtml2Pdf() {
   const mod = await import("html2pdf.js");
@@ -71,6 +85,18 @@ export default function AdminCVPrintPage() {
   const [logs, setLogs] = useState<CvLog[]>([]);
   const [logsLoading, setLogsLoading] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [cvForm, setCvForm] = useState<CvPrintFormData>({
+    cvPrintFullName: "",
+    cvPrintTitle: "",
+    cvPrintEmail: "",
+    cvPrintPhone: "",
+    cvPrintLocation: "",
+    cvPrintLinkedin: "",
+    cvPrintWebsite: "",
+    cvPrintBio: "",
+  });
+  const [formChanged, setFormChanged] = useState(false);
+  const [saving, setSaving] = useState(false);
   const cvRef = useRef<HTMLDivElement>(null);
 
   const fetchStatus = async () => {
@@ -99,6 +125,17 @@ export default function AdminCVPrintPage() {
       .then((res) => res.json())
       .then((result) => {
         setData(result);
+        const p = result.profile || {};
+        setCvForm({
+          cvPrintFullName: p.cvPrintFullName || "",
+          cvPrintTitle: p.cvPrintTitle || "",
+          cvPrintEmail: p.cvPrintEmail || "",
+          cvPrintPhone: p.cvPrintPhone || "",
+          cvPrintLocation: p.cvPrintLocation || "",
+          cvPrintLinkedin: p.cvPrintLinkedin || "",
+          cvPrintWebsite: p.cvPrintWebsite || "",
+          cvPrintBio: p.cvPrintBio || "",
+        });
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -110,6 +147,63 @@ export default function AdminCVPrintPage() {
   const showMessage = (text: string, type: "success" | "error") => {
     setMessage({ text, type });
     setTimeout(() => setMessage(null), 5000);
+  };
+
+  const updateFormField = (field: keyof CvPrintFormData, value: string) => {
+    setCvForm((prev) => ({ ...prev, [field]: value }));
+    setFormChanged(true);
+  };
+
+  const resetForm = () => {
+    if (!data?.profile) return;
+    const p = data.profile;
+    setCvForm({
+      cvPrintFullName: p.cvPrintFullName || "",
+      cvPrintTitle: p.cvPrintTitle || "",
+      cvPrintEmail: p.cvPrintEmail || "",
+      cvPrintPhone: p.cvPrintPhone || "",
+      cvPrintLocation: p.cvPrintLocation || "",
+      cvPrintLinkedin: p.cvPrintLinkedin || "",
+      cvPrintWebsite: p.cvPrintWebsite || "",
+      cvPrintBio: p.cvPrintBio || "",
+    });
+    setFormChanged(false);
+  };
+
+  const handleSaveCvContent = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...cvForm,
+          // Convert empty strings to null so the template falls back to public profile fields
+          cvPrintFullName: cvForm.cvPrintFullName.trim() || null,
+          cvPrintTitle: cvForm.cvPrintTitle.trim() || null,
+          cvPrintEmail: cvForm.cvPrintEmail.trim() || null,
+          cvPrintPhone: cvForm.cvPrintPhone.trim() || null,
+          cvPrintLocation: cvForm.cvPrintLocation.trim() || null,
+          cvPrintLinkedin: cvForm.cvPrintLinkedin.trim() || null,
+          cvPrintWebsite: cvForm.cvPrintWebsite.trim() || null,
+          cvPrintBio: cvForm.cvPrintBio.trim() || null,
+        }),
+      });
+      if (res.ok) {
+        showMessage("Contenu du CV enregistré avec succès.", "success");
+        setFormChanged(false);
+        // Refresh data so the preview uses the new values
+        const refreshed = await fetch("/api/homepage").then((r) => r.json());
+        setData(refreshed);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        showMessage("Erreur : " + (err.error || "Échec de l'enregistrement"), "error");
+      }
+    } catch (error) {
+      showMessage("Erreur réseau lors de l'enregistrement.", "error");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleDownloadHtml2Pdf = async () => {
@@ -301,7 +395,19 @@ export default function AdminCVPrintPage() {
               style={mode === "screen" ? { transform: "scale(0.92)", transformOrigin: "top center" } : {}}
             >
               <CVPrintTemplate
-                profile={data.profile}
+                profile={{
+                  ...data.profile,
+                  ...cvForm,
+                  // Use public profile values as placeholders for empty cvPrint fields in the live preview
+                  cvPrintFullName: cvForm.cvPrintFullName || data.profile.fullName,
+                  cvPrintTitle: cvForm.cvPrintTitle || data.profile.title,
+                  cvPrintEmail: cvForm.cvPrintEmail || data.profile.email,
+                  cvPrintPhone: cvForm.cvPrintPhone || data.profile.phone,
+                  cvPrintLocation: cvForm.cvPrintLocation || data.profile.location,
+                  cvPrintLinkedin: cvForm.cvPrintLinkedin || data.profile.linkedin,
+                  cvPrintWebsite: cvForm.cvPrintWebsite || "abdenour-hellas.online",
+                  cvPrintBio: cvForm.cvPrintBio || data.profile.bio,
+                }}
                 experiences={data.experiences || []}
                 education={data.education || []}
                 skills={data.skills || []}
@@ -353,6 +459,128 @@ export default function AdminCVPrintPage() {
                   {status.reason}
                 </p>
               )}
+            </div>
+          </section>
+
+          {/* Content card */}
+          <section className="bg-card border border-border rounded-xl p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-semibold text-foreground flex items-center gap-2">
+                <Pencil size={18} className="text-primary" />
+                Contenu du CV
+              </h2>
+              {formChanged && (
+                <span className="text-xs font-medium text-amber-600 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 px-2 py-1 rounded-full">
+                  Modifications non enregistrées
+                </span>
+              )}
+            </div>
+            <div className="space-y-3 text-sm">
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Nom complet</label>
+                <input
+                  type="text"
+                  value={cvForm.cvPrintFullName}
+                  onChange={(e) => updateFormField("cvPrintFullName", e.target.value)}
+                  placeholder={data.profile.fullName}
+                  className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Titre / poste</label>
+                <input
+                  type="text"
+                  value={cvForm.cvPrintTitle}
+                  onChange={(e) => updateFormField("cvPrintTitle", e.target.value)}
+                  placeholder={data.profile.title}
+                  className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">Email</label>
+                  <input
+                    type="email"
+                    value={cvForm.cvPrintEmail}
+                    onChange={(e) => updateFormField("cvPrintEmail", e.target.value)}
+                    placeholder={data.profile.email}
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">Téléphone</label>
+                  <input
+                    type="text"
+                    value={cvForm.cvPrintPhone}
+                    onChange={(e) => updateFormField("cvPrintPhone", e.target.value)}
+                    placeholder={data.profile.phone}
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Localisation</label>
+                <input
+                  type="text"
+                  value={cvForm.cvPrintLocation}
+                  onChange={(e) => updateFormField("cvPrintLocation", e.target.value)}
+                  placeholder={data.profile.location}
+                  className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">LinkedIn</label>
+                  <input
+                    type="text"
+                    value={cvForm.cvPrintLinkedin}
+                    onChange={(e) => updateFormField("cvPrintLinkedin", e.target.value)}
+                    placeholder={data.profile.linkedin}
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">Site web</label>
+                  <input
+                    type="text"
+                    value={cvForm.cvPrintWebsite}
+                    onChange={(e) => updateFormField("cvPrintWebsite", e.target.value)}
+                    placeholder="abdenour-hellas.online"
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Bio / profil</label>
+                <textarea
+                  value={cvForm.cvPrintBio}
+                  onChange={(e) => updateFormField("cvPrintBio", e.target.value)}
+                  placeholder={data.profile.bio}
+                  rows={4}
+                  className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none resize-none"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Laissez un champ vide pour utiliser la valeur du profil public.
+              </p>
+              <div className="flex gap-2 pt-1">
+                <button
+                  onClick={handleSaveCvContent}
+                  disabled={saving || !formChanged}
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+                >
+                  {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                  {saving ? "Enregistrement..." : "Enregistrer"}
+                </button>
+                <button
+                  onClick={resetForm}
+                  disabled={!formChanged}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-border bg-background text-foreground rounded-lg text-sm font-medium hover:bg-muted transition-colors disabled:opacity-50"
+                >
+                  <RotateCcw size={16} />
+                  Réinitialiser
+                </button>
+              </div>
             </div>
           </section>
 
