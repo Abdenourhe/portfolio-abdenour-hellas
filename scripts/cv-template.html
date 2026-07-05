@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>CV — Abdenour Hellas</title>
+  <title>CV — {{fullName}}</title>
   <style>
     @page { size: A4; margin: 8mm 10mm; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -109,194 +109,20 @@
       <div class="header-line"></div>
     </header>
 
-    <section>
-      <h2>Profil<span class="line"></span></h2>
-      <p class="profile">{{bio}}</p>
-    </section>
+    {{section:profile}}
 
-    <section>
-      <h2>Expériences professionnelles<span class="line"></span></h2>
-
-      <div class="item">
-        <div class="item-header">
-          <span class="item-title">Technicien en Génie Électrique</span>
-          <span class="item-date">Déc. 2025 — Présent</span>
-        </div>
-        <div class="item-sub">Maisons Laprise — Québec, QC</div>
-        <div class="item-desc">
-          <ul>
-            <li>Conception et maintenance du système collaboratif électrique TCOST (normes, standards, options de configuration).</li>
-            <li>Développement d'une bibliothèque numérique complète : produits, prix, spécifications techniques, codes applicables.</li>
-            <li>Formation de 15+ utilisateurs (électriciens, estimateurs, représentants) sur le système TCOST.</li>
-            <li>Intégration de solutions innovantes : systèmes intelligents, efficacité énergétique, automatisations.</li>
-            <li>Évolution continue du système pour projets résidentiels, multilogements et commerciaux.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="item-header">
-          <span class="item-title">Superviseur Département Électroménagers</span>
-          <span class="item-date">Mars 2024 — Nov. 2025</span>
-        </div>
-        <div class="item-sub">RONA — Rouyn-Noranda, QC</div>
-        <div class="item-desc">
-          <ul>
-            <li>Encadrement, formation et motivation d'une équipe de 5 conseillers pour atteindre les objectifs de vente et de service.</li>
-            <li>Gestion des relations fournisseurs et suivi des factures/paiements.</li>
-            <li>Organisation structurée des documents pour une traçabilité optimale.</li>
-            <li>Supervision des inventaires et rotation des produits.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="item-header">
-          <span class="item-title">Conseiller Spécialisé Électroménagers</span>
-          <span class="item-date">Juin 2023 — Avr. 2024</span>
-        </div>
-        <div class="item-sub">RONA — Rouyn-Noranda, QC (temps partiel, weekends)</div>
-        <div class="item-desc">Accueil et évaluation des besoins clients en électroménagers. Présentation des produits, caractéristiques et avantages. Suivi des commandes et livraisons.</div>
-      </div>
-
-      <div class="item">
-        <div class="item-header">
-          <span class="item-title">Service Omni / Préparateur de commandes</span>
-          <span class="item-date">Mai 2023 — Mai 2024</span>
-        </div>
-        <div class="item-sub">Walmart — Rouyn-Noranda, QC (temps partiel)</div>
-        <div class="item-desc">Sélection, emballage et préparation des commandes clients pour ramassage ou livraison. Accueil clients, gestion des retours et réponses aux questions sur commandes en ligne.</div>
-      </div>
-
-      <div class="item">
-        <div class="item-header">
-          <span class="item-title">Électricien Industriel</span>
-          <span class="item-date">Nov. 2018 — Août 2019</span>
-        </div>
-        <div class="item-sub">ENTP — In-Amenas, Algérie</div>
-        <div class="item-desc">Montage, réparation et entretien des circuits électriques, tableaux de distribution et dispositifs de commande. Diagnostic et résolution des dysfonctionnements (surchauffe, courts-circuits, défauts d'isolation). Rédaction des rapports d'intervention et mise à jour des schémas électriques.</div>
-      </div>
-
-      <div class="item">
-        <div class="item-header">
-          <span class="item-title">Stages Techniques</span>
-          <span class="item-date">2017 — 2019</span>
-        </div>
-        <div class="item-sub">ENTP / SNP / Complexe Industriel TDA — Algérie</div>
-        <div class="item-desc">Maintenance préventive/corrective des équipements électriques et industriels. Inspection qualité, supervision travaux, gestion des stocks de pièces de rechange.</div>
-      </div>
-    </section>
+    {{section:experience}}
 
     <div class="two-col">
       <div class="col-left">
-        <section>
-          <h2>Compétences<span class="line"></span></h2>
-          <div class="skill-group">
-            <h3>Techniques</h3>
-            <div class="skill-list">Génie électrique, Électromécanique, Maintenance industrielle, Instrumentation & systèmes embarqués, Automatisation, Câblage industriel</div>
-          </div>
-          <div class="skill-group">
-            <h3>Normes</h3>
-            <div class="skill-list">Code québécois de l'électricité (CQE), Canadian Electrical Code (CEC), NFPA 70</div>
-          </div>
-          <div class="skill-group">
-            <h3>Développement web</h3>
-            <div class="skill-list">Next.js, React, TypeScript, Prisma, PostgreSQL, Tailwind CSS, Node.js, Git, GitHub</div>
-          </div>
-          <div class="skill-group">
-            <h3>Logiciels</h3>
-            <div class="skill-list">Proteus 8, SolidWorks, MATLAB, AutoCAD, Excel avancé</div>
-          </div>
-          <div class="skill-group">
-            <h3>Soft skills</h3>
-            <div class="skill-list">Autonomie, Leadership, Rigueur, Travail d'équipe, Gestion de projet</div>
-          </div>
-        </section>
-
-        <section>
-          <h2>Langues<span class="line"></span></h2>
-          <div class="lang"><span>Arabe</span><span>100 % — Natif</span></div>
-          <div class="lang"><span>Français</span><span>90 % — Courant</span></div>
-          <div class="lang"><span>Anglais</span><span>80 % — Professionnel</span></div>
-        </section>
+        {{section:skills}}
+        {{section:languages}}
       </div>
 
       <div class="col-right">
-        <section>
-          <h2>Formation<span class="line"></span></h2>
-          <div class="item">
-            <div class="item-header">
-              <span class="item-title">M.Eng. Génie électrique</span>
-              <span class="item-date">2023 — 2025</span>
-            </div>
-            <div class="item-sub">UQAT, Rouyn-Noranda, QC</div>
-          </div>
-          <div class="item">
-            <div class="item-header">
-              <span class="item-title">Master Électromécanique</span>
-              <span class="item-date">2018 — 2020</span>
-            </div>
-            <div class="item-sub">Université de Batna 2, Batna, Algérie</div>
-          </div>
-          <div class="item">
-            <div class="item-header">
-              <span class="item-title">Licence Électromécanique</span>
-              <span class="item-date">2015 — 2018</span>
-            </div>
-            <div class="item-sub">Université de Batna 2, Batna, Algérie</div>
-          </div>
-          <div class="item">
-            <div class="item-header">
-              <span class="item-title">Technicien Supérieur Informatique-Réseaux</span>
-              <span class="item-date">2022 — 2023</span>
-            </div>
-            <div class="item-sub">CFPA, Algérie</div>
-          </div>
-          <div class="item">
-            <div class="item-header">
-              <span class="item-title">Technicien Informatique-Réseaux</span>
-              <span class="item-date">2021 — 2022</span>
-            </div>
-            <div class="item-sub">CFPA, Algérie</div>
-          </div>
-          <div class="item">
-            <div class="item-header">
-              <span class="item-title">Baccalauréat Sciences Expérimentales</span>
-              <span class="item-date">2012 — 2015</span>
-            </div>
-            <div class="item-sub">Lycée Kser Bellazma, Algérie</div>
-          </div>
-        </section>
-
-        <section>
-          <h2>Projets<span class="line"></span></h2>
-          <div class="item">
-            <div class="item-header">
-              <span class="item-title">TAHFIDZ — Plateforme SaaS de gestion d'écoles coraniques</span>
-              <span class="item-date">2024 — Présent</span>
-            </div>
-            <div class="item-desc">Système multi-utilisateurs avec suivi de mémorisation, évaluations, présences et notifications. <span class="tech">Next.js 15</span><span class="tech">TypeScript</span><span class="tech">Prisma</span><span class="tech">PostgreSQL</span></div>
-          </div>
-          <div class="item">
-            <div class="item-header">
-              <span class="item-title">CCI Montmagny — Site web communautaire</span>
-              <span class="item-date">Janv. — Juil. 2026</span>
-            </div>
-            <div class="item-desc">Site vitrine pour le Centre Culturel Islamique de Montmagny. <span class="tech">Next.js 15</span><span class="tech">React</span><span class="tech">Tailwind CSS</span><span class="tech">Vercel</span></div>
-          </div>
-          <div class="item">
-            <div class="item-header">
-              <span class="item-title">Radar Avancé — Projet de fin d'études UQAT</span>
-              <span class="item-date">2024 — 2025</span>
-            </div>
-            <div class="item-desc">Conception et réalisation d'un système radar pour détection et surveillance. <span class="tech">Électronique</span><span class="tech">Signal Processing</span><span class="tech">MATLAB</span></div>
-          </div>
-        </section>
-
-        <section>
-          <h2>Certifications<span class="line"></span></h2>
-          <div class="item-desc"><strong>ASP Construction (Santé & Sécurité)</strong> — Centre Polymétier, Rouyn-Noranda, QC — Juill. — Sept. 2024</div>
-        </section>
+        {{section:education}}
+        {{section:projects}}
+        {{section:certifications}}
       </div>
     </div>
 

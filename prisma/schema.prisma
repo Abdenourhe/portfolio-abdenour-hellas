@@ -56,6 +56,9 @@ model Profile {
   cvPrintLinkedin   String?
   cvPrintWebsite    String?
 
+  // Full CV print configuration (sections, item selection/order, item text overrides)
+  cvPrintConfig     Json?
+
   linkedin          String?
   github       String?
   twitter      String?

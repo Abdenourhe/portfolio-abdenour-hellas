@@ -17,8 +17,40 @@ import {
   Save,
   Pencil,
   RotateCcw,
+  GripVertical,
+  ChevronDown,
+  Layers,
+  ListChecks,
+  X,
+  Plus,
 } from "lucide-react";
 import CVPrintTemplate from "@/components/public/CVPrintTemplate";
+import {
+  CvPrintConfig,
+  CvPrintSectionConfig,
+  CvPrintItemOverride,
+  Experience,
+  Education,
+  Skill,
+  Project,
+} from "@/types";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface CvPrintFormData {
   cvPrintFullName: string;
@@ -29,6 +61,15 @@ interface CvPrintFormData {
   cvPrintLinkedin: string;
   cvPrintWebsite: string;
   cvPrintBio: string;
+}
+
+interface HomepageData {
+  profile: Record<string, unknown> & { cvPrintConfig?: CvPrintConfig | null };
+  experiences: Experience[];
+  education: Education[];
+  skills: Skill[];
+  projects: Project[];
+  certifications: Education[];
 }
 
 async function getHtml2Pdf() {
@@ -75,6 +116,483 @@ function formatDate(dateStr: string | null): string {
   });
 }
 
+const CV_SECTION_ORDER: CvPrintSectionConfig["key"][] = [
+  "header",
+  "profile",
+  "experience",
+  "skills",
+  "languages",
+  "education",
+  "projects",
+  "certifications",
+];
+
+const DEFAULT_SECTION_LABELS: Record<CvPrintSectionConfig["key"], string> = {
+  header: "",
+  profile: "Profil",
+  experience: "Expériences professionnelles",
+  skills: "Compétences",
+  languages: "Langues",
+  education: "Formation",
+  projects: "Projets",
+  certifications: "Certifications",
+};
+
+const SECTION_UI_LABELS: Record<CvPrintSectionConfig["key"], string> = {
+  header: "En-tête",
+  profile: "Profil",
+  experience: "Expériences",
+  skills: "Compétences",
+  languages: "Langues",
+  education: "Formation",
+  projects: "Projets",
+  certifications: "Certifications",
+};
+
+const SELECTABLE_SECTIONS: CvPrintSectionConfig["key"][] = [
+  "experience",
+  "education",
+  "skills",
+  "languages",
+  "projects",
+  "certifications",
+];
+
+function getDefaultCvPrintConfig(
+  experiences: Experience[],
+  education: Education[],
+  skills: Skill[],
+  projects: Project[],
+  certifications: Education[]
+): CvPrintConfig {
+  return {
+    sections: CV_SECTION_ORDER.map((key) => {
+      const base: CvPrintSectionConfig = {
+        key,
+        visible: true,
+        label: DEFAULT_SECTION_LABELS[key],
+      };
+      if (key === "experience") base.itemIds = experiences.map((e) => e.id);
+      if (key === "education") base.itemIds = education.map((e) => e.id);
+      if (key === "skills") base.itemIds = skills.filter((s) => s.category !== "langue").map((s) => s.id);
+      if (key === "languages") base.itemIds = skills.filter((s) => s.category === "langue").map((s) => s.id);
+      if (key === "projects") base.itemIds = projects.map((p) => p.id);
+      if (key === "certifications") base.itemIds = certifications.map((c) => c.id);
+      return base;
+    }),
+    itemOverrides: {},
+  };
+}
+
+function parseCvPrintConfig(
+  saved: CvPrintConfig | null | undefined,
+  experiences: Experience[],
+  education: Education[],
+  skills: Skill[],
+  projects: Project[],
+  certifications: Education[]
+): CvPrintConfig {
+  const defaults = getDefaultCvPrintConfig(experiences, education, skills, projects, certifications);
+  if (!saved) return defaults;
+  const savedMap = new Map(saved.sections.map((s) => [s.key, s]));
+  return {
+    sections: defaults.sections.map((def) => {
+      const s = savedMap.get(def.key);
+      return {
+        ...def,
+        ...s,
+        label: s?.label ?? def.label,
+        itemIds: s?.itemIds ?? def.itemIds,
+      };
+    }),
+    itemOverrides: saved.itemOverrides || {},
+  };
+}
+
+function cleanItemOverride(override: CvPrintItemOverride): CvPrintItemOverride | null {
+  const cleaned: CvPrintItemOverride = {};
+  if (override.title?.trim()) cleaned.title = override.title.trim();
+  else if (override.title !== undefined) cleaned.title = null;
+
+  if (override.subtitle?.trim()) cleaned.subtitle = override.subtitle.trim();
+  else if (override.subtitle !== undefined) cleaned.subtitle = null;
+
+  if (override.description?.trim()) cleaned.description = override.description.trim();
+  else if (override.description !== undefined) cleaned.description = null;
+
+  if (override.dateRange?.trim()) cleaned.dateRange = override.dateRange.trim();
+  else if (override.dateRange !== undefined) cleaned.dateRange = null;
+
+  if (override.technologies && override.technologies.length > 0) {
+    cleaned.technologies = override.technologies.map((t) => t.trim()).filter(Boolean);
+  } else if (override.technologies !== undefined) {
+    cleaned.technologies = null;
+  }
+
+  const hasValue = Object.values(cleaned).some(
+    (v) => v !== null && v !== undefined && (Array.isArray(v) ? v.length > 0 : true)
+  );
+  return hasValue ? cleaned : null;
+}
+
+function cleanConfigForSave(config: CvPrintConfig): CvPrintConfig {
+  const cleanedOverrides: Record<string, CvPrintItemOverride> = {};
+  Object.entries(config.itemOverrides).forEach(([key, override]) => {
+    const cleaned = cleanItemOverride(override);
+    if (cleaned) cleanedOverrides[key] = cleaned;
+  });
+  const cleanedSections = config.sections.map((section) => ({
+    ...section,
+    label: section.label?.trim() || null,
+    itemIds: section.itemIds?.length ? section.itemIds : null,
+  }));
+  return { sections: cleanedSections, itemOverrides: cleanedOverrides };
+}
+
+function getItemType(sectionKey: CvPrintSectionConfig["key"]): string {
+  switch (sectionKey) {
+    case "experience":
+      return "experience";
+    case "education":
+      return "education";
+    case "skills":
+    case "languages":
+      return "skill";
+    case "projects":
+      return "project";
+    case "certifications":
+      return "certification";
+    default:
+      return sectionKey;
+  }
+}
+
+function getSectionItems(
+  sectionKey: CvPrintSectionConfig["key"],
+  data: HomepageData
+): Array<{ id: string; title: string }> {
+  switch (sectionKey) {
+    case "experience":
+      return (data.experiences || []).map((e: Experience) => ({ id: e.id, title: e.title }));
+    case "education":
+      return (data.education || []).map((e: Education) => ({ id: e.id, title: e.degree }));
+    case "skills":
+      return (data.skills || [])
+        .filter((s: Skill) => s.category !== "langue")
+        .map((s: Skill) => ({ id: s.id, title: s.name }));
+    case "languages":
+      return (data.skills || [])
+        .filter((s: Skill) => s.category === "langue")
+        .map((s: Skill) => ({ id: s.id, title: s.name }));
+    case "projects":
+      return (data.projects || []).map((p: Project) => ({ id: p.id, title: p.title }));
+    case "certifications":
+      return (data.certifications || []).map((c: Education) => ({ id: c.id, title: c.degree }));
+    default:
+      return [];
+  }
+}
+
+function getOverrideFields(sectionKey: CvPrintSectionConfig["key"]): Array<
+  keyof CvPrintItemOverride
+> {
+  switch (sectionKey) {
+    case "experience":
+      return ["title", "subtitle", "description", "dateRange"];
+    case "education":
+      return ["title", "subtitle", "dateRange"];
+    case "skills":
+    case "languages":
+      return ["title"];
+    case "projects":
+      return ["title", "description", "technologies"];
+    case "certifications":
+      return ["title", "subtitle", "dateRange"];
+    default:
+      return [];
+  }
+}
+
+function SortableCvSectionItem({
+  section,
+  onToggle,
+  onLabelChange,
+}: {
+  section: CvPrintSectionConfig;
+  onToggle: (key: CvPrintSectionConfig["key"]) => void;
+  onLabelChange: (key: CvPrintSectionConfig["key"], label: string) => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: section.key,
+  });
+  const style = { transform: CSS.Transform.toString(transform), transition };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center gap-2 p-2.5 rounded-lg border border-border bg-card"
+    >
+      <button
+        type="button"
+        {...attributes}
+        {...listeners}
+        className="text-muted-foreground hover:text-foreground cursor-grab active:cursor-grabbing"
+      >
+        <GripVertical size={18} />
+      </button>
+      <input
+        type="checkbox"
+        checked={section.visible}
+        onChange={() => onToggle(section.key)}
+        className="rounded border-border text-primary focus:ring-primary"
+      />
+      <input
+        type="text"
+        value={section.label || ""}
+        onChange={(e) => onLabelChange(section.key, e.target.value)}
+        placeholder={DEFAULT_SECTION_LABELS[section.key]}
+        className="flex-1 min-w-0 px-2 py-1.5 rounded-md bg-background border border-border focus:border-primary focus:outline-none text-sm"
+      />
+    </div>
+  );
+}
+
+function SortableSectionContentItem({
+  id,
+  title,
+  selected,
+  overridden,
+  onToggle,
+  onEdit,
+}: {
+  id: string;
+  title: string;
+  selected: boolean;
+  overridden: boolean;
+  onToggle: (id: string) => void;
+  onEdit: (id: string) => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+  const style = { transform: CSS.Transform.toString(transform), transition };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center gap-2 p-2 rounded-lg border border-border bg-card"
+    >
+      <button
+        type="button"
+        {...attributes}
+        {...listeners}
+        className="text-muted-foreground hover:text-foreground cursor-grab active:cursor-grabbing"
+      >
+        <GripVertical size={16} />
+      </button>
+      <input
+        type="checkbox"
+        checked={selected}
+        onChange={() => onToggle(id)}
+        className="rounded border-border text-primary focus:ring-primary"
+      />
+      <span className="flex-1 text-sm truncate">{title}</span>
+      {overridden && (
+        <span className="text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium shrink-0">
+          Modifié
+        </span>
+      )}
+      <button
+        type="button"
+        onClick={() => onEdit(id)}
+        className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-border bg-background text-xs font-medium hover:bg-muted transition-colors"
+      >
+        <Pencil size={12} />
+        Éditer
+      </button>
+    </div>
+  );
+}
+
+function OverrideEditor({
+  sectionKey,
+  itemTitle,
+  draft,
+  onChange,
+  onSave,
+  onCancel,
+  onRemove,
+}: {
+  sectionKey: CvPrintSectionConfig["key"];
+  itemTitle: string;
+  draft: CvPrintItemOverride;
+  onChange: (draft: CvPrintItemOverride) => void;
+  onSave: () => void;
+  onCancel: () => void;
+  onRemove: () => void;
+}) {
+  const fields = getOverrideFields(sectionKey);
+
+  const updateField = <K extends keyof CvPrintItemOverride>(key: K, value: CvPrintItemOverride[K]) => {
+    onChange({ ...draft, [key]: value });
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+      <div className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-card border border-border rounded-xl p-5 shadow-lg space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold text-foreground">
+            Modifier « {itemTitle} »
+          </h3>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        <div className="space-y-3">
+          {fields.includes("title") && (
+            <div>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">Titre</label>
+              <input
+                type="text"
+                value={draft.title || ""}
+                onChange={(e) => updateField("title", e.target.value)}
+                className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm"
+              />
+            </div>
+          )}
+          {fields.includes("subtitle") && (
+            <div>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">Sous-titre</label>
+              <input
+                type="text"
+                value={draft.subtitle || ""}
+                onChange={(e) => updateField("subtitle", e.target.value)}
+                className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm"
+              />
+            </div>
+          )}
+          {fields.includes("description") && (
+            <div>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">Description</label>
+              <textarea
+                value={draft.description || ""}
+                onChange={(e) => updateField("description", e.target.value)}
+                rows={4}
+                className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm resize-none"
+              />
+            </div>
+          )}
+          {fields.includes("dateRange") && (
+            <div>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">Période</label>
+              <input
+                type="text"
+                value={draft.dateRange || ""}
+                onChange={(e) => updateField("dateRange", e.target.value)}
+                placeholder="ex: Janv. 2020 — Présent"
+                className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm"
+              />
+            </div>
+          )}
+          {fields.includes("technologies") && (
+            <TechnologyEditor
+              technologies={draft.technologies || []}
+              onChange={(technologies) => updateField("technologies", technologies)}
+            />
+          )}
+        </div>
+
+        <div className="flex gap-2 pt-2">
+          <button
+            type="button"
+            onClick={onSave}
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            <Save size={16} />
+            Enregistrer
+          </button>
+          <button
+            type="button"
+            onClick={onRemove}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-destructive text-destructive bg-destructive/5 rounded-lg text-sm font-medium hover:bg-destructive/10 transition-colors"
+          >
+            Réinitialiser
+          </button>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-border bg-background text-foreground rounded-lg text-sm font-medium hover:bg-muted transition-colors"
+          >
+            Annuler
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TechnologyEditor({
+  technologies,
+  onChange,
+}: {
+  technologies: string[];
+  onChange: (technologies: string[]) => void;
+}) {
+  const [value, setValue] = useState("");
+
+  const add = () => {
+    const trimmed = value.trim();
+    if (!trimmed) return;
+    onChange([...technologies, trimmed]);
+    setValue("");
+  };
+
+  const remove = (index: number) => {
+    onChange(technologies.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div>
+      <label className="block text-xs font-medium text-muted-foreground mb-1">Technologies</label>
+      <div className="flex gap-2 mb-2">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), add())}
+          placeholder="Ajouter une technologie..."
+          className="flex-1 px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm"
+        />
+        <button
+          type="button"
+          onClick={add}
+          className="inline-flex items-center gap-1 px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 text-sm"
+        >
+          <Plus size={14} /> Ajouter
+        </button>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {technologies.map((tech, i) => (
+          <span
+            key={i}
+            className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-muted text-xs"
+          >
+            {tech}
+            <button type="button" onClick={() => remove(i)} className="hover:text-destructive">
+              <X size={12} />
+            </button>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function AdminCVPrintPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -95,9 +613,25 @@ export default function AdminCVPrintPage() {
     cvPrintWebsite: "",
     cvPrintBio: "",
   });
+  const [cvConfig, setCvConfig] = useState<CvPrintConfig>(() =>
+    getDefaultCvPrintConfig([], [], [], [], [])
+  );
   const [formChanged, setFormChanged] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [openAccordions, setOpenAccordions] = useState<
+    Partial<Record<CvPrintSectionConfig["key"], boolean>>
+  >({});
+  const [editingOverride, setEditingOverride] = useState<{
+    sectionKey: CvPrintSectionConfig["key"];
+    itemId: string;
+  } | null>(null);
+  const [overrideDraft, setOverrideDraft] = useState<CvPrintItemOverride>({});
   const cvRef = useRef<HTMLDivElement>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
   const fetchStatus = async () => {
     try {
@@ -136,6 +670,16 @@ export default function AdminCVPrintPage() {
           cvPrintWebsite: p.cvPrintWebsite || "",
           cvPrintBio: p.cvPrintBio || "",
         });
+        setCvConfig(
+          parseCvPrintConfig(
+            p.cvPrintConfig,
+            result.experiences || [],
+            result.education || [],
+            result.skills || [],
+            result.projects || [],
+            result.certifications || []
+          )
+        );
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -167,7 +711,31 @@ export default function AdminCVPrintPage() {
       cvPrintWebsite: p.cvPrintWebsite || "",
       cvPrintBio: p.cvPrintBio || "",
     });
+    setCvConfig(
+      parseCvPrintConfig(
+        p.cvPrintConfig,
+        data.experiences || [],
+        data.education || [],
+        data.skills || [],
+        data.projects || [],
+        data.certifications || []
+      )
+    );
     setFormChanged(false);
+  };
+
+  const resetCvConfig = () => {
+    if (!data) return;
+    setCvConfig(
+      getDefaultCvPrintConfig(
+        data.experiences || [],
+        data.education || [],
+        data.skills || [],
+        data.projects || [],
+        data.certifications || []
+      )
+    );
+    setFormChanged(true);
   };
 
   const handleSaveCvContent = async () => {
@@ -187,6 +755,7 @@ export default function AdminCVPrintPage() {
           cvPrintLinkedin: cvForm.cvPrintLinkedin.trim() || null,
           cvPrintWebsite: cvForm.cvPrintWebsite.trim() || null,
           cvPrintBio: cvForm.cvPrintBio.trim() || null,
+          cvPrintConfig: cleanConfigForSave(cvConfig),
         }),
       });
       if (res.ok) {
@@ -285,6 +854,117 @@ export default function AdminCVPrintPage() {
       console.error("Failed to update generation mode:", error);
       showMessage("Erreur lors de la mise à jour du mode.", "error");
     }
+  };
+
+  // CvPrintConfig helpers
+  const handleSectionDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setCvConfig((prev) => {
+      const oldIndex = prev.sections.findIndex((s) => s.key === active.id);
+      const newIndex = prev.sections.findIndex((s) => s.key === over.id);
+      if (oldIndex === -1 || newIndex === -1) return prev;
+      return { ...prev, sections: arrayMove(prev.sections, oldIndex, newIndex) };
+    });
+    setFormChanged(true);
+  };
+
+  const toggleSectionVisibility = (key: CvPrintSectionConfig["key"]) => {
+    setCvConfig((prev) => ({
+      ...prev,
+      sections: prev.sections.map((s) => (s.key === key ? { ...s, visible: !s.visible } : s)),
+    }));
+    setFormChanged(true);
+  };
+
+  const updateSectionLabel = (key: CvPrintSectionConfig["key"], label: string) => {
+    setCvConfig((prev) => ({
+      ...prev,
+      sections: prev.sections.map((s) => (s.key === key ? { ...s, label: label || null } : s)),
+    }));
+    setFormChanged(true);
+  };
+
+  const getSectionItemIds = (sectionKey: CvPrintSectionConfig["key"]) => {
+    return cvConfig.sections.find((s) => s.key === sectionKey)?.itemIds || [];
+  };
+
+  const toggleItemSelection = (sectionKey: CvPrintSectionConfig["key"], itemId: string) => {
+    setCvConfig((prev) => {
+      const section = prev.sections.find((s) => s.key === sectionKey);
+      if (!section) return prev;
+      const currentIds = section.itemIds || [];
+      const isSelected = currentIds.includes(itemId);
+      const newIds = isSelected
+        ? currentIds.filter((id) => id !== itemId)
+        : [...currentIds, itemId];
+      return {
+        ...prev,
+        sections: prev.sections.map((s) =>
+          s.key === sectionKey ? { ...s, itemIds: newIds } : s
+        ),
+      };
+    });
+    setFormChanged(true);
+  };
+
+  const handleItemDragEnd = (sectionKey: CvPrintSectionConfig["key"], event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setCvConfig((prev) => {
+      const section = prev.sections.find((s) => s.key === sectionKey);
+      if (!section) return prev;
+      const ids = section.itemIds || [];
+      const oldIndex = ids.indexOf(active.id as string);
+      const newIndex = ids.indexOf(over.id as string);
+      if (oldIndex === -1 || newIndex === -1) return prev;
+      return {
+        ...prev,
+        sections: prev.sections.map((s) =>
+          s.key === sectionKey ? { ...s, itemIds: arrayMove(ids, oldIndex, newIndex) } : s
+        ),
+      };
+    });
+    setFormChanged(true);
+  };
+
+  const getOverrideKey = (sectionKey: CvPrintSectionConfig["key"], itemId: string) => {
+    return `${getItemType(sectionKey)}:${itemId}`;
+  };
+
+  const isOverridden = (sectionKey: CvPrintSectionConfig["key"], itemId: string) => {
+    return !!cvConfig.itemOverrides[getOverrideKey(sectionKey, itemId)];
+  };
+
+  const openOverrideEditor = (sectionKey: CvPrintSectionConfig["key"], itemId: string) => {
+    const key = getOverrideKey(sectionKey, itemId);
+    setOverrideDraft({ ...cvConfig.itemOverrides[key] });
+    setEditingOverride({ sectionKey, itemId });
+  };
+
+  const saveOverride = () => {
+    if (!editingOverride) return;
+    const key = getOverrideKey(editingOverride.sectionKey, editingOverride.itemId);
+    setCvConfig((prev) => ({
+      ...prev,
+      itemOverrides: { ...prev.itemOverrides, [key]: overrideDraft },
+    }));
+    setFormChanged(true);
+    setEditingOverride(null);
+  };
+
+  const removeOverride = (sectionKey: CvPrintSectionConfig["key"], itemId: string) => {
+    const key = getOverrideKey(sectionKey, itemId);
+    setCvConfig((prev) => {
+      const next = { ...prev.itemOverrides };
+      delete next[key];
+      return { ...prev, itemOverrides: next };
+    });
+    setFormChanged(true);
+  };
+
+  const toggleAccordion = (key: CvPrintSectionConfig["key"]) => {
+    setOpenAccordions((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   if (loading) {
@@ -413,6 +1093,7 @@ export default function AdminCVPrintPage() {
                 skills={data.skills || []}
                 projects={data.projects || []}
                 certifications={data.certifications || []}
+                config={cvConfig}
               />
             </div>
           </div>
@@ -560,6 +1241,147 @@ export default function AdminCVPrintPage() {
                   className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none resize-none"
                 />
               </div>
+
+              {/* Sections card */}
+              <div className="pt-2 border-t border-border space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-foreground flex items-center gap-2">
+                    <Layers size={18} className="text-primary" />
+                    Sections du CV
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={resetCvConfig}
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-border bg-background text-xs font-medium hover:bg-muted transition-colors"
+                  >
+                    <RotateCcw size={12} />
+                    Réinitialiser
+                  </button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Glissez-déposez pour réordonner. Cochez/décochez pour afficher ou masquer. Laissez le libellé vide pour utiliser la valeur par défaut.
+                </p>
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleSectionDragEnd}
+                >
+                  <SortableContext items={cvConfig.sections.map((s) => s.key)} strategy={verticalListSortingStrategy}>
+                    <div className="space-y-2">
+                      {cvConfig.sections.map((section) => (
+                        <SortableCvSectionItem
+                          key={section.key}
+                          section={section}
+                          onToggle={toggleSectionVisibility}
+                          onLabelChange={updateSectionLabel}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+              </div>
+
+              {/* Section content accordions */}
+              <div className="pt-2 border-t border-border space-y-3">
+                <h3 className="font-semibold text-foreground flex items-center gap-2">
+                  <ListChecks size={18} className="text-primary" />
+                  Contenu des sections
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  Choisissez les éléments à inclure, réordonnez-les et modifiez leurs champs pour le CV imprimé.
+                </p>
+                <div className="space-y-2">
+                  {SELECTABLE_SECTIONS.map((sectionKey) => {
+                    const items = getSectionItems(sectionKey, data);
+                    const selectedIds = new Set(getSectionItemIds(sectionKey));
+                    const selectedItems = items.filter((i) => selectedIds.has(i.id));
+                    const unselectedItems = items.filter((i) => !selectedIds.has(i.id));
+                    const isOpen = !!openAccordions[sectionKey];
+
+                    return (
+                      <div
+                        key={sectionKey}
+                        className="border border-border rounded-lg bg-card overflow-hidden"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => toggleAccordion(sectionKey)}
+                          className="w-full flex items-center justify-between p-3 text-left hover:bg-muted/50 transition-colors"
+                        >
+                          <span className="font-medium text-sm flex items-center gap-2">
+                            {SECTION_UI_LABELS[sectionKey]}
+                            <span className="text-xs text-muted-foreground font-normal">
+                              ({selectedItems.length}/{items.length})
+                            </span>
+                          </span>
+                          <ChevronDown
+                            size={16}
+                            className={`text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`}
+                          />
+                        </button>
+                        {isOpen && (
+                          <div className="p-3 pt-0 space-y-3">
+                            {items.length === 0 ? (
+                              <p className="text-xs text-muted-foreground py-2">
+                                Aucun élément disponible.
+                              </p>
+                            ) : (
+                              <>
+                                <DndContext
+                                  sensors={sensors}
+                                  collisionDetection={closestCenter}
+                                  onDragEnd={(e) => handleItemDragEnd(sectionKey, e)}
+                                >
+                                  <SortableContext
+                                    items={selectedItems.map((i) => i.id)}
+                                    strategy={verticalListSortingStrategy}
+                                  >
+                                    <div className="space-y-1.5">
+                                      {selectedItems.map((item) => (
+                                        <SortableSectionContentItem
+                                          key={item.id}
+                                          id={item.id}
+                                          title={item.title}
+                                          selected={true}
+                                          overridden={isOverridden(sectionKey, item.id)}
+                                          onToggle={(id) => toggleItemSelection(sectionKey, id)}
+                                          onEdit={(id) => openOverrideEditor(sectionKey, id)}
+                                        />
+                                      ))}
+                                    </div>
+                                  </SortableContext>
+                                </DndContext>
+                                {unselectedItems.length > 0 && (
+                                  <div className="space-y-1.5 pt-2 border-t border-border">
+                                    <p className="text-xs text-muted-foreground">Éléments non sélectionnés</p>
+                                    {unselectedItems.map((item) => (
+                                      <div
+                                        key={item.id}
+                                        className="flex items-center gap-2 p-2 rounded-lg bg-muted/30"
+                                      >
+                                        <input
+                                          type="checkbox"
+                                          checked={false}
+                                          onChange={() => toggleItemSelection(sectionKey, item.id)}
+                                          className="rounded border-border text-primary focus:ring-primary"
+                                        />
+                                        <span className="flex-1 text-sm text-muted-foreground truncate">
+                                          {item.title}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
               <p className="text-xs text-muted-foreground">
                 Laissez un champ vide pour utiliser la valeur du profil public.
               </p>
@@ -682,6 +1504,25 @@ export default function AdminCVPrintPage() {
           </section>
         </div>
       </div>
+
+      {/* Override editor modal */}
+      {editingOverride && (
+        <OverrideEditor
+          sectionKey={editingOverride.sectionKey}
+          itemTitle={
+            getSectionItems(editingOverride.sectionKey, data).find((i) => i.id === editingOverride.itemId)
+              ?.title || ""
+          }
+          draft={overrideDraft}
+          onChange={setOverrideDraft}
+          onSave={saveOverride}
+          onCancel={() => setEditingOverride(null)}
+          onRemove={() => {
+            removeOverride(editingOverride.sectionKey, editingOverride.itemId);
+            setEditingOverride(null);
+          }}
+        />
+      )}
     </div>
   );
 }

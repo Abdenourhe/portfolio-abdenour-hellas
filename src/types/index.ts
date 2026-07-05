@@ -25,7 +25,28 @@ export interface Profile {
   cvPrintLinkedin?: string | null;
   cvPrintWebsite?: string | null;
   cvPrintBio?: string | null;
+  cvPrintConfig?: CvPrintConfig | null;
   updatedAt: Date;
+}
+
+export interface CvPrintConfig {
+  sections: CvPrintSectionConfig[];
+  itemOverrides: Record<string, CvPrintItemOverride>;
+}
+
+export interface CvPrintSectionConfig {
+  key: "header" | "profile" | "experience" | "skills" | "languages" | "education" | "projects" | "certifications";
+  visible: boolean;
+  label?: string | null;
+  itemIds?: string[] | null;
+}
+
+export interface CvPrintItemOverride {
+  title?: string | null;
+  subtitle?: string | null;
+  description?: string | null;
+  dateRange?: string | null;
+  technologies?: string[] | null;
 }
 
 export interface Experience {

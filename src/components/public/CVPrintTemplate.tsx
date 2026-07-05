@@ -1,6 +1,6 @@
 "use client";
 
-import { Profile, Experience, Education, Skill, Project } from "@/types";
+import { Profile, Experience, Education, Skill, Project, CvPrintConfig, CvPrintSectionConfig, CvPrintItemOverride } from "@/types";
 
 interface CVPrintTemplateProps {
   profile: Profile | null;
@@ -9,6 +9,95 @@ interface CVPrintTemplateProps {
   skills: Skill[];
   projects: Project[];
   certifications?: Education[];
+  config?: CvPrintConfig | null;
+}
+
+const DEFAULT_SECTION_ORDER: CvPrintSectionConfig["key"][] = [
+  "header",
+  "profile",
+  "experience",
+  "skills",
+  "languages",
+  "education",
+  "projects",
+  "certifications",
+];
+
+const DEFAULT_SECTION_LABELS: Record<CvPrintSectionConfig["key"], string> = {
+  header: "",
+  profile: "Profil",
+  experience: "Expériences professionnelles",
+  skills: "Compétences",
+  languages: "Langues",
+  education: "Formation",
+  projects: "Projets",
+  certifications: "Certifications",
+};
+
+function getDefaultConfig(
+  experiences: Experience[],
+  education: Education[],
+  skills: Skill[],
+  projects: Project[],
+  certifications: Education[]
+): CvPrintConfig {
+  return {
+    sections: DEFAULT_SECTION_ORDER.map((key) => {
+      const base: CvPrintSectionConfig = { key, visible: true, label: DEFAULT_SECTION_LABELS[key] };
+      if (key === "experience") base.itemIds = experiences.map((e) => e.id);
+      if (key === "education") base.itemIds = education.map((e) => e.id);
+      if (key === "skills") base.itemIds = skills.filter((s) => s.category !== "langue").map((s) => s.id);
+      if (key === "languages") base.itemIds = skills.filter((s) => s.category === "langue").map((s) => s.id);
+      if (key === "projects") base.itemIds = projects.map((p) => p.id);
+      if (key === "certifications") base.itemIds = certifications.map((c) => c.id);
+      return base;
+    }),
+    itemOverrides: {},
+  };
+}
+
+function mergeConfig(
+  config: CvPrintConfig | null | undefined,
+  experiences: Experience[],
+  education: Education[],
+  skills: Skill[],
+  projects: Project[],
+  certifications: Education[]
+): CvPrintConfig {
+  const defaults = getDefaultConfig(experiences, education, skills, projects, certifications);
+  if (!config) return defaults;
+
+  const sectionMap = new Map(config.sections.map((s) => [s.key, s]));
+  const mergedSections = DEFAULT_SECTION_ORDER.map((key) => {
+    const saved = sectionMap.get(key);
+    const def = defaults.sections.find((s) => s.key === key)!;
+    return {
+      ...def,
+      ...saved,
+      label: saved?.label ?? def.label,
+      itemIds: saved?.itemIds ?? def.itemIds,
+    };
+  });
+
+  return {
+    sections: mergedSections,
+    itemOverrides: config.itemOverrides || {},
+  };
+}
+
+function useSection(sections: CvPrintSectionConfig[], key: CvPrintSectionConfig["key"]) {
+  const section = sections.find((s) => s.key === key);
+  return section || { key, visible: true, label: DEFAULT_SECTION_LABELS[key], itemIds: [] };
+}
+
+function orderItems<T extends { id: string }>(items: T[], itemIds: string[] | null | undefined): T[] {
+  if (!itemIds || itemIds.length === 0) return items;
+  const map = new Map(items.map((i) => [i.id, i]));
+  return itemIds.map((id) => map.get(id)).filter(Boolean) as T[];
+}
+
+function getOverride(overrides: Record<string, CvPrintItemOverride>, type: string, id: string): CvPrintItemOverride {
+  return overrides[`${type}:${id}`] || {};
 }
 
 const THEME = {
@@ -103,6 +192,7 @@ export default function CVPrintTemplate({
   skills,
   projects,
   certifications = [],
+  config: rawConfig,
 }: CVPrintTemplateProps) {
   if (!profile) {
     return (
@@ -112,13 +202,44 @@ export default function CVPrintTemplate({
     );
   }
 
-  const skillGroups = skills.reduce((acc, skill) => {
+  const mergedConfig = mergeConfig(rawConfig, experiences, education, skills, projects, certifications);
+  const { sections, itemOverrides } = mergedConfig;
+
+  const profileSection = useSection(sections, "profile");
+  const experienceSection = useSection(sections, "experience");
+  const skillsSection = useSection(sections, "skills");
+  const languagesSection = useSection(sections, "languages");
+  const educationSection = useSection(sections, "education");
+  const projectsSection = useSection(sections, "projects");
+  const certificationsSection = useSection(sections, "certifications");
+
+  const visibleExperiences = experienceSection.visible
+    ? orderItems(experiences, experienceSection.itemIds)
+    : [];
+  const visibleEducation = educationSection.visible ? orderItems(education, educationSection.itemIds) : [];
+  const visibleProjects = projectsSection.visible ? orderItems(projects, projectsSection.itemIds) : [];
+  const visibleCertifications = certificationsSection.visible
+    ? orderItems(certifications, certificationsSection.itemIds)
+    : [];
+  const visibleSkills = skillsSection.visible
+    ? orderItems(
+        skills.filter((s) => s.category !== "langue"),
+        skillsSection.itemIds
+      )
+    : [];
+  const visibleLanguages = languagesSection.visible
+    ? orderItems(
+        skills.filter((s) => s.category === "langue"),
+        languagesSection.itemIds
+      )
+    : [];
+
+  const skillGroups = visibleSkills.reduce((acc, skill) => {
     if (!acc[skill.category]) acc[skill.category] = [];
     acc[skill.category].push(skill);
     return acc;
   }, {} as Record<string, Skill[]>);
 
-  const languages = skillGroups["langue"] || [];
   const skillCategories = ["électrique", "normes", "web", "logiciel", "soft"].filter(
     (cat) => skillGroups[cat]?.length
   );
@@ -203,41 +324,46 @@ export default function CVPrintTemplate({
       </header>
 
       {/* Profile */}
-      <section style={{ marginBottom: "8px" }}>
-        <SectionTitle>Profil</SectionTitle>
-        <p style={{ textAlign: "justify", margin: 0, fontSize: "8pt", color: THEME.text }}>
-          {cvBio}
-        </p>
-      </section>
+      {profileSection.visible && (
+        <section style={{ marginBottom: "8px" }}>
+          <SectionTitle>{profileSection.label}</SectionTitle>
+          <p style={{ textAlign: "justify", margin: 0, fontSize: "8pt", color: THEME.text }}>
+            {cvBio}
+          </p>
+        </section>
+      )}
 
       {/* Experiences */}
-      {experiences.length > 0 && (
+      {experienceSection.visible && visibleExperiences.length > 0 && (
         <section style={{ marginBottom: "8px" }}>
-          <SectionTitle>Expériences professionnelles</SectionTitle>
+          <SectionTitle>{experienceSection.label}</SectionTitle>
           <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-            {experiences.map((exp) => (
-              <div key={exp.id}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                  <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
-                    {exp.title}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "8pt",
-                      color: THEME.muted,
-                      whiteSpace: "nowrap",
-                      flexShrink: 0,
-                    }}
-                  >
-                    {formatExperienceRange(exp.startDate, exp.endDate, exp.current)}
-                  </span>
+            {visibleExperiences.map((exp) => {
+              const over = getOverride(itemOverrides, "experience", exp.id);
+              return (
+                <div key={exp.id}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
+                    <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
+                      {over.title || exp.title}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "8pt",
+                        color: THEME.muted,
+                        whiteSpace: "nowrap",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {over.dateRange || formatExperienceRange(exp.startDate, exp.endDate, exp.current)}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: "8pt", fontWeight: 600, color: THEME.muted, marginBottom: "1px" }}>
+                    {over.subtitle || `${exp.company} — ${exp.location}`}
+                  </div>
+                  <BulletList items={toBullets(over.description || exp.description)} />
                 </div>
-                <div style={{ fontSize: "8pt", fontWeight: 600, color: THEME.muted, marginBottom: "1px" }}>
-                  {exp.company} — {exp.location}
-                </div>
-                <BulletList items={toBullets(exp.description)} />
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}
@@ -247,9 +373,9 @@ export default function CVPrintTemplate({
         {/* Left column */}
         <div style={{ width: "80mm", flexShrink: 0 }}>
           {/* Skills */}
-          {skillCategories.length > 0 && (
+          {skillsSection.visible && skillCategories.length > 0 && (
             <section style={{ marginBottom: "7px" }}>
-              <SectionTitle>Compétences</SectionTitle>
+              <SectionTitle>{skillsSection.label}</SectionTitle>
               <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                 {skillCategories.map((cat) => (
                   <div key={cat}>
@@ -265,7 +391,7 @@ export default function CVPrintTemplate({
                       {SKILL_CATEGORY_LABELS[cat] || cat}
                     </div>
                     <div style={{ fontSize: "8pt", color: THEME.text, textAlign: "justify" }}>
-                      {skillGroups[cat].map((s) => s.name).join(", ")}
+                      {skillGroups[cat].map((s) => getOverride(itemOverrides, "skill", s.id).title || s.name).join(", ")}
                     </div>
                   </div>
                 ))}
@@ -274,21 +400,24 @@ export default function CVPrintTemplate({
           )}
 
           {/* Languages */}
-          {languages.length > 0 && (
+          {languagesSection.visible && visibleLanguages.length > 0 && (
             <section style={{ marginBottom: "7px" }}>
-              <SectionTitle>Langues</SectionTitle>
+              <SectionTitle>{languagesSection.label}</SectionTitle>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                {languages.map((lang) => (
-                  <div
-                    key={lang.id}
-                    style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "8pt", color: THEME.text }}
-                  >
-                    <span>{lang.name}</span>
-                    <span style={{ fontSize: "8pt", color: THEME.muted, whiteSpace: "nowrap" }}>
-                      {lang.level}% — {languageLevel(lang.level)}
-                    </span>
-                  </div>
-                ))}
+                {visibleLanguages.map((lang) => {
+                  const over = getOverride(itemOverrides, "skill", lang.id);
+                  return (
+                    <div
+                      key={lang.id}
+                      style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "8pt", color: THEME.text }}
+                    >
+                      <span>{over.title || lang.name}</span>
+                      <span style={{ fontSize: "8pt", color: THEME.muted, whiteSpace: "nowrap" }}>
+                        {lang.level}% — {languageLevel(lang.level)}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </section>
           )}
@@ -297,82 +426,91 @@ export default function CVPrintTemplate({
         {/* Right column */}
         <div style={{ flex: 1 }}>
           {/* Education */}
-          {education.length > 0 && (
+          {educationSection.visible && visibleEducation.length > 0 && (
             <section style={{ marginBottom: "7px" }}>
-              <SectionTitle>Formation</SectionTitle>
+              <SectionTitle>{educationSection.label}</SectionTitle>
               <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
-                {education.map((edu) => (
-                  <div key={edu.id}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                      <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
-                        {edu.degree}
-                      </span>
-                      <span style={{ fontSize: "8pt", color: THEME.muted, whiteSpace: "nowrap", flexShrink: 0 }}>
-                        {formatYearRange(edu.startDate, edu.endDate, edu.current)}
-                      </span>
+                {visibleEducation.map((edu) => {
+                  const over = getOverride(itemOverrides, "education", edu.id);
+                  return (
+                    <div key={edu.id}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
+                        <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
+                          {over.title || edu.degree}
+                        </span>
+                        <span style={{ fontSize: "8pt", color: THEME.muted, whiteSpace: "nowrap", flexShrink: 0 }}>
+                          {over.dateRange || formatYearRange(edu.startDate, edu.endDate, edu.current)}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: "8pt", color: THEME.muted }}>
+                        {over.subtitle || `${edu.school}, ${edu.location}`}
+                      </div>
                     </div>
-                    <div style={{ fontSize: "8pt", color: THEME.muted }}>
-                      {edu.school}, {edu.location}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
           )}
 
           {/* Projects */}
-          {projects.length > 0 && (
+          {projectsSection.visible && visibleProjects.length > 0 && (
             <section style={{ marginBottom: "7px" }}>
-              <SectionTitle>Projets</SectionTitle>
+              <SectionTitle>{projectsSection.label}</SectionTitle>
               <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                {projects.map((project) => (
-                  <div key={project.id}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                      <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
-                        {project.title}
-                      </span>
-                    </div>
-                    <p style={{ margin: 0, fontSize: "8pt", color: THEME.text, textAlign: "justify" }}>
-                      {project.description}
-                    </p>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "3px", marginTop: "2px" }}>
-                      {project.technologies.map((tech) => (
-                        <span
-                          key={tech}
-                          style={{
-                            fontSize: "7pt",
-                            color: THEME.primary,
-                            backgroundColor: "#eef3fa",
-                            padding: "1px 3px",
-                            borderRadius: "2px",
-                            fontWeight: 500,
-                          }}
-                        >
-                          {tech}
+                {visibleProjects.map((project) => {
+                  const over = getOverride(itemOverrides, "project", project.id);
+                  return (
+                    <div key={project.id}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
+                        <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
+                          {over.title || project.title}
                         </span>
-                      ))}
+                      </div>
+                      <p style={{ margin: 0, fontSize: "8pt", color: THEME.text, textAlign: "justify" }}>
+                        {over.description || project.description}
+                      </p>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "3px", marginTop: "2px" }}>
+                        {(over.technologies || project.technologies).map((tech) => (
+                          <span
+                            key={tech}
+                            style={{
+                              fontSize: "7pt",
+                              color: THEME.primary,
+                              backgroundColor: "#eef3fa",
+                              padding: "1px 3px",
+                              borderRadius: "2px",
+                              fontWeight: 500,
+                            }}
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
           )}
 
           {/* Certifications */}
-          {certifications.length > 0 && (
+          {certificationsSection.visible && visibleCertifications.length > 0 && (
             <section style={{ marginBottom: "7px" }}>
-              <SectionTitle>Certifications</SectionTitle>
+              <SectionTitle>{certificationsSection.label}</SectionTitle>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                {certifications.map((cert) => (
-                  <div key={cert.id}>
-                    <div style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
-                      {cert.degree}
+                {visibleCertifications.map((cert) => {
+                  const over = getOverride(itemOverrides, "certification", cert.id);
+                  return (
+                    <div key={cert.id}>
+                      <div style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
+                        {over.title || cert.degree}
+                      </div>
+                      <div style={{ fontSize: "8pt", color: THEME.muted }}>
+                        {over.subtitle || `${cert.school}, ${cert.location}`} — {over.dateRange || formatDateRange(cert.startDate, cert.endDate, cert.current)}
+                      </div>
                     </div>
-                    <div style={{ fontSize: "8pt", color: THEME.muted }}>
-                      {cert.school}, {cert.location} — {formatDateRange(cert.startDate, cert.endDate, cert.current)}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
           )}
