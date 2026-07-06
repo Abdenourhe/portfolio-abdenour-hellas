@@ -5,6 +5,23 @@ import { motion } from "framer-motion";
 import { Experience } from "@/types";
 import { Plus, Pencil, Trash2, GripVertical, Upload, ImageIcon } from "lucide-react";
 import SpellCheck from "@/components/admin/SpellCheck";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 export default function ExperiencesPage() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
@@ -56,6 +73,31 @@ export default function ExperiencesPage() {
       ...exp,
       startDate: exp.startDate ? new Date(exp.startDate).toISOString().split("T")[0] : "" as any,
       endDate: exp.endDate ? new Date(exp.endDate).toISOString().split("T")[0] : "" as any,
+    });
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = experiences.findIndex((e) => e.id === active.id);
+    const newIndex = experiences.findIndex((e) => e.id === over.id);
+    const reordered = arrayMove(experiences, oldIndex, newIndex);
+    setExperiences(reordered);
+
+    await fetch("/api/experiences/reorder", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        items: reordered.map((e, index) => ({ id: e.id, order: index })),
+      }),
     });
   };
 
@@ -204,34 +246,94 @@ export default function ExperiencesPage() {
         </form>
       )}
 
-      <div className="space-y-2">
-        {experiences.map((exp) => (
-          <div
-            key={exp.id}
-            className="flex items-center gap-4 p-4 rounded-lg bg-card border border-border hover:border-primary transition-colors"
-          >
-            <GripVertical className="text-muted-foreground cursor-move" size={18} />
-            <div className="flex-1">
-              <h3 className="font-medium">{exp.title}</h3>
-              <p className="text-sm text-muted-foreground">{exp.company} · {exp.location}{exp.url ? " · " : ""}{exp.url && <a href={exp.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Attestation ↗</a>}{exp.certificateImage && <span className="inline-flex items-center gap-1 ml-2 text-xs text-[#8B6914]"><ImageIcon size={12} /> Image</span>}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => handleEdit(exp)}
-                className="p-2 rounded-lg hover:bg-muted transition-colors"
-              >
-                <Pencil size={16} />
-              </button>
-              <button
-                onClick={() => handleDelete(exp.id)}
-                className="p-2 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={experiences.map((e) => e.id)} strategy={verticalListSortingStrategy}>
+          <div className="space-y-2">
+            {experiences.map((exp) => (
+              <SortableExperienceItem
+                key={exp.id}
+                exp={exp}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            ))}
           </div>
-        ))}
-      </div>
+        </SortableContext>
+      </DndContext>
     </motion.div>
+  );
+}
+
+function SortableExperienceItem({
+  exp,
+  onEdit,
+  onDelete,
+}: {
+  exp: Experience;
+  onEdit: (exp: Experience) => void;
+  onDelete: (id: string) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: exp.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 10 : undefined,
+    opacity: isDragging ? 0.8 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center gap-4 p-4 rounded-lg bg-card border border-border hover:border-primary transition-colors"
+    >
+      <button
+        type="button"
+        {...attributes}
+        {...listeners}
+        className="text-muted-foreground cursor-move hover:text-foreground"
+      >
+        <GripVertical size={18} />
+      </button>
+      <div className="flex-1">
+        <h3 className="font-medium">{exp.title}</h3>
+        <p className="text-sm text-muted-foreground">
+          {exp.company} · {exp.location}
+          {exp.url ? " · " : ""}
+          {exp.url && (
+            <a href={exp.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              Attestation ↗
+            </a>
+          )}
+          {exp.certificateImage && (
+            <span className="inline-flex items-center gap-1 ml-2 text-xs text-[#8B6914]">
+              <ImageIcon size={12} /> Image
+            </span>
+          )}
+        </p>
+      </div>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => onEdit(exp)}
+          className="p-2 rounded-lg hover:bg-muted transition-colors"
+        >
+          <Pencil size={16} />
+        </button>
+        <button
+          onClick={() => onDelete(exp.id)}
+          className="p-2 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
+    </div>
   );
 }

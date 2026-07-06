@@ -2,6 +2,8 @@ import HomePageClient from "@/components/public/HomePageClient";
 import { prisma } from "@/lib/prisma";
 import { getDefaultHomepageSettings } from "@/lib/homepageDefaults";
 
+export const revalidate = 60;
+
 async function getHomepageData() {
   try {
     const [
