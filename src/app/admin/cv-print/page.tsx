@@ -293,6 +293,85 @@ function getSectionItems(
   }
 }
 
+function getItemOriginalValues(
+  sectionKey: CvPrintSectionConfig["key"],
+  itemId: string,
+  data: HomepageData
+): CvPrintItemOverride {
+  switch (sectionKey) {
+    case "experience": {
+      const exp = data.experiences?.find((e) => e.id === itemId);
+      if (!exp) return {};
+      const start = new Date(exp.startDate);
+      const end = exp.endDate ? new Date(exp.endDate) : null;
+      const monthLabels = ["jan", "fév", "mars", "avr", "mai", "juin", "juill", "août", "sept", "oct", "nov", "déc"];
+      const format = (d: Date) => `${monthLabels[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+      const dateRange = exp.current
+        ? `${format(start)} — Présent`
+        : end
+        ? `${format(start)} — ${format(end)}`
+        : format(start);
+      return {
+        title: exp.title,
+        subtitle: `${exp.company} — ${exp.location}`,
+        description: exp.description,
+        dateRange,
+      };
+    }
+    case "education": {
+      const edu = data.education?.find((e) => e.id === itemId);
+      if (!edu) return {};
+      const start = new Date(edu.startDate);
+      const end = edu.endDate ? new Date(edu.endDate) : null;
+      const dateRange = edu.current
+        ? `${start.getUTCFullYear()} — Présent`
+        : end
+        ? `${start.getUTCFullYear()} — ${end.getUTCFullYear()}`
+        : `${start.getUTCFullYear()}`;
+      return {
+        title: edu.degree,
+        subtitle: `${edu.school}, ${edu.location}`,
+        dateRange,
+      };
+    }
+    case "skills":
+    case "languages": {
+      const skill = data.skills?.find((s) => s.id === itemId);
+      return skill ? { title: skill.name } : {};
+    }
+    case "projects": {
+      const project = data.projects?.find((p) => p.id === itemId);
+      return project
+        ? {
+            title: project.title,
+            description: project.description,
+            technologies: [...(project.technologies || [])],
+          }
+        : {};
+    }
+    case "certifications": {
+      const cert = data.certifications?.find((c) => c.id === itemId);
+      if (!cert) return {};
+      const start = new Date(cert.startDate);
+      const end = cert.endDate ? new Date(cert.endDate) : null;
+      const monthLabels = ["jan", "fév", "mars", "avr", "mai", "juin", "juill", "août", "sept", "oct", "nov", "déc"];
+      const format = (d: Date) => `${monthLabels[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+      const dateRange = cert.current
+        ? `${format(start)} — Présent`
+        : end
+        ? `${format(start)} — ${format(end)}`
+        : format(start);
+      return {
+        title: cert.degree,
+        subtitle: `${cert.school}, ${cert.location}`,
+        dateRange,
+      };
+    }
+    default:
+      return {};
+  }
+}
+
 function getOverrideFields(sectionKey: CvPrintSectionConfig["key"]): Array<
   keyof CvPrintItemOverride
 > {
@@ -938,17 +1017,53 @@ export default function AdminCVPrintPage() {
 
   const openOverrideEditor = (sectionKey: CvPrintSectionConfig["key"], itemId: string) => {
     const key = getOverrideKey(sectionKey, itemId);
-    setOverrideDraft({ ...cvConfig.itemOverrides[key] });
+    const original = data ? getItemOriginalValues(sectionKey, itemId, data as HomepageData) : {};
+    const existing = cvConfig.itemOverrides[key] || {};
+    setOverrideDraft({
+      title: existing.title ?? original.title ?? "",
+      subtitle: existing.subtitle ?? original.subtitle ?? "",
+      description: existing.description ?? original.description ?? "",
+      dateRange: existing.dateRange ?? original.dateRange ?? "",
+      technologies: existing.technologies ?? original.technologies ?? [],
+    });
     setEditingOverride({ sectionKey, itemId });
   };
 
   const saveOverride = () => {
-    if (!editingOverride) return;
-    const key = getOverrideKey(editingOverride.sectionKey, editingOverride.itemId);
-    setCvConfig((prev) => ({
-      ...prev,
-      itemOverrides: { ...prev.itemOverrides, [key]: overrideDraft },
-    }));
+    if (!editingOverride || !data) return;
+    const { sectionKey, itemId } = editingOverride;
+    const key = getOverrideKey(sectionKey, itemId);
+    const original = getItemOriginalValues(sectionKey, itemId, data as HomepageData);
+
+    const changed: CvPrintItemOverride = {};
+    (["title", "subtitle", "description", "dateRange"] as const).forEach((field) => {
+      const draftValue = overrideDraft[field];
+      const origValue = original[field];
+      const normalizedDraft = typeof draftValue === "string" ? draftValue.trim() : draftValue;
+      const normalizedOrig = typeof origValue === "string" ? origValue.trim() : origValue;
+      if (normalizedDraft && normalizedDraft !== normalizedOrig) {
+        changed[field] = normalizedDraft;
+      }
+    });
+
+    const draftTechs = overrideDraft.technologies || [];
+    const origTechs = original.technologies || [];
+    const techsChanged =
+      draftTechs.length !== origTechs.length ||
+      draftTechs.some((t, i) => t.trim() !== (origTechs[i] || "").trim());
+    if (techsChanged && draftTechs.length > 0) {
+      changed.technologies = draftTechs.map((t) => t.trim()).filter(Boolean);
+    }
+
+    setCvConfig((prev) => {
+      const next = { ...prev.itemOverrides };
+      if (Object.keys(changed).length === 0) {
+        delete next[key];
+      } else {
+        next[key] = changed;
+      }
+      return { ...prev, itemOverrides: next };
+    });
     setFormChanged(true);
     setEditingOverride(null);
   };
