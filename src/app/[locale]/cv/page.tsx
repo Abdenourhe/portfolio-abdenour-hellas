@@ -50,7 +50,7 @@ export default function CVPage() {
     const pageEl = el.querySelector("#cv-print-content") as HTMLElement | null;
     if (!pageEl) return 1;
 
-    const A4_HEIGHT_PX = 297 * 3.7795;
+    const A4_HEIGHT_PX = 297 * 3.7795 - 10;
     let scale = 1;
     pageEl.style.setProperty("--cv-scale", "1");
     const originalMinHeight = pageEl.style.minHeight;
@@ -58,10 +58,10 @@ export default function CVPage() {
     pageEl.style.maxHeight = "none";
     await new Promise((r) => setTimeout(r, 50));
 
-    while (pageEl.scrollHeight > A4_HEIGHT_PX && scale > 0.85) {
-      scale -= 0.02;
+    while (pageEl.scrollHeight > A4_HEIGHT_PX && scale > 0.80) {
+      scale -= 0.01;
       pageEl.style.setProperty("--cv-scale", scale.toFixed(2));
-      await new Promise((r) => setTimeout(r, 20));
+      await new Promise((r) => setTimeout(r, 15));
     }
 
     pageEl.style.minHeight = originalMinHeight;

@@ -144,7 +144,7 @@ export default function CVPrintTemplate({
         .cv-page {
           width: 210mm;
           min-height: 297mm;
-          padding: calc(12mm * var(--cv-scale)) calc(16mm * var(--cv-scale));
+          padding: calc(10mm * var(--cv-scale)) calc(14mm * var(--cv-scale));
           font-family: "Inter", "Calibri", "Segoe UI", sans-serif;
           font-size: calc(9.5pt * var(--cv-scale));
           line-height: 1.35;
@@ -156,7 +156,7 @@ export default function CVPrintTemplate({
         .cv-name { font-size: calc(24pt * var(--cv-scale)); font-weight: 700; letter-spacing: -0.5px; margin: 0; color: #111; }
         .cv-title { font-size: calc(10.5pt * var(--cv-scale)); font-weight: 500; color: #374151; margin: calc(3px * var(--cv-scale)) 0 0; text-transform: uppercase; letter-spacing: 0.05em; }
         .cv-contacts { font-size: calc(8.5pt * var(--cv-scale)); color: #4b5563; margin: calc(4px * var(--cv-scale)) 0 0; }
-        .cv-section { margin-top: calc(10px * var(--cv-scale)); }
+        .cv-section { margin-top: calc(8px * var(--cv-scale)); }
         .cv-section-title {
           font-size: calc(9.5pt * var(--cv-scale));
           font-weight: 700;
@@ -182,7 +182,7 @@ export default function CVPrintTemplate({
         .cv-lang-list { display: flex; flex-wrap: wrap; gap: calc(10px * var(--cv-scale)); font-size: calc(9pt * var(--cv-scale)); color: #374151; }
         .cv-tech { font-size: calc(8.5pt * var(--cv-scale)); color: #6b7280; margin-top: calc(1px * var(--cv-scale)); }
         .cv-stack { display: flex; flex-direction: column; gap: calc(5px * var(--cv-scale)); }
-        .cv-bottom-row { display: flex; gap: calc(20px * var(--cv-scale)); }
+        .cv-bottom-row { display: flex; gap: calc(16px * var(--cv-scale)); }
         .cv-bottom-col { flex: 1; min-width: 0; }
       `}</style>
 
