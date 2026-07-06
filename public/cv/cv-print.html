@@ -8,9 +8,9 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: "Inter", "Calibri", "Segoe UI", sans-serif;
-      color: #1f2937;
+      color: #111827;
       font-size: 8pt;
-      line-height: 1.1;
+      line-height: 1.2;
       background: #fff;
     }
     .page {
@@ -20,8 +20,8 @@
       flex-direction: column;
     }
     header { margin-bottom: 7px; }
-    .name { font-size: 18pt; font-weight: 800; color: #1f2937; letter-spacing: -0.3px; }
-    .title { font-size: 10pt; font-weight: 600; color: #1e3a5f; margin-top: 2px; }
+    .name { font-size: 17pt; font-weight: 700; color: #111827; letter-spacing: -0.2px; }
+    .title { font-size: 9.5pt; font-weight: 500; color: #1e3a5f; margin-top: 1px; }
     .header-line { height: 2px; background-color: #1e3a5f; margin-top: 5px; }
     .contact {
       display: flex;
@@ -37,16 +37,18 @@
     h2 {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       font-size: 8.5pt;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
       color: #1e3a5f;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
       margin-top: 0;
+      border-bottom: 1px solid #d1d5db;
+      padding-bottom: 2px;
     }
-    h2 .line { flex: 1; height: 1px; background-color: #d1d5db; min-width: 20px; }
+    h2 .line { display: none; }
 
     section { margin-bottom: 8px; }
     .profile { text-align: justify; font-size: 8pt; color: #1f2937; }
@@ -197,7 +199,7 @@
         <section>
 <h2>Projets<span class="line"></span></h2>
 <div class="item">
-<div class="item-header"><span class="item-title">TAHFIDZ — Plateforme SaaS de gestion d&#039;écoles coraniques</span></div>
+<div class="item-header"><span class="item-title">TAHFIDZ — Plateforme SaaS de gestion d&#039;écoles mémorisation</span></div>
 <div class="item-desc">Système multi-utilisateurs avec suivi de mémorisation, évaluations, présences et notifications. <span class="tech">Next.js 15</span><span class="tech">TypeScript</span><span class="tech">Prisma</span><span class="tech">PostgreSQL</span><span class="tech">Tailwind CSS</span><span class="tech">NextAuth.js</span></div>
 </div>
 <div class="item">

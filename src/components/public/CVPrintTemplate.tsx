@@ -102,7 +102,7 @@ function getOverride(overrides: Record<string, CvPrintItemOverride>, type: strin
 
 const THEME = {
   primary: "#1e3a5f",
-  text: "#1f2937",
+  text: "#111827",
   muted: "#4b5563",
   border: "#d1d5db",
   bg: "#ffffff",
@@ -289,7 +289,7 @@ export default function CVPrintTemplate({
         padding: "8mm 10mm 8mm 10mm",
         fontFamily: '"Inter", "Calibri", "Segoe UI", sans-serif',
         fontSize: "8pt",
-        lineHeight: 1.15,
+        lineHeight: 1.2,
         color: THEME.text,
         backgroundColor: THEME.bg,
         boxSizing: "border-box",
@@ -301,21 +301,21 @@ export default function CVPrintTemplate({
       <header style={{ marginBottom: "7px" }}>
         <h1
           style={{
-            fontSize: "18pt",
-            fontWeight: 800,
+            fontSize: "17pt",
+            fontWeight: 700,
             color: THEME.text,
             margin: 0,
-            letterSpacing: "-0.3px",
+            letterSpacing: "-0.2px",
           }}
         >
           {cvFullName}
         </h1>
         <p
           style={{
-            fontSize: "10pt",
-            fontWeight: 600,
+            fontSize: "9.5pt",
+            fontWeight: 500,
             color: THEME.primary,
-            margin: "2px 0 0 0",
+            margin: "1px 0 0 0",
           }}
         >
           {cvTitle}
@@ -557,18 +557,19 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
       style={{
         display: "flex",
         alignItems: "center",
-        gap: "6px",
-        fontSize: "9pt",
+        gap: "8px",
+        fontSize: "8.5pt",
         fontWeight: 700,
         textTransform: "uppercase",
-        letterSpacing: "0.04em",
+        letterSpacing: "0.05em",
         color: THEME.primary,
-        marginBottom: "4px",
+        marginBottom: "5px",
         marginTop: 0,
+        borderBottom: `1px solid ${THEME.border}`,
+        paddingBottom: "2px",
       }}
     >
       <span style={{ flexShrink: 0 }}>{children}</span>
-      <span style={{ flex: 1, height: "1px", backgroundColor: THEME.border, minWidth: "20px" }} />
     </h2>
   );
 }
