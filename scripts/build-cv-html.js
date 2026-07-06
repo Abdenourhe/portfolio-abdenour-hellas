@@ -327,7 +327,7 @@ async function main() {
   const phone = profile.cvPrintPhone || profile.phone;
   const location = profile.cvPrintLocation || profile.location;
   const linkedinRaw = profile.cvPrintLinkedin || profile.linkedin || "";
-  const linkedin = linkedinRaw.replace(/^https?:\/\/(www\.)?/, "");
+  const linkedin = linkedinRaw.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
   const website = profile.cvPrintWebsite || "abdenour-hellas.online";
   const generatedDate = new Date().toLocaleDateString("fr-CA", { timeZone: "UTC" });
 

@@ -267,14 +267,14 @@ export default function CVPrintTemplate({
   const cvPhone = profile.cvPrintPhone || profile.phone;
   const cvLocation = profile.cvPrintLocation || profile.location;
   const cvBio = profile.cvPrintBio || profile.bio;
-  const cvLinkedin = profile.cvPrintLinkedin || profile.linkedin;
+  const cvLinkedin = (profile.cvPrintLinkedin || profile.linkedin)?.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
   const cvWebsite = profile.cvPrintWebsite || "abdenour-hellas.online";
 
   const headerContacts = [
     { icon: <MailIcon />, text: cvEmail },
     { icon: <PhoneIcon />, text: cvPhone },
     { icon: <MapPinIcon />, text: cvLocation },
-    { icon: <LinkedInIcon />, text: cvLinkedin?.replace(/^https?:\/\/(www\.)?/, "") },
+    { icon: <LinkedInIcon />, text: cvLinkedin },
     { icon: <GlobeIcon />, text: cvWebsite },
   ].filter((c) => c.text);
 
@@ -324,9 +324,9 @@ export default function CVPrintTemplate({
           style={{
             display: "flex",
             flexWrap: "wrap",
-            gap: "4px 16px",
+            gap: "3px 12px",
             marginTop: "5px",
-            fontSize: "8.5pt",
+            fontSize: "8pt",
             color: THEME.muted,
           }}
         >
