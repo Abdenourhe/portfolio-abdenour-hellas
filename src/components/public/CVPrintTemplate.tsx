@@ -10,6 +10,7 @@ interface CVPrintTemplateProps {
   projects: Project[];
   certifications?: Education[];
   config?: CvPrintConfig | null;
+  locale?: "fr" | "en";
 }
 
 const DEFAULT_SECTION_ORDER: CvPrintSectionConfig["key"][] = [
@@ -23,7 +24,7 @@ const DEFAULT_SECTION_ORDER: CvPrintSectionConfig["key"][] = [
   "certifications",
 ];
 
-const DEFAULT_SECTION_LABELS: Record<CvPrintSectionConfig["key"], string> = {
+const DEFAULT_SECTION_LABELS_FR: Record<CvPrintSectionConfig["key"], string> = {
   header: "",
   profile: "Profil",
   experience: "Expériences professionnelles",
@@ -34,16 +35,98 @@ const DEFAULT_SECTION_LABELS: Record<CvPrintSectionConfig["key"], string> = {
   certifications: "Certifications",
 };
 
+const DEFAULT_SECTION_LABELS_EN: Record<CvPrintSectionConfig["key"], string> = {
+  header: "",
+  profile: "Profile",
+  experience: "Professional Experience",
+  skills: "Skills",
+  languages: "Languages",
+  education: "Education",
+  projects: "Projects",
+  certifications: "Certifications",
+};
+
+const ADDITIONAL_EXPERIENCE_LABEL = {
+  fr: "Expérience complémentaire",
+  en: "Additional Experience",
+};
+
+const PRESENT_TEXT = { fr: "Présent", en: "Present" };
+
+const MONTH_LABELS_FR = [
+  "jan",
+  "fév",
+  "mars",
+  "avr",
+  "mai",
+  "juin",
+  "juill",
+  "août",
+  "sept",
+  "oct",
+  "nov",
+  "déc",
+];
+
+const MONTH_LABELS_EN = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+const SKILL_CATEGORY_LABELS_FR: Record<string, string> = {
+  électrique: "Techniques",
+  normes: "Normes",
+  web: "Développement web",
+  logiciel: "Logiciels",
+  soft: "Soft skills",
+};
+
+const SKILL_CATEGORY_LABELS_EN: Record<string, string> = {
+  électrique: "Technical",
+  normes: "Standards",
+  web: "Web Development",
+  logiciel: "Software",
+  soft: "Soft Skills",
+};
+
+const LANGUAGE_LEVEL_FR = {
+  native: "Natif",
+  fluent: "Courant",
+  professional: "Professionnel",
+  intermediate: "Intermédiaire",
+  beginner: "Débutant",
+};
+
+const LANGUAGE_LEVEL_EN = {
+  native: "Native",
+  fluent: "Fluent",
+  professional: "Professional",
+  intermediate: "Intermediate",
+  beginner: "Beginner",
+};
+
 function getDefaultConfig(
   experiences: Experience[],
   education: Education[],
   skills: Skill[],
   projects: Project[],
-  certifications: Education[]
+  certifications: Education[],
+  locale: "fr" | "en"
 ): CvPrintConfig {
+  const labels = locale === "en" ? DEFAULT_SECTION_LABELS_EN : DEFAULT_SECTION_LABELS_FR;
   return {
     sections: DEFAULT_SECTION_ORDER.map((key) => {
-      const base: CvPrintSectionConfig = { key, visible: true, label: DEFAULT_SECTION_LABELS[key] };
+      const base: CvPrintSectionConfig = { key, visible: true, label: labels[key] };
       if (key === "experience") base.itemIds = experiences.map((e) => e.id);
       if (key === "education") base.itemIds = education.map((e) => e.id);
       if (key === "skills") base.itemIds = skills.filter((s) => s.category !== "langue").map((s) => s.id);
@@ -62,9 +145,10 @@ function mergeConfig(
   education: Education[],
   skills: Skill[],
   projects: Project[],
-  certifications: Education[]
+  certifications: Education[],
+  locale: "fr" | "en"
 ): CvPrintConfig {
-  const defaults = getDefaultConfig(experiences, education, skills, projects, certifications);
+  const defaults = getDefaultConfig(experiences, education, skills, projects, certifications, locale);
   if (!config) return defaults;
 
   const sectionMap = new Map(config.sections.map((s) => [s.key, s]));
@@ -85,9 +169,31 @@ function mergeConfig(
   };
 }
 
-function useSection(sections: CvPrintSectionConfig[], key: CvPrintSectionConfig["key"]) {
+function resolveSectionLabel(
+  label: string | null | undefined,
+  locale: "fr" | "en",
+  defaultLabel: string
+): string {
+  if (locale === "en") {
+    if (label?.startsWith("EN:")) return label.slice(3);
+    if (label) return label;
+    return defaultLabel;
+  }
+  // French: ignore English-prefixed labels and fall back to default
+  if (label?.startsWith("EN:")) return defaultLabel;
+  return label || defaultLabel;
+}
+
+function findSection(sections: CvPrintSectionConfig[], key: CvPrintSectionConfig["key"], locale: "fr" | "en") {
+  const labels = locale === "en" ? DEFAULT_SECTION_LABELS_EN : DEFAULT_SECTION_LABELS_FR;
   const section = sections.find((s) => s.key === key);
-  return section || { key, visible: true, label: DEFAULT_SECTION_LABELS[key], itemIds: [] };
+  const rawLabel = section?.label;
+  return {
+    key,
+    visible: section?.visible ?? true,
+    label: resolveSectionLabel(rawLabel, locale, labels[key]),
+    itemIds: section?.itemIds ?? [],
+  };
 }
 
 function orderItems<T extends { id: string }>(items: T[], itemIds: string[] | null | undefined): T[] {
@@ -100,12 +206,25 @@ function getOverride(overrides: Record<string, CvPrintItemOverride>, type: strin
   return overrides[`${type}:${id}`] || {};
 }
 
+function getOverrideValue<T extends string | string[]>(
+  override: CvPrintItemOverride,
+  field: "title" | "subtitle" | "description" | "dateRange" | "technologies",
+  locale: "fr" | "en"
+): T | null | undefined {
+  if (locale === "en") {
+    const enKey = `${field}En` as keyof CvPrintItemOverride;
+    return (override[enKey] as T | undefined) || (override[field] as T | undefined);
+  }
+  return override[field] as T | undefined;
+}
+
 const THEME = {
   primary: "#1e3a5f",
   text: "#111827",
   muted: "#4b5563",
   border: "#d1d5db",
   bg: "#ffffff",
+  accent: "#C9A962",
 };
 
 function toBullets(text: string): string[] {
@@ -117,43 +236,44 @@ function toBullets(text: string): string[] {
     .map((s) => (s.endsWith(".") ? s : s + "."));
 }
 
-const MONTH_LABELS = [
-  "jan",
-  "fév",
-  "mars",
-  "avr",
-  "mai",
-  "juin",
-  "juill",
-  "août",
-  "sept",
-  "oct",
-  "nov",
-  "déc",
-];
-
-function formatDate(date: string | Date | null | undefined): string {
+function formatDate(date: string | Date | null | undefined, locale: "fr" | "en" = "fr"): string {
   if (!date) return "";
   const d = typeof date === "string" ? new Date(date) : date;
-  const month = MONTH_LABELS[d.getUTCMonth()];
+  const labels = locale === "en" ? MONTH_LABELS_EN : MONTH_LABELS_FR;
+  const month = labels[d.getUTCMonth()];
   const year = d.getUTCFullYear();
   return `${month} ${year}`;
 }
 
-function formatDateRange(start: string | Date, end?: string | Date | null, current?: boolean): string {
-  const s = formatDate(start);
-  const e = current ? "Présent" : formatDate(end);
+function formatDateRange(
+  start: string | Date,
+  end?: string | Date | null,
+  current?: boolean,
+  locale: "fr" | "en" = "fr"
+): string {
+  const s = formatDate(start, locale);
+  const e = current ? PRESENT_TEXT[locale] : formatDate(end, locale);
   return `${s} ${e ? `— ${e}` : ""}`;
 }
 
-function formatYearRange(start: string | Date, end?: string | Date | null, current?: boolean): string {
+function formatYearRange(
+  start: string | Date,
+  end?: string | Date | null,
+  current?: boolean,
+  locale: "fr" | "en" = "fr"
+): string {
   if (!start) return "";
   const s = (typeof start === "string" ? new Date(start) : start).getUTCFullYear();
-  const e = current ? "Présent" : end ? (typeof end === "string" ? new Date(end) : end).getUTCFullYear() : "";
+  const e = current ? PRESENT_TEXT[locale] : end ? (typeof end === "string" ? new Date(end) : end).getUTCFullYear() : "";
   return `${s}${e ? ` — ${e}` : ""}`;
 }
 
-function formatExperienceRange(start: string | Date, end?: string | Date | null, current?: boolean): string {
+function formatExperienceRange(
+  start: string | Date,
+  end?: string | Date | null,
+  current?: boolean,
+  locale: "fr" | "en" = "fr"
+): string {
   if (!start) return "";
   const startDate = typeof start === "string" ? new Date(start) : start;
   const endDate = end ? (typeof end === "string" ? new Date(end) : end) : null;
@@ -163,26 +283,19 @@ function formatExperienceRange(start: string | Date, end?: string | Date | null,
     ? Infinity
     : 0;
   if (durationYears > 2.5 && !current) {
-    return formatYearRange(start, end, current);
+    return formatYearRange(start, end, current, locale);
   }
-  return formatDateRange(start, end, current);
+  return formatDateRange(start, end, current, locale);
 }
 
-function languageLevel(level: number): string {
-  if (level >= 100) return "Natif";
-  if (level >= 90) return "Courant";
-  if (level >= 75) return "Professionnel";
-  if (level >= 60) return "Intermédiaire";
-  return "Débutant";
+function languageLevel(level: number, locale: "fr" | "en" = "fr"): string {
+  const labels = locale === "en" ? LANGUAGE_LEVEL_EN : LANGUAGE_LEVEL_FR;
+  if (level >= 100) return labels.native;
+  if (level >= 90) return labels.fluent;
+  if (level >= 75) return labels.professional;
+  if (level >= 60) return labels.intermediate;
+  return labels.beginner;
 }
-
-const SKILL_CATEGORY_LABELS: Record<string, string> = {
-  électrique: "Techniques",
-  normes: "Normes",
-  web: "Développement web",
-  logiciel: "Logiciels",
-  soft: "Soft skills",
-};
 
 // Simple inline SVG icons
 const ICON_SIZE = 10;
@@ -210,29 +323,33 @@ export default function CVPrintTemplate({
   projects,
   certifications = [],
   config: rawConfig,
+  locale = "fr",
 }: CVPrintTemplateProps) {
   if (!profile) {
     return (
       <div style={{ padding: "40px", textAlign: "center", color: THEME.muted }}>
-        Aucun profil trouvé.
+        {locale === "en" ? "No profile found." : "Aucun profil trouvé."}
       </div>
     );
   }
 
-  const mergedConfig = mergeConfig(rawConfig, experiences, education, skills, projects, certifications);
+  const mergedConfig = mergeConfig(rawConfig, experiences, education, skills, projects, certifications, locale);
   const { sections, itemOverrides } = mergedConfig;
 
-  const profileSection = useSection(sections, "profile");
-  const experienceSection = useSection(sections, "experience");
-  const skillsSection = useSection(sections, "skills");
-  const languagesSection = useSection(sections, "languages");
-  const educationSection = useSection(sections, "education");
-  const projectsSection = useSection(sections, "projects");
-  const certificationsSection = useSection(sections, "certifications");
+  const profileSection = findSection(sections, "profile", locale);
+  const experienceSection = findSection(sections, "experience", locale);
+  const skillsSection = findSection(sections, "skills", locale);
+  const languagesSection = findSection(sections, "languages", locale);
+  const educationSection = findSection(sections, "education", locale);
+  const projectsSection = findSection(sections, "projects", locale);
+  const certificationsSection = findSection(sections, "certifications", locale);
 
   const visibleExperiences = experienceSection.visible
     ? orderItems(experiences, experienceSection.itemIds)
     : [];
+  const mainExperiences = visibleExperiences.filter((e) => e.category === "tech");
+  const additionalExperiences = visibleExperiences.filter((e) => e.category !== "tech");
+
   const visibleEducation = educationSection.visible ? orderItems(education, educationSection.itemIds) : [];
   const visibleProjects = projectsSection.visible ? orderItems(projects, projectsSection.itemIds) : [];
   const visibleCertifications = certificationsSection.visible
@@ -261,12 +378,20 @@ export default function CVPrintTemplate({
     (cat) => skillGroups[cat]?.length
   );
 
+  const skillCategoryLabels = locale === "en" ? SKILL_CATEGORY_LABELS_EN : SKILL_CATEGORY_LABELS_FR;
+
   const cvFullName = profile.cvPrintFullName || profile.fullName;
-  const cvTitle = profile.cvPrintTitle || profile.title;
+  const cvTitle =
+    locale === "en"
+      ? profile.cvPrintTitleEn || profile.titleEn || profile.cvPrintTitle || profile.title
+      : profile.cvPrintTitle || profile.title;
   const cvEmail = profile.cvPrintEmail || profile.email;
   const cvPhone = profile.cvPrintPhone || profile.phone;
   const cvLocation = profile.cvPrintLocation || profile.location;
-  const cvBio = profile.cvPrintBio || profile.bio;
+  const cvBio =
+    locale === "en"
+      ? profile.cvPrintBioEn || profile.bioEn || profile.cvPrintBio || profile.bio
+      : profile.cvPrintBio || profile.bio;
   const cvLinkedin = (profile.cvPrintLinkedin || profile.linkedin)?.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
   const cvWebsite = profile.cvPrintWebsite || "abdenour-hellas.online";
 
@@ -337,7 +462,7 @@ export default function CVPrintTemplate({
             </span>
           ))}
         </div>
-        <div style={{ height: "2px", backgroundColor: THEME.primary, marginTop: "5px" }} />
+        <div className="header-line" style={{ height: "2px", backgroundColor: THEME.accent, marginTop: "5px" }} />
       </header>
 
       {/* Profile */}
@@ -350,34 +475,97 @@ export default function CVPrintTemplate({
         </section>
       )}
 
-      {/* Experiences */}
-      {experienceSection.visible && visibleExperiences.length > 0 && (
+      {/* Main Experiences */}
+      {experienceSection.visible && mainExperiences.length > 0 && (
         <section style={{ marginBottom: "8px" }}>
           <SectionTitle>{experienceSection.label}</SectionTitle>
           <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-            {visibleExperiences.map((exp) => {
+            {mainExperiences.map((exp) => {
               const over = getOverride(itemOverrides, "experience", exp.id);
+              const title =
+                getOverrideValue<string>(over, "title", locale) ||
+                (locale === "en" ? exp.titleEn : undefined) ||
+                exp.title;
+              const subtitle =
+                getOverrideValue<string>(over, "subtitle", locale) || `${exp.company} — ${exp.location}`;
+              const description =
+                getOverrideValue<string>(over, "description", locale) ||
+                (locale === "en" ? exp.descriptionEn : undefined) ||
+                exp.description;
+              const dateRange =
+                getOverrideValue<string>(over, "dateRange", locale) ||
+                formatExperienceRange(exp.startDate, exp.endDate, exp.current, locale);
               return (
                 <div key={exp.id}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
                     <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
-                      {over.title || exp.title}
+                      {title}
                     </span>
                     <span
+                      className="item-date"
                       style={{
                         fontSize: "8pt",
-                        color: THEME.muted,
+                        color: THEME.accent,
                         whiteSpace: "nowrap",
                         flexShrink: 0,
                       }}
                     >
-                      {over.dateRange || formatExperienceRange(exp.startDate, exp.endDate, exp.current)}
+                      {dateRange}
                     </span>
                   </div>
                   <div style={{ fontSize: "8pt", fontWeight: 600, color: THEME.muted, marginBottom: "1px" }}>
-                    {over.subtitle || `${exp.company} — ${exp.location}`}
+                    {subtitle}
                   </div>
-                  <BulletList items={toBullets(over.description || exp.description)} />
+                  <BulletList items={toBullets(description)} />
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* Additional Experiences */}
+      {experienceSection.visible && additionalExperiences.length > 0 && (
+        <section style={{ marginBottom: "8px" }}>
+          <SectionTitle>{ADDITIONAL_EXPERIENCE_LABEL[locale]}</SectionTitle>
+          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+            {additionalExperiences.map((exp) => {
+              const over = getOverride(itemOverrides, "experience", exp.id);
+              const title =
+                getOverrideValue<string>(over, "title", locale) ||
+                (locale === "en" ? exp.titleEn : undefined) ||
+                exp.title;
+              const subtitle =
+                getOverrideValue<string>(over, "subtitle", locale) || `${exp.company} — ${exp.location}`;
+              const description =
+                getOverrideValue<string>(over, "description", locale) ||
+                (locale === "en" ? exp.descriptionEn : undefined) ||
+                exp.description;
+              const dateRange =
+                getOverrideValue<string>(over, "dateRange", locale) ||
+                formatExperienceRange(exp.startDate, exp.endDate, exp.current, locale);
+              return (
+                <div key={exp.id}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
+                    <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
+                      {title}
+                    </span>
+                    <span
+                      className="item-date"
+                      style={{
+                        fontSize: "8pt",
+                        color: THEME.accent,
+                        whiteSpace: "nowrap",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {dateRange}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: "8pt", fontWeight: 600, color: THEME.muted, marginBottom: "1px" }}>
+                    {subtitle}
+                  </div>
+                  <BulletList items={toBullets(description)} />
                 </div>
               );
             })}
@@ -402,13 +590,53 @@ export default function CVPrintTemplate({
                         fontWeight: 700,
                         color: THEME.primary,
                         textTransform: "uppercase",
-                        marginBottom: "1px",
+                        marginBottom: "2px",
                       }}
                     >
-                      {SKILL_CATEGORY_LABELS[cat] || cat}
+                      {skillCategoryLabels[cat] || cat}
                     </div>
-                    <div style={{ fontSize: "8pt", color: THEME.text, textAlign: "justify" }}>
-                      {skillGroups[cat].map((s) => getOverride(itemOverrides, "skill", s.id).title || s.name).join(", ")}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+                      {skillGroups[cat].map((s) => {
+                        const over = getOverride(itemOverrides, "skill", s.id);
+                        const skillName =
+                          locale === "en"
+                            ? over.titleEn || over.title || s.nameEn || s.name
+                            : over.title || s.name;
+                        return (
+                          <div key={s.id}>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                fontSize: "8pt",
+                                color: THEME.text,
+                              }}
+                            >
+                              <span>{skillName}</span>
+                              <span style={{ fontSize: "7.5pt", color: THEME.muted }}>{s.level}%</span>
+                            </div>
+                            <div
+                              style={{
+                                height: "3px",
+                                backgroundColor: "#e5e7eb",
+                                borderRadius: "2px",
+                                marginTop: "1px",
+                                overflow: "hidden",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  width: `${s.level}%`,
+                                  height: "100%",
+                                  backgroundColor: THEME.primary,
+                                  borderRadius: "2px",
+                                }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 ))}
@@ -423,14 +651,18 @@ export default function CVPrintTemplate({
               <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 {visibleLanguages.map((lang) => {
                   const over = getOverride(itemOverrides, "skill", lang.id);
+                  const langName =
+                    locale === "en"
+                      ? over.titleEn || over.title || lang.nameEn || lang.name
+                      : over.title || lang.name;
                   return (
                     <div
                       key={lang.id}
                       style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "8pt", color: THEME.text }}
                     >
-                      <span>{over.title || lang.name}</span>
-                      <span style={{ fontSize: "8pt", color: THEME.muted, whiteSpace: "nowrap" }}>
-                        {lang.level}% — {languageLevel(lang.level)}
+                      <span>{langName}</span>
+                      <span className="item-date" style={{ fontSize: "8pt", color: THEME.accent, whiteSpace: "nowrap" }}>
+                        {lang.level}% — {languageLevel(lang.level, locale)}
                       </span>
                     </div>
                   );
@@ -449,18 +681,27 @@ export default function CVPrintTemplate({
               <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
                 {visibleEducation.map((edu) => {
                   const over = getOverride(itemOverrides, "education", edu.id);
+                  const title =
+                    getOverrideValue<string>(over, "title", locale) ||
+                    (locale === "en" ? edu.degreeEn : undefined) ||
+                    edu.degree;
+                  const subtitle =
+                    getOverrideValue<string>(over, "subtitle", locale) || `${edu.school}, ${edu.location}`;
+                  const dateRange =
+                    getOverrideValue<string>(over, "dateRange", locale) ||
+                    formatYearRange(edu.startDate, edu.endDate, edu.current, locale);
                   return (
                     <div key={edu.id}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
                         <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
-                          {over.title || edu.degree}
+                          {title}
                         </span>
-                        <span style={{ fontSize: "8pt", color: THEME.muted, whiteSpace: "nowrap", flexShrink: 0 }}>
-                          {over.dateRange || formatYearRange(edu.startDate, edu.endDate, edu.current)}
+                        <span className="item-date" style={{ fontSize: "8pt", color: THEME.accent, whiteSpace: "nowrap", flexShrink: 0 }}>
+                          {dateRange}
                         </span>
                       </div>
                       <div style={{ fontSize: "8pt", color: THEME.muted }}>
-                        {over.subtitle || `${edu.school}, ${edu.location}`}
+                        {subtitle}
                       </div>
                     </div>
                   );
@@ -476,18 +717,28 @@ export default function CVPrintTemplate({
               <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                 {visibleProjects.map((project) => {
                   const over = getOverride(itemOverrides, "project", project.id);
+                  const title =
+                    getOverrideValue<string>(over, "title", locale) ||
+                    (locale === "en" ? project.titleEn : undefined) ||
+                    project.title;
+                  const description =
+                    getOverrideValue<string>(over, "description", locale) ||
+                    (locale === "en" ? project.descriptionEn : undefined) ||
+                    project.description;
+                  const technologies =
+                    getOverrideValue<string[]>(over, "technologies", locale) || project.technologies;
                   return (
                     <div key={project.id}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
                         <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
-                          {over.title || project.title}
+                          {title}
                         </span>
                       </div>
                       <p style={{ margin: 0, fontSize: "8pt", color: THEME.text, textAlign: "justify" }}>
-                        {over.description || project.description}
+                        {description}
                       </p>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "3px", marginTop: "2px" }}>
-                        {(over.technologies || project.technologies).map((tech) => (
+                        {technologies.map((tech) => (
                           <span
                             key={tech}
                             style={{
@@ -517,13 +768,22 @@ export default function CVPrintTemplate({
               <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 {visibleCertifications.map((cert) => {
                   const over = getOverride(itemOverrides, "certification", cert.id);
+                  const title =
+                    getOverrideValue<string>(over, "title", locale) ||
+                    (locale === "en" ? cert.degreeEn : undefined) ||
+                    cert.degree;
+                  const subtitle =
+                    getOverrideValue<string>(over, "subtitle", locale) || `${cert.school}, ${cert.location}`;
+                  const dateRange =
+                    getOverrideValue<string>(over, "dateRange", locale) ||
+                    formatDateRange(cert.startDate, cert.endDate, cert.current, locale);
                   return (
                     <div key={cert.id}>
                       <div style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
-                        {over.title || cert.degree}
+                        {title}
                       </div>
                       <div style={{ fontSize: "8pt", color: THEME.muted }}>
-                        {over.subtitle || `${cert.school}, ${cert.location}`} — {over.dateRange || formatDateRange(cert.startDate, cert.endDate, cert.current)}
+                        {subtitle} — <span className="item-date" style={{ color: THEME.accent }}>{dateRange}</span>
                       </div>
                     </div>
                   );
@@ -545,7 +805,7 @@ export default function CVPrintTemplate({
           textAlign: "center",
         }}
       >
-        {cvFullName} — CV généré le {new Date().toLocaleDateString("fr-CA", { timeZone: "UTC" })}
+        {cvFullName} — {locale === "en" ? "CV generated on" : "CV généré le"} {new Date().toLocaleDateString(locale === "en" ? "en-CA" : "fr-CA", { timeZone: "UTC" })}
       </footer>
     </div>
   );

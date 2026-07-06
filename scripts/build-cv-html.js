@@ -4,13 +4,25 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
-const templatePath = path.resolve(__dirname, "cv-template.html");
-const outputPath = path.resolve(__dirname, "../public/cv/cv-print.html");
+function parseLocale() {
+  const arg = process.argv.find((a) => a.startsWith("--locale="));
+  const locale = arg ? arg.split("=")[1] : "fr";
+  if (locale !== "fr" && locale !== "en") {
+    console.error(`❌ Locale non supportée: ${locale}. Utilisez "fr" ou "en".`);
+    process.exit(1);
+  }
+  return locale;
+}
+
+const LOCALE = parseLocale();
+const templatePath = path.resolve(__dirname, `cv-template-${LOCALE}.html`);
+const outputPath = path.resolve(__dirname, `../public/cv/cv-print-${LOCALE}.html`);
 
 const DEFAULT_SECTION_ORDER = [
   "header",
   "profile",
   "experience",
+  "experienceAdditional",
   "skills",
   "languages",
   "education",
@@ -18,24 +30,64 @@ const DEFAULT_SECTION_ORDER = [
   "certifications",
 ];
 
-const DEFAULT_SECTION_LABELS = {
-  header: "",
-  profile: "Profil",
-  experience: "Expériences professionnelles",
-  skills: "Compétences",
-  languages: "Langues",
-  education: "Formation",
-  projects: "Projets",
-  certifications: "Certifications",
-};
+function getDefaultSectionLabels(locale) {
+  if (locale === "en") {
+    return {
+      header: "",
+      profile: "Profile",
+      experience: "Professional Experience",
+      experienceAdditional: "Additional Experience",
+      skills: "Skills",
+      languages: "Languages",
+      education: "Education",
+      projects: "Projects",
+      certifications: "Certifications",
+    };
+  }
+  return {
+    header: "",
+    profile: "Profil",
+    experience: "Expériences professionnelles",
+    experienceAdditional: "Expériences complémentaires",
+    skills: "Compétences",
+    languages: "Langues",
+    education: "Formation",
+    projects: "Projets",
+    certifications: "Certifications",
+  };
+}
 
-const SKILL_CATEGORY_LABELS = {
-  électrique: "Techniques",
-  normes: "Normes",
-  web: "Développement web",
-  logiciel: "Logiciels",
-  soft: "Soft skills",
-};
+const DEFAULT_SECTION_LABELS = getDefaultSectionLabels(LOCALE);
+
+function getSkillCategoryLabels(locale) {
+  if (locale === "en") {
+    return {
+      électrique: "Technical",
+      normes: "Standards",
+      web: "Web Development",
+      logiciel: "Software",
+      soft: "Soft Skills",
+    };
+  }
+  return {
+    électrique: "Techniques",
+    normes: "Normes",
+    web: "Développement web",
+    logiciel: "Logiciels",
+    soft: "Soft skills",
+  };
+}
+
+const SKILL_CATEGORY_LABELS = getSkillCategoryLabels(LOCALE);
+
+function getLanguageLevelLabels(locale) {
+  if (locale === "en") {
+    return { native: "Native", fluent: "Fluent", professional: "Professional", intermediate: "Intermediate", beginner: "Beginner" };
+  }
+  return { native: "Natif", fluent: "Courant", professional: "Professionnel", intermediate: "Intermédiaire", beginner: "Débutant" };
+}
+
+const LANGUAGE_LEVEL_LABELS = getLanguageLevelLabels(LOCALE);
 
 function escapeHtml(text) {
   if (text == null) return "";
@@ -53,43 +105,39 @@ function replaceConditional(template, key, value) {
   return template.replace(regex, escaped ? `$1` : "");
 }
 
-const MONTH_LABELS = [
-  "jan",
-  "fév",
-  "mars",
-  "avr",
-  "mai",
-  "juin",
-  "juill",
-  "août",
-  "sept",
-  "oct",
-  "nov",
-  "déc",
-];
+const MONTH_LABELS_FR = ["jan", "fév", "mars", "avr", "mai", "juin", "juill", "août", "sept", "oct", "nov", "déc"];
+const MONTH_LABELS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-function formatDate(date) {
+function getMonthLabels(locale) {
+  return locale === "en" ? MONTH_LABELS_EN : MONTH_LABELS_FR;
+}
+
+function formatDate(date, locale = LOCALE) {
   if (!date) return "";
   const d = typeof date === "string" ? new Date(date) : date;
-  const month = MONTH_LABELS[d.getUTCMonth()];
+  const month = getMonthLabels(locale)[d.getUTCMonth()];
   const year = d.getUTCFullYear();
   return `${month} ${year}`;
 }
 
-function formatDateRange(start, end, current) {
-  const s = formatDate(start);
-  const e = current ? "Présent" : formatDate(end);
+function presentLabel(locale = LOCALE) {
+  return locale === "en" ? "Present" : "Présent";
+}
+
+function formatDateRange(start, end, current, locale = LOCALE) {
+  const s = formatDate(start, locale);
+  const e = current ? presentLabel(locale) : formatDate(end, locale);
   return `${s}${e ? ` — ${e}` : ""}`;
 }
 
-function formatYearRange(start, end, current) {
+function formatYearRange(start, end, current, locale = LOCALE) {
   if (!start) return "";
   const s = (typeof start === "string" ? new Date(start) : start).getUTCFullYear();
-  const e = current ? "Présent" : end ? (typeof end === "string" ? new Date(end) : end).getUTCFullYear() : "";
+  const e = current ? presentLabel(locale) : end ? (typeof end === "string" ? new Date(end) : end).getUTCFullYear() : "";
   return `${s}${e ? ` — ${e}` : ""}`;
 }
 
-function formatExperienceRange(start, end, current) {
+function formatExperienceRange(start, end, current, locale = LOCALE) {
   if (!start) return "";
   const startDate = typeof start === "string" ? new Date(start) : start;
   const endDate = end ? (typeof end === "string" ? new Date(end) : end) : null;
@@ -99,33 +147,37 @@ function formatExperienceRange(start, end, current) {
     ? Infinity
     : 0;
   if (durationYears > 2.5 && !current) {
-    return formatYearRange(start, end, current);
+    return formatYearRange(start, end, current, locale);
   }
-  return formatDateRange(start, end, current);
+  return formatDateRange(start, end, current, locale);
 }
 
-function languageLevel(level) {
-  if (level >= 100) return "Natif";
-  if (level >= 90) return "Courant";
-  if (level >= 75) return "Professionnel";
-  if (level >= 60) return "Intermédiaire";
-  return "Débutant";
+function languageLevel(level, locale = LOCALE) {
+  const labels = getLanguageLevelLabels(locale);
+  if (level >= 100) return labels.native;
+  if (level >= 90) return labels.fluent;
+  if (level >= 75) return labels.professional;
+  if (level >= 60) return labels.intermediate;
+  return labels.beginner;
 }
 
 function toBullets(text) {
   if (!text) return [];
   return text
-    .split(/\. (?=[A-ZÀ-ÖØ-öø-ÿ0-9•])/)
+    .split(/\. (?=[A-ZÀ-ÖØ-öø-ÿ0-9•])/) // keep French uppercase range for FR inputs
     .map((s) => s.trim())
     .filter(Boolean)
     .map((s) => (s.endsWith(".") ? s : `${s}.`));
 }
 
 function getDefaultConfig(experiences, education, skills, projects, certifications) {
+  const mainExperiences = experiences.filter((e) => e.category === "tech");
+  const additionalExperiences = experiences.filter((e) => e.category !== "tech");
   return {
     sections: DEFAULT_SECTION_ORDER.map((key) => {
       const section = { key, visible: true, label: DEFAULT_SECTION_LABELS[key] };
-      if (key === "experience") section.itemIds = experiences.map((e) => e.id);
+      if (key === "experience") section.itemIds = mainExperiences.map((e) => e.id);
+      if (key === "experienceAdditional") section.itemIds = additionalExperiences.map((e) => e.id);
       if (key === "education") section.itemIds = education.map((e) => e.id);
       if (key === "skills") section.itemIds = skills.filter((s) => s.category !== "langue").map((s) => s.id);
       if (key === "languages") section.itemIds = skills.filter((s) => s.category === "langue").map((s) => s.id);
@@ -148,7 +200,8 @@ function mergeConfig(config, experiences, education, skills, projects, certifica
     return {
       ...def,
       ...saved,
-      label: saved?.label ?? def.label,
+      // Use locale-specific default labels for English; preserve custom labels for French.
+      label: LOCALE === "en" ? def.label : saved?.label ?? def.label,
       itemIds: saved?.itemIds ?? def.itemIds,
     };
   });
@@ -160,7 +213,7 @@ function mergeConfig(config, experiences, education, skills, projects, certifica
 }
 
 function getSection(sections, key) {
-  return sections.find((s) => s.key === key) || { key, visible: true, label: DEFAULT_SECTION_LABELS[key], itemIds: [] };
+  return sections.find((s) => s.key === key) || { key, visible: true, label: getDefaultSectionLabels(LOCALE)[key], itemIds: [] };
 }
 
 function orderItems(items, itemIds) {
@@ -179,30 +232,63 @@ function renderSectionTitle(label) {
 
 function renderProfileSection(section, profile) {
   if (!section.visible) return "";
-  const bio = profile.cvPrintBio || profile.bio || "";
+  const bio =
+    LOCALE === "en"
+      ? profile.cvPrintBioEn || profile.cvPrintBio || profile.bioEn || profile.bio || ""
+      : profile.cvPrintBio || profile.bio || "";
   if (!bio) return "";
   return `<section>\n${renderSectionTitle(section.label)}\n<p class="profile">${escapeHtml(bio)}</p>\n</section>`;
 }
 
-function renderExperienceSection(section, experiences) {
-  if (!section.visible) return "";
-  const items = orderItems(experiences, section.itemIds);
-  if (items.length === 0) return "";
-  const itemsHtml = items
+function renderExperienceItems(items, section) {
+  const itemOverrides = section.itemOverrides || {};
+  return items
     .map((exp) => {
-      const over = getOverride(section.itemOverrides || {}, "experience", exp.id);
-      const title = over.title || exp.title;
-      const dateRange = over.dateRange || formatExperienceRange(exp.startDate, exp.endDate, exp.current);
-      const subtitle = over.subtitle || `${exp.company} — ${exp.location}`;
-      const desc = over.description || exp.description;
+      const over = getOverride(itemOverrides, "experience", exp.id);
+
+      const title =
+        LOCALE === "en"
+          ? over.titleEn || over.title || exp.titleEn || exp.title
+          : over.title || exp.title;
+
+      const subtitle =
+        (LOCALE === "en" ? over.subtitleEn || over.subtitle : over.subtitle) || `${exp.company} — ${exp.location}`;
+
+      const desc =
+        LOCALE === "en"
+          ? over.descriptionEn || over.description || exp.descriptionEn || exp.description
+          : over.description || exp.description;
+
+      const dateRange =
+        (LOCALE === "en" ? over.dateRangeEn || over.dateRange : over.dateRange) ||
+        formatExperienceRange(exp.startDate, exp.endDate, exp.current);
+
       const bullets = toBullets(desc);
       const descHtml =
         bullets.length <= 1
           ? `<div class="item-desc">${escapeHtml(bullets[0] || "")}</div>`
           : `<div class="item-desc"><ul>${bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}</ul></div>`;
+
       return `<div class="item">\n<div class="item-header"><span class="item-title">${escapeHtml(title)}</span><span class="item-date">${escapeHtml(dateRange)}</span></div>\n<div class="item-sub">${escapeHtml(subtitle)}</div>\n${descHtml}\n</div>`;
     })
     .join("\n");
+}
+
+function renderExperienceSection(section, experiences) {
+  if (!section.visible) return "";
+  const mainExperiences = experiences.filter((e) => e.category === "tech");
+  const items = orderItems(mainExperiences, section.itemIds);
+  if (items.length === 0) return "";
+  const itemsHtml = renderExperienceItems(items, section);
+  return `<section>\n${renderSectionTitle(section.label)}\n${itemsHtml}\n</section>`;
+}
+
+function renderAdditionalExperienceSection(section, experiences) {
+  if (!section.visible) return "";
+  const additionalExperiences = experiences.filter((e) => e.category !== "tech");
+  const items = orderItems(additionalExperiences, section.itemIds);
+  if (items.length === 0) return "";
+  const itemsHtml = renderExperienceItems(items, section);
   return `<section>\n${renderSectionTitle(section.label)}\n${itemsHtml}\n</section>`;
 }
 
@@ -222,8 +308,18 @@ function renderSkillsSection(section, skills) {
   if (categories.length === 0) return "";
   const groupsHtml = categories
     .map((cat) => {
-      const names = groups[cat].map((s) => escapeHtml(getOverride({}, "skill", s.id).title || s.name)).join(", ");
-      return `<div class="skill-group"><h3>${escapeHtml(SKILL_CATEGORY_LABELS[cat] || cat)}</h3><div class="skill-list">${names}</div></div>`;
+      const rows = groups[cat]
+        .map((s) => {
+          const over = getOverride(section.itemOverrides || {}, "skill", s.id);
+          const name =
+            LOCALE === "en"
+              ? over.titleEn || over.title || s.nameEn || s.name
+              : over.title || s.name;
+          const level = Math.max(0, Math.min(100, s.level || 0));
+          return `<div class="skill-row"><span class="skill-name">${escapeHtml(name)}</span><div class="skill-bar"><div class="skill-fill" style="width:${level}%"></div></div></div>`;
+        })
+        .join("\n");
+      return `<div class="skill-group"><h3>${escapeHtml(SKILL_CATEGORY_LABELS[cat] || cat)}</h3>${rows}</div>`;
     })
     .join("\n");
   return `<section>\n${renderSectionTitle(section.label)}\n${groupsHtml}\n</section>`;
@@ -239,7 +335,10 @@ function renderLanguagesSection(section, skills) {
   const itemsHtml = languages
     .map((lang) => {
       const over = getOverride(section.itemOverrides || {}, "skill", lang.id);
-      const name = over.title || lang.name;
+      const name =
+        LOCALE === "en"
+          ? over.titleEn || over.title || lang.nameEn || lang.name
+          : over.title || lang.name;
       return `<div class="lang"><span>${escapeHtml(name)}</span><span>${lang.level}% — ${languageLevel(lang.level)}</span></div>`;
     })
     .join("\n");
@@ -253,9 +352,15 @@ function renderEducationSection(section, education) {
   const itemsHtml = items
     .map((edu) => {
       const over = getOverride(section.itemOverrides || {}, "education", edu.id);
-      const title = over.title || edu.degree;
-      const dateRange = over.dateRange || formatYearRange(edu.startDate, edu.endDate, edu.current);
-      const subtitle = over.subtitle || `${edu.school}, ${edu.location}`;
+      const title =
+        LOCALE === "en"
+          ? over.titleEn || over.title || edu.degreeEn || edu.degree
+          : over.title || edu.degree;
+      const subtitle =
+        (LOCALE === "en" ? over.subtitleEn || over.subtitle : over.subtitle) || `${edu.school}, ${edu.location}`;
+      const dateRange =
+        (LOCALE === "en" ? over.dateRangeEn || over.dateRange : over.dateRange) ||
+        formatYearRange(edu.startDate, edu.endDate, edu.current);
       return `<div class="item">\n<div class="item-header"><span class="item-title">${escapeHtml(title)}</span><span class="item-date">${escapeHtml(dateRange)}</span></div>\n<div style="font-size: 8pt; color: #4b5563;">${escapeHtml(subtitle)}</div>\n</div>`;
     })
     .join("\n");
@@ -269,9 +374,16 @@ function renderProjectsSection(section, projects) {
   const itemsHtml = items
     .map((project) => {
       const over = getOverride(section.itemOverrides || {}, "project", project.id);
-      const title = over.title || project.title;
-      const desc = over.description || project.description;
-      const techs = over.technologies || project.technologies || [];
+      const title =
+        LOCALE === "en"
+          ? over.titleEn || over.title || project.titleEn || project.title
+          : over.title || project.title;
+      const desc =
+        LOCALE === "en"
+          ? over.descriptionEn || over.description || project.descriptionEn || project.description
+          : over.description || project.description;
+      const techs =
+        (LOCALE === "en" ? over.technologiesEn || over.technologies : over.technologies) || project.technologies || [];
       const techsHtml = techs.map((t) => `<span class="tech">${escapeHtml(t)}</span>`).join("");
       return `<div class="item">\n<div class="item-header"><span class="item-title">${escapeHtml(title)}</span></div>\n<div class="item-desc">${escapeHtml(desc)} ${techsHtml}</div>\n</div>`;
     })
@@ -286,9 +398,15 @@ function renderCertificationsSection(section, certifications) {
   const itemsHtml = items
     .map((cert) => {
       const over = getOverride(section.itemOverrides || {}, "certification", cert.id);
-      const title = over.title || cert.degree;
-      const subtitle = over.subtitle || `${cert.school}, ${cert.location}`;
-      const dateRange = over.dateRange || formatDateRange(cert.startDate, cert.endDate, cert.current);
+      const title =
+        LOCALE === "en"
+          ? over.titleEn || over.title || cert.degreeEn || cert.degree
+          : over.title || cert.degree;
+      const subtitle =
+        (LOCALE === "en" ? over.subtitleEn || over.subtitle : over.subtitle) || `${cert.school}, ${cert.location}`;
+      const dateRange =
+        (LOCALE === "en" ? over.dateRangeEn || over.dateRange : over.dateRange) ||
+        formatDateRange(cert.startDate, cert.endDate, cert.current);
       return `<div class="item-desc"><strong>${escapeHtml(title)}</strong> — ${escapeHtml(subtitle)} — ${escapeHtml(dateRange)}</div>`;
     })
     .join("\n");
@@ -305,7 +423,7 @@ async function main() {
   ]);
 
   if (!profile) {
-    console.error("❌ Aucun profil trouvé.");
+    console.error(LOCALE === "en" ? "❌ No profile found." : "❌ Aucun profil trouvé.");
     process.exit(1);
   }
 
@@ -322,14 +440,17 @@ async function main() {
   });
 
   const fullName = profile.cvPrintFullName || profile.fullName;
-  const title = profile.cvPrintTitle || profile.title;
+  const title =
+    LOCALE === "en"
+      ? profile.cvPrintTitleEn || profile.cvPrintTitle || profile.titleEn || profile.title
+      : profile.cvPrintTitle || profile.title;
   const email = profile.cvPrintEmail || profile.email;
   const phone = profile.cvPrintPhone || profile.phone;
   const location = profile.cvPrintLocation || profile.location;
   const linkedinRaw = profile.cvPrintLinkedin || profile.linkedin || "";
   const linkedin = linkedinRaw.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
   const website = profile.cvPrintWebsite || "abdenour-hellas.online";
-  const generatedDate = new Date().toLocaleDateString("fr-CA", { timeZone: "UTC" });
+  const generatedDate = new Date().toLocaleDateString(LOCALE === "en" ? "en-CA" : "fr-CA", { timeZone: "UTC" });
 
   let template = fs.readFileSync(templatePath, "utf-8");
 
@@ -351,6 +472,7 @@ async function main() {
 
   template = template.replace(/\{\{section:profile\}\}/, renderProfileSection(getSection(sections, "profile"), profile));
   template = template.replace(/\{\{section:experience\}\}/, renderExperienceSection(getSection(sections, "experience"), experiences));
+  template = template.replace(/\{\{section:experienceAdditional\}\}/, renderAdditionalExperienceSection(getSection(sections, "experienceAdditional"), experiences));
   template = template.replace(/\{\{section:skills\}\}/, renderSkillsSection(getSection(sections, "skills"), skills));
   template = template.replace(/\{\{section:languages\}\}/, renderLanguagesSection(getSection(sections, "languages"), skills));
   template = template.replace(/\{\{section:education\}\}/, renderEducationSection(getSection(sections, "education"), degrees));
@@ -358,12 +480,12 @@ async function main() {
   template = template.replace(/\{\{section:certifications\}\}/, renderCertificationsSection(getSection(sections, "certifications"), certifications));
 
   fs.writeFileSync(outputPath, template, "utf-8");
-  console.log(`✅ HTML CV mis à jour : ${outputPath}`);
+  console.log(LOCALE === "en" ? `✅ HTML CV updated: ${outputPath}` : `✅ HTML CV mis à jour : ${outputPath}`);
 }
 
 main()
   .catch((error) => {
-    console.error("❌ Erreur lors de la génération du HTML CV :", error);
+    console.error(LOCALE === "en" ? "❌ Error generating HTML CV:" : "❌ Erreur lors de la génération du HTML CV :", error);
     process.exit(1);
   })
   .finally(async () => {

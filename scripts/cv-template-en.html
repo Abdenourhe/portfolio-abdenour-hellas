@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>CV — {{fullName}}</title>
@@ -22,7 +22,7 @@
     header { margin-bottom: 7px; }
     .name { font-size: 17pt; font-weight: 700; color: #111827; letter-spacing: -0.2px; }
     .title { font-size: 9.5pt; font-weight: 500; color: #1e3a5f; margin-top: 1px; }
-    .header-line { height: 2px; background-color: #1e3a5f; margin-top: 5px; }
+    .header-line { height: 2px; background: linear-gradient(90deg, #1e3a5f 70%, #C9A962 100%); margin-top: 5px; }
     .contact {
       display: flex;
       flex-wrap: wrap;
@@ -51,13 +51,13 @@
     h2 .line { display: none; }
 
     section { margin-bottom: 8px; }
-    .profile { text-align: justify; font-size: 8pt; color: #1f2937; }
+    .profile { text-align: justify; font-size: 8pt; color: #111827; }
     .item { margin-bottom: 3px; }
     .item-header { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
-    .item-title { font-weight: 700; font-size: 8.5pt; color: #1f2937; }
-    .item-date { font-size: 8pt; color: #4b5563; white-space: nowrap; flex-shrink: 0; }
+    .item-title { font-weight: 700; font-size: 8.5pt; color: #111827; }
+    .item-date { font-size: 8pt; color: #C9A962; white-space: nowrap; flex-shrink: 0; font-weight: 500; }
     .item-sub { font-size: 8pt; font-weight: 600; color: #4b5563; margin-bottom: 1px; }
-    .item-desc { font-size: 8pt; color: #1f2937; margin-top: 1px; text-align: justify; }
+    .item-desc { font-size: 8pt; color: #111827; margin-top: 1px; text-align: justify; }
     .item-desc ul { margin: 2px 0 0 0; padding-left: 10px; list-style-type: disc; }
     .item-desc li { margin-bottom: 1px; text-align: justify; }
     .two-col { display: flex; gap: 10px; flex: 1; }
@@ -69,10 +69,14 @@
       font-weight: 700;
       color: #1e3a5f;
       text-transform: uppercase;
-      margin-bottom: 1px;
+      margin-bottom: 2px;
     }
-    .skill-list { font-size: 8pt; color: #1f2937; text-align: justify; }
-    .lang { display: flex; justify-content: space-between; font-size: 8pt; color: #1f2937; margin-bottom: 1px; }
+    .skill-row { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+    .skill-name { width: 66px; flex-shrink: 0; font-size: 7.5pt; color: #111827; }
+    .skill-bar { flex: 1; height: 4px; background: #e5e7eb; border-radius: 2px; overflow: hidden; }
+    .skill-fill { height: 100%; background: #1e3a5f; border-radius: 2px; }
+    .skill-list { font-size: 8pt; color: #111827; text-align: justify; }
+    .lang { display: flex; justify-content: space-between; font-size: 8pt; color: #111827; margin-bottom: 1px; }
     .lang span:last-child { font-size: 8pt; color: #4b5563; white-space: nowrap; }
     .tech {
       display: inline-block;
@@ -115,6 +119,8 @@
 
     {{section:experience}}
 
+    {{section:experienceAdditional}}
+
     <div class="two-col">
       <div class="col-left">
         {{section:skills}}
@@ -129,7 +135,7 @@
     </div>
 
     <footer>
-      {{fullName}} — CV généré le {{generatedDate}}
+      {{fullName}} — Generated on {{generatedDate}}
     </footer>
   </div>
 </body>

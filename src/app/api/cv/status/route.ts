@@ -14,20 +14,24 @@ function fileHash(filePath: string): string | null {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const locale = searchParams.get("locale") === "en" ? "en" : "fr";
+    const suffix = locale.toUpperCase();
+
     const templatePath = path.resolve(process.cwd(), "src/components/public/CVPrintTemplate.tsx");
-    const htmlPath = path.resolve(process.cwd(), "public/cv/cv-print.html");
-    const pdfPath = path.resolve(process.cwd(), "public/cv/Abdenour_Hellas_CV.pdf");
+    const htmlPath = path.resolve(process.cwd(), `public/cv/cv-print-${locale}.html`);
+    const pdfPath = path.resolve(process.cwd(), `public/cv/Abdenour_Hellas_CV_${suffix}.pdf`);
 
     const templateHash = fileHash(templatePath);
     const htmlHash = fileHash(htmlPath);
     const pdfMtime = fs.existsSync(pdfPath) ? fs.statSync(pdfPath).mtime : null;
 
     const profile = await prisma.profile.findFirst();
-    const lastSyncedAt = profile?.cvLastSyncedAt;
-    const lastGeneratedAt = profile?.lastCvGeneratedAt;
-    const storedTemplateHash = profile?.cvTemplateHash;
+    const lastSyncedAt = locale === "en" ? profile?.cvLastSyncedAtEn : profile?.cvLastSyncedAt;
+    const lastGeneratedAt = locale === "en" ? profile?.lastCvGeneratedAtEn : profile?.lastCvGeneratedAt;
+    const storedTemplateHash = locale === "en" ? profile?.cvTemplateHashEn : profile?.cvTemplateHash;
 
     // Désynchronisé si le hash du template React diffère de celui du HTML statique,
     // ou si le hash stocké en base ne correspond plus au template actuel.

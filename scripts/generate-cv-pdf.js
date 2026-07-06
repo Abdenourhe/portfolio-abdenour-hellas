@@ -1,6 +1,18 @@
 const { execSync } = require("child_process");
 const path = require("path");
 
+function parseLocale() {
+  const arg = process.argv.find((a) => a.startsWith("--locale="));
+  const locale = arg ? arg.split("=")[1] : "fr";
+  if (locale !== "fr" && locale !== "en") {
+    console.error(`❌ Locale non supportée: ${locale}. Utilisez "fr" ou "en".`);
+    process.exit(1);
+  }
+  return locale;
+}
+
+const LOCALE = parseLocale();
+
 const edgePaths = [
   "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
   "C:/Program Files/Microsoft/Edge/Application/msedge.exe",
@@ -23,18 +35,18 @@ if (!edge) {
   process.exit(1);
 }
 
-const htmlPath = path.resolve(__dirname, "../public/cv/cv-print.html");
-const pdfPath = path.resolve(__dirname, "../public/cv/Abdenour_Hellas_CV.pdf");
+const htmlPath = path.resolve(__dirname, `../public/cv/cv-print-${LOCALE}.html`);
+const pdfPath = path.resolve(__dirname, `../public/cv/Abdenour_Hellas_CV_${LOCALE.toUpperCase()}.pdf`);
 
 const cmd = `"${edge}" --headless --disable-gpu --no-pdf-header-footer --run-all-compositor-stages-before-draw --virtual-time-budget=20000 --print-to-pdf="${pdfPath}" "file:///${htmlPath.replace(/\\/g, "/")}"`;
 
-console.log("🖨️  Génération du CV PDF...");
+console.log(LOCALE === "en" ? "🖨️  Generating CV PDF..." : "🖨️  Génération du CV PDF...");
 console.log(`📄 Source : ${htmlPath}`);
 console.log(`💾 PDF : ${pdfPath}`);
 
 try {
   execSync(cmd, { stdio: "inherit" });
-  console.log("\n✅ CV PDF généré avec succès !");
+  console.log(LOCALE === "en" ? "\n✅ CV PDF generated successfully!" : "\n✅ CV PDF généré avec succès !");
 } catch (error) {
   console.error("\n❌ Erreur lors de la génération du PDF.", error);
   process.exit(1);

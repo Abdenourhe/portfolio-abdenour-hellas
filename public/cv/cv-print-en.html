@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CV — Abdenour Hellas</title>
+  <style>
+    @page { size: A4; margin: 8mm 10mm; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Inter", "Calibri", "Segoe UI", sans-serif;
+      color: #111827;
+      font-size: 8pt;
+      line-height: 1.2;
+      background: #fff;
+    }
+    .page {
+      width: 190mm;
+      min-height: 277mm;
+      display: flex;
+      flex-direction: column;
+    }
+    header { margin-bottom: 7px; }
+    .name { font-size: 17pt; font-weight: 700; color: #111827; letter-spacing: -0.2px; }
+    .title { font-size: 9.5pt; font-weight: 500; color: #1e3a5f; margin-top: 1px; }
+    .header-line { height: 2px; background: linear-gradient(90deg, #1e3a5f 70%, #C9A962 100%); margin-top: 5px; }
+    .contact {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+      margin-top: 5px;
+      font-size: 8pt;
+      color: #4b5563;
+    }
+    .contact span { display: inline-flex; align-items: center; gap: 5px; }
+    .icon { width: 10px; height: 10px; stroke: #1e3a5f; stroke-width: 2; fill: none; }
+
+    h2 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 8.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #1e3a5f;
+      margin-bottom: 5px;
+      margin-top: 0;
+      border-bottom: 1px solid #d1d5db;
+      padding-bottom: 2px;
+    }
+    h2 .line { display: none; }
+
+    section { margin-bottom: 8px; }
+    .profile { text-align: justify; font-size: 8pt; color: #111827; }
+    .item { margin-bottom: 3px; }
+    .item-header { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+    .item-title { font-weight: 700; font-size: 8.5pt; color: #111827; }
+    .item-date { font-size: 8pt; color: #C9A962; white-space: nowrap; flex-shrink: 0; font-weight: 500; }
+    .item-sub { font-size: 8pt; font-weight: 600; color: #4b5563; margin-bottom: 1px; }
+    .item-desc { font-size: 8pt; color: #111827; margin-top: 1px; text-align: justify; }
+    .item-desc ul { margin: 2px 0 0 0; padding-left: 10px; list-style-type: disc; }
+    .item-desc li { margin-bottom: 1px; text-align: justify; }
+    .two-col { display: flex; gap: 10px; flex: 1; }
+    .col-left { width: 80mm; flex-shrink: 0; }
+    .col-right { flex: 1; }
+    .skill-group { margin-bottom: 4px; }
+    .skill-group h3 {
+      font-size: 8pt;
+      font-weight: 700;
+      color: #1e3a5f;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .skill-row { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+    .skill-name { width: 66px; flex-shrink: 0; font-size: 7.5pt; color: #111827; }
+    .skill-bar { flex: 1; height: 4px; background: #e5e7eb; border-radius: 2px; overflow: hidden; }
+    .skill-fill { height: 100%; background: #1e3a5f; border-radius: 2px; }
+    .skill-list { font-size: 8pt; color: #111827; text-align: justify; }
+    .lang { display: flex; justify-content: space-between; font-size: 8pt; color: #111827; margin-bottom: 1px; }
+    .lang span:last-child { font-size: 8pt; color: #4b5563; white-space: nowrap; }
+    .tech {
+      display: inline-block;
+      background: #eef3fa;
+      color: #1e3a5f;
+      padding: 1px 3px;
+      border-radius: 2px;
+      font-size: 7pt;
+      margin-right: 2px;
+      margin-bottom: 1px;
+      font-weight: 500;
+    }
+    footer {
+      margin-top: auto;
+      padding-top: 6px;
+      border-top: 1px solid #d1d5db;
+      font-size: 7pt;
+      color: #4b5563;
+      text-align: center;
+    }
+    a { color: inherit; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="name">Abdenour Hellas</div>
+      <div class="title">Electrical Engineering Specialist &amp; Web Developer</div>
+      <div class="contact">
+        <span><svg class="icon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 8.97 5.7a1.94 1.94 0 0 0 2.06 0L22 7"/></svg>abdenour.hellas@uqat.ca</span>
+        <span><svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>+1 418-350-5686</span>
+        <span><svg class="icon" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Nouveau-Brunswick, Canada</span>
+        <span><svg class="icon" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>linkedin.com/in/abdenour-hellas</span>
+        <span><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>abdenour-hellas.online</span>
+      </div>
+      <div class="header-line"></div>
+    </header>
+
+    <section>
+<h2>Profile<span class="line"></span></h2>
+<p class="profile">Electrical engineering specialist with dual expertise in web development, focused on collaborative electrical systems design and industrial automation. 5+ years of international experience (Algeria, Canada) in maintenance, supervision and design. Passionate about energy innovation and digital solutions. Seeking opportunities in Canada, Europe and internationally.</p>
+</section>
+
+    <section>
+<h2>Professional Experience<span class="line"></span></h2>
+<div class="item">
+<div class="item-header"><span class="item-title">Technicien en Génie Électrique</span><span class="item-date">déc 2025 — mars 2026</span></div>
+<div class="item-sub">Maisons Laprise — Québec, QC</div>
+<div class="item-desc"><ul><li>Conception et maintenance du système collaboratif électrique TCOST (normes, standards, options de configuration).</li><li>Développement d&#039;une bibliothèque numérique complète : produits, prix, spécifications techniques, codes applicables.</li><li>Intégration de solutions innovantes : systèmes intelligents, efficacité énergétique, automatisations.</li><li>Évolution continue du système pour projets résidentiels, multilogements et commerciaux.</li></ul></div>
+</div>
+<div class="item">
+<div class="item-header"><span class="item-title">Électricien Industriel</span><span class="item-date">Nov 2018 — Aug 2019</span></div>
+<div class="item-sub">ENTP — In-Amenas, Algérie</div>
+<div class="item-desc"><ul><li>Montage, réparation et entretien des circuits électriques, tableaux de distribution et dispositifs de commande.</li><li>Diagnostic et résolution des dysfonctionnements (surchauffe, courts-circuits, défauts d&#039;isolation).</li><li>Rédaction des rapports d&#039;intervention et mise à jour des schémas électriques.</li></ul></div>
+</div>
+<div class="item">
+<div class="item-header"><span class="item-title">Stages Techniques</span><span class="item-date">2017 — 2019</span></div>
+<div class="item-sub">ENTP / SNP / Complexe Industriel TDA — Algérie</div>
+<div class="item-desc"><ul><li>Maintenance préventive/corrective des équipements électriques et industriels.</li><li>Inspection qualité, supervision travaux, gestion des stocks de pièces de rechange.</li></ul></div>
+</div>
+</section>
+
+    <section>
+<h2>Additional Experience<span class="line"></span></h2>
+<div class="item">
+<div class="item-header"><span class="item-title">Superviseur Département Électroménagers</span><span class="item-date">Mar 2024 — Nov 2025</span></div>
+<div class="item-sub">RONA — Rouyn-Noranda, QC</div>
+<div class="item-desc"><ul><li>Encadrement, formation et motivation d&#039;une équipe de 5 conseillers pour atteindre les objectifs de vente et de service.</li><li>Gestion des relations fournisseurs et suivi des factures/paiements.</li><li>Organisation structurée des documents pour une traçabilité optimale.</li><li>Supervision des inventaires et rotation des produits.</li></ul></div>
+</div>
+<div class="item">
+<div class="item-header"><span class="item-title">Conseiller Spécialisé Électroménagers</span><span class="item-date">Jun 2023 — Apr 2024</span></div>
+<div class="item-sub">RONA — Rouyn-Noranda, QC</div>
+<div class="item-desc"><ul><li>Accueil et évaluation des besoins clients en électroménagers.</li><li>Présentation des produits, caractéristiques et avantages.</li><li>Suivi des commandes et livraisons.</li></ul></div>
+</div>
+<div class="item">
+<div class="item-header"><span class="item-title">Service Omni / Préparateur de commandes</span><span class="item-date">May 2023 — May 2024</span></div>
+<div class="item-sub">Walmart — Rouyn-Noranda, QC</div>
+<div class="item-desc"><ul><li>Sélection, emballage et préparation des commandes clients pour ramassage ou livraison.</li><li>Accueil clients, gestion des retours et réponses aux questions sur commandes en ligne.</li></ul></div>
+</div>
+</section>
+
+    <div class="two-col">
+      <div class="col-left">
+        <section>
+<h2>Skills<span class="line"></span></h2>
+<div class="skill-group"><h3>Technical</h3><div class="skill-row"><span class="skill-name">Génie Électrique</span><div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Électromécanique</span><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Maintenance Industrielle</span><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Instrumentation &amp; Systèmes Embarqués</span><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Automatisation</span><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Câblage Industriel</span><div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div></div></div>
+<div class="skill-group"><h3>Standards</h3><div class="skill-row"><span class="skill-name">Code québécois de l&#039;électricité (CQE)</span><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Canadian Electrical Code (CEC)</span><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+<div class="skill-row"><span class="skill-name">NFPA 70</span><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div></div>
+<div class="skill-group"><h3>Web Development</h3><div class="skill-row"><span class="skill-name">Next.js</span><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+<div class="skill-row"><span class="skill-name">React</span><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+<div class="skill-row"><span class="skill-name">TypeScript</span><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Prisma</span><div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div></div>
+<div class="skill-row"><span class="skill-name">PostgreSQL</span><div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Tailwind CSS</span><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Node.js</span><div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Git</span><div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div></div>
+<div class="skill-row"><span class="skill-name">GitHub</span><div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div></div></div>
+<div class="skill-group"><h3>Software</h3><div class="skill-row"><span class="skill-name">Proteus 8</span><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+<div class="skill-row"><span class="skill-name">SolidWorks</span><div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div></div>
+<div class="skill-row"><span class="skill-name">MATLAB</span><div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div></div>
+<div class="skill-row"><span class="skill-name">AutoCAD</span><div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Excel avancé</span><div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div></div></div>
+<div class="skill-group"><h3>Soft Skills</h3><div class="skill-row"><span class="skill-name">Autonomie</span><div class="skill-bar"><div class="skill-fill" style="width:95%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Leadership</span><div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Rigueur</span><div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Travail d&#039;équipe</span><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+<div class="skill-row"><span class="skill-name">Gestion de projet</span><div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div></div></div>
+</section>
+        <section>
+<h2>Languages<span class="line"></span></h2>
+<div class="lang"><span>Arabe</span><span>100% — Native</span></div>
+<div class="lang"><span>Français</span><span>90% — Fluent</span></div>
+<div class="lang"><span>Anglais</span><span>80% — Professional</span></div>
+</section>
+      </div>
+
+      <div class="col-right">
+        <section>
+<h2>Education<span class="line"></span></h2>
+<div class="item">
+<div class="item-header"><span class="item-title">M.Eng. Génie Électrique</span><span class="item-date">2023 — 2025</span></div>
+<div style="font-size: 8pt; color: #4b5563;">UQAT, Rouyn-Noranda, QC</div>
+</div>
+<div class="item">
+<div class="item-header"><span class="item-title">Master Électromécanique</span><span class="item-date">2018 — 2020</span></div>
+<div style="font-size: 8pt; color: #4b5563;">Université de Batna 2, Batna, Algérie</div>
+</div>
+<div class="item">
+<div class="item-header"><span class="item-title">Licence Électromécanique</span><span class="item-date">2015 — 2018</span></div>
+<div style="font-size: 8pt; color: #4b5563;">Université de Batna 2, Batna, Algérie</div>
+</div>
+<div class="item">
+<div class="item-header"><span class="item-title">Technicien Supérieur Informatique-Réseaux</span><span class="item-date">2022 — 2023</span></div>
+<div style="font-size: 8pt; color: #4b5563;">CFPA, Algérie</div>
+</div>
+<div class="item">
+<div class="item-header"><span class="item-title">Technicien Informatique-Réseaux</span><span class="item-date">2021 — 2022</span></div>
+<div style="font-size: 8pt; color: #4b5563;">CFPA, Algérie</div>
+</div>
+<div class="item">
+<div class="item-header"><span class="item-title">Baccalauréat Sciences Expérimentales</span><span class="item-date">2012 — 2015</span></div>
+<div style="font-size: 8pt; color: #4b5563;">Lycée Kser Bellazma, Algérie</div>
+</div>
+</section>
+        <section>
+<h2>Projects<span class="line"></span></h2>
+<div class="item">
+<div class="item-header"><span class="item-title">TAHFIDZ — Plateforme SaaS de gestion d&#039;écoles mémorisation</span></div>
+<div class="item-desc">Système multi-utilisateurs avec suivi de mémorisation, évaluations, présences et notifications. <span class="tech">Next.js 15</span><span class="tech">TypeScript</span><span class="tech">Prisma</span><span class="tech">PostgreSQL</span><span class="tech">Tailwind CSS</span><span class="tech">NextAuth.js</span></div>
+</div>
+<div class="item">
+<div class="item-header"><span class="item-title">CCI Montmagny — Site web communautaire</span></div>
+<div class="item-desc">Site vitrine pour le Centre Culturel Islamique de Montmagny, livré et en production. <span class="tech">Next.js 15</span><span class="tech">React</span><span class="tech">TypeScript</span><span class="tech">Tailwind CSS</span><span class="tech">Vercel</span></div>
+</div>
+<div class="item">
+<div class="item-header"><span class="item-title">Radar Avancé — Projet de fin d&#039;études UQAT</span></div>
+<div class="item-desc">Conception et réalisation d&#039;un système radar pour détection et surveillance. <span class="tech">Électronique</span><span class="tech">Signal Processing</span><span class="tech">MATLAB</span></div>
+</div>
+</section>
+        <section>
+<h2>Certifications<span class="line"></span></h2>
+<div class="item-desc"><strong>ASP Construction (Santé &amp; Sécurité)</strong> — Centre Polymétier, Rouyn-Noranda, QC — Jul 2024 — Sep 2024</div>
+</section>
+      </div>
+    </div>
+
+    <footer>
+      Abdenour Hellas — Generated on 2026-07-06
+    </footer>
+  </div>
+</body>
+</html>

@@ -46,6 +46,13 @@ model Profile {
   cvLastSyncedAt    DateTime?
   cvGenerationMode  CvGenerationMethod @default(HEADLESS)
 
+  // CV print metadata for English version
+  cvUrlEn             String?
+  cvFileNameEn        String?
+  lastCvGeneratedAtEn DateTime?
+  cvTemplateHashEn    String?
+  cvLastSyncedAtEn    DateTime?
+
   // CV print specific content (optional overrides)
   cvPrintFullName   String?
   cvPrintTitle      String?
@@ -55,6 +62,10 @@ model Profile {
   cvPrintBio        String?  @db.Text
   cvPrintLinkedin   String?
   cvPrintWebsite    String?
+
+  // CV print English overrides
+  cvPrintTitleEn    String?
+  cvPrintBioEn      String?  @db.Text
 
   // Full CV print configuration (sections, item selection/order, item text overrides)
   cvPrintConfig     Json?
@@ -233,4 +244,7 @@ model CvGenerationLog {
   fileSizeKb  Int?
   success     Boolean
   error       String?
+  locale      String           @default("fr")
+
+  @@index([locale, generatedAt(sort: Desc)])
 }

@@ -15,11 +15,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { method = "HEADLESS" } = await request.json().catch(() => ({}));
+    const { method = "HEADLESS", locale = "fr" } = await request.json().catch(() => ({}));
+    const normalizedLocale = locale === "en" ? "en" : "fr";
     const generationMethod = method === "HTML2PDF" ? CvGenerationMethod.HTML2PDF : CvGenerationMethod.HEADLESS;
 
-    const pdfPath = path.resolve(process.cwd(), "public/cv/Abdenour_Hellas_CV.pdf");
-    const relativeUrl = "/cv/Abdenour_Hellas_CV.pdf";
+    const suffix = normalizedLocale.toUpperCase();
+    const pdfPath = path.resolve(process.cwd(), `public/cv/Abdenour_Hellas_CV_${suffix}.pdf`);
+    const relativeUrl = `/cv/Abdenour_Hellas_CV_${suffix}.pdf`;
 
     const templatePath = path.resolve(process.cwd(), "src/components/public/CVPrintTemplate.tsx");
     const templateHash = fs.existsSync(templatePath)
@@ -36,7 +38,7 @@ export async function POST(request: NextRequest) {
         if (!fs.existsSync(scriptPath)) {
           throw new Error("Script de génération headless introuvable.");
         }
-        execSync(`node "${scriptPath}"`, { stdio: "pipe", timeout: 60000 });
+        execSync(`node "${scriptPath}" --locale=${normalizedLocale}`, { stdio: "pipe", timeout: 60000 });
         success = true;
       } catch (err: any) {
         success = false;
@@ -55,15 +57,23 @@ export async function POST(request: NextRequest) {
     // Met à jour le profil
     const profile = await prisma.profile.findFirst();
     if (profile && success) {
+      const updateData: any = {
+        cvLastSyncedAt: new Date(),
+      };
+      if (normalizedLocale === "en") {
+        updateData.cvUrlEn = relativeUrl;
+        updateData.cvFileNameEn = `Abdenour_Hellas_CV_${suffix}.pdf`;
+        updateData.lastCvGeneratedAtEn = new Date();
+        updateData.cvTemplateHashEn = templateHash;
+      } else {
+        updateData.cvUrl = relativeUrl;
+        updateData.cvFileName = `Abdenour_Hellas_CV_${suffix}.pdf`;
+        updateData.lastCvGeneratedAt = new Date();
+        updateData.cvTemplateHash = templateHash;
+      }
       await prisma.profile.update({
         where: { id: profile.id },
-        data: {
-          cvUrl: relativeUrl,
-          cvFileName: "Abdenour_Hellas_CV.pdf",
-          lastCvGeneratedAt: new Date(),
-          cvLastSyncedAt: new Date(),
-          cvTemplateHash: templateHash,
-        },
+        data: updateData,
       });
     }
 
@@ -74,6 +84,7 @@ export async function POST(request: NextRequest) {
         fileSizeKb,
         success,
         error: errorMessage,
+        locale: normalizedLocale,
       },
     });
 

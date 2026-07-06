@@ -13,6 +13,11 @@ export interface Profile {
   photoUrl?: string | null;
   cvUrl?: string | null;
   cvFileName?: string | null;
+  cvUrlEn?: string | null;
+  cvFileNameEn?: string | null;
+  lastCvGeneratedAtEn?: Date | null;
+  cvTemplateHashEn?: string | null;
+  cvLastSyncedAtEn?: Date | null;
   linkedin?: string | null;
   github?: string | null;
   twitter?: string | null;
@@ -25,6 +30,8 @@ export interface Profile {
   cvPrintLinkedin?: string | null;
   cvPrintWebsite?: string | null;
   cvPrintBio?: string | null;
+  cvPrintTitleEn?: string | null;
+  cvPrintBioEn?: string | null;
   cvPrintConfig?: CvPrintConfig | null;
   updatedAt: Date;
 }
@@ -47,6 +54,11 @@ export interface CvPrintItemOverride {
   description?: string | null;
   dateRange?: string | null;
   technologies?: string[] | null;
+  titleEn?: string | null;
+  subtitleEn?: string | null;
+  descriptionEn?: string | null;
+  dateRangeEn?: string | null;
+  technologiesEn?: string[] | null;
 }
 
 export interface Experience {

@@ -55,12 +55,14 @@ import { CSS } from "@dnd-kit/utilities";
 interface CvPrintFormData {
   cvPrintFullName: string;
   cvPrintTitle: string;
+  cvPrintTitleEn: string;
   cvPrintEmail: string;
   cvPrintPhone: string;
   cvPrintLocation: string;
   cvPrintLinkedin: string;
   cvPrintWebsite: string;
   cvPrintBio: string;
+  cvPrintBioEn: string;
 }
 
 interface HomepageData {
@@ -138,6 +140,21 @@ const DEFAULT_SECTION_LABELS: Record<CvPrintSectionConfig["key"], string> = {
   certifications: "Certifications",
 };
 
+const DEFAULT_SECTION_LABELS_EN: Record<CvPrintSectionConfig["key"], string> = {
+  header: "",
+  profile: "Profile",
+  experience: "Professional Experience",
+  skills: "Skills",
+  languages: "Languages",
+  education: "Education",
+  projects: "Projects",
+  certifications: "Certifications",
+};
+
+function getDefaultSectionLabel(key: CvPrintSectionConfig["key"], locale: "fr" | "en"): string {
+  return locale === "en" ? DEFAULT_SECTION_LABELS_EN[key] : DEFAULT_SECTION_LABELS[key];
+}
+
 const SECTION_UI_LABELS: Record<CvPrintSectionConfig["key"], string> = {
   header: "En-tête",
   profile: "Profil",
@@ -148,6 +165,21 @@ const SECTION_UI_LABELS: Record<CvPrintSectionConfig["key"], string> = {
   projects: "Projets",
   certifications: "Certifications",
 };
+
+const SECTION_UI_LABELS_EN: Record<CvPrintSectionConfig["key"], string> = {
+  header: "Header",
+  profile: "Profile",
+  experience: "Experience",
+  skills: "Skills",
+  languages: "Languages",
+  education: "Education",
+  projects: "Projects",
+  certifications: "Certifications",
+};
+
+function getSectionUiLabel(key: CvPrintSectionConfig["key"], locale: "fr" | "en"): string {
+  return locale === "en" ? SECTION_UI_LABELS_EN[key] : SECTION_UI_LABELS[key];
+}
 
 const SELECTABLE_SECTIONS: CvPrintSectionConfig["key"][] = [
   "experience",
@@ -211,23 +243,33 @@ function parseCvPrintConfig(
 
 function cleanItemOverride(override: CvPrintItemOverride): CvPrintItemOverride | null {
   const cleaned: CvPrintItemOverride = {};
-  if (override.title?.trim()) cleaned.title = override.title.trim();
-  else if (override.title !== undefined) cleaned.title = null;
+  const stringFields: Array<"title" | "subtitle" | "description" | "dateRange" | "titleEn" | "subtitleEn" | "descriptionEn" | "dateRangeEn"> = [
+    "title",
+    "subtitle",
+    "description",
+    "dateRange",
+    "titleEn",
+    "subtitleEn",
+    "descriptionEn",
+    "dateRangeEn",
+  ];
+  stringFields.forEach((field) => {
+    const value = override[field];
+    if (typeof value === "string" && value.trim()) {
+      cleaned[field] = value.trim();
+    } else if (value !== undefined) {
+      cleaned[field] = null;
+    }
+  });
 
-  if (override.subtitle?.trim()) cleaned.subtitle = override.subtitle.trim();
-  else if (override.subtitle !== undefined) cleaned.subtitle = null;
-
-  if (override.description?.trim()) cleaned.description = override.description.trim();
-  else if (override.description !== undefined) cleaned.description = null;
-
-  if (override.dateRange?.trim()) cleaned.dateRange = override.dateRange.trim();
-  else if (override.dateRange !== undefined) cleaned.dateRange = null;
-
-  if (override.technologies && override.technologies.length > 0) {
-    cleaned.technologies = override.technologies.map((t) => t.trim()).filter(Boolean);
-  } else if (override.technologies !== undefined) {
-    cleaned.technologies = null;
-  }
+  (["technologies", "technologiesEn"] as const).forEach((field) => {
+    const value = override[field];
+    if (Array.isArray(value) && value.length > 0) {
+      cleaned[field] = value.map((t) => t.trim()).filter(Boolean);
+    } else if (value !== undefined) {
+      cleaned[field] = null;
+    }
+  });
 
   const hasValue = Object.values(cleaned).some(
     (v) => v !== null && v !== undefined && (Array.isArray(v) ? v.length > 0 : true)
@@ -372,32 +414,125 @@ function getItemOriginalValues(
   }
 }
 
-function getOverrideFields(sectionKey: CvPrintSectionConfig["key"]): Array<
-  keyof CvPrintItemOverride
-> {
-  switch (sectionKey) {
-    case "experience":
-      return ["title", "subtitle", "description", "dateRange"];
-    case "education":
-      return ["title", "subtitle", "dateRange"];
-    case "skills":
-    case "languages":
-      return ["title"];
-    case "projects":
-      return ["title", "description", "technologies"];
-    case "certifications":
-      return ["title", "subtitle", "dateRange"];
-    default:
-      return [];
+function getOverrideFields(
+  sectionKey: CvPrintSectionConfig["key"],
+  locale: "fr" | "en" = "fr"
+): Array<keyof CvPrintItemOverride> {
+  const baseFields = (() => {
+    switch (sectionKey) {
+      case "experience":
+        return ["title", "subtitle", "description", "dateRange"];
+      case "education":
+        return ["title", "subtitle", "dateRange"];
+      case "skills":
+      case "languages":
+        return ["title"];
+      case "projects":
+        return ["title", "description", "technologies"];
+      case "certifications":
+        return ["title", "subtitle", "dateRange"];
+      default:
+        return [];
+    }
+  })() as Array<"title" | "subtitle" | "description" | "dateRange" | "technologies">;
+
+  if (locale === "en") {
+    return baseFields.map((f) =>
+      f === "technologies" ? "technologiesEn" : (`${f}En` as keyof CvPrintItemOverride)
+    );
   }
+  return baseFields;
+}
+
+function toEnglishDateRange(dateRange: string): string {
+  return dateRange
+    .replace(/Présent/g, "Present")
+    .replace(/jan/g, "Jan")
+    .replace(/fév/g, "Feb")
+    .replace(/mars/g, "Mar")
+    .replace(/avr/g, "Apr")
+    .replace(/mai/g, "May")
+    .replace(/juin/g, "Jun")
+    .replace(/juill/g, "Jul")
+    .replace(/août/g, "Aug")
+    .replace(/sept/g, "Sep")
+    .replace(/oct/g, "Oct")
+    .replace(/nov/g, "Nov")
+    .replace(/déc/g, "Dec");
+}
+
+function getItemOriginalValuesForLocale(
+  sectionKey: CvPrintSectionConfig["key"],
+  itemId: string,
+  data: HomepageData,
+  locale: "fr" | "en"
+): CvPrintItemOverride {
+  const french = getItemOriginalValues(sectionKey, itemId, data);
+  if (locale === "fr") return french;
+
+  const english: CvPrintItemOverride = {};
+  if (french.title !== undefined) {
+    switch (sectionKey) {
+      case "experience": {
+        const exp = data.experiences?.find((e) => e.id === itemId);
+        english.titleEn = exp?.titleEn || french.title;
+        english.subtitleEn = french.subtitle;
+        english.descriptionEn = exp?.descriptionEn || french.description;
+        english.dateRangeEn = french.dateRange ? toEnglishDateRange(french.dateRange) : french.dateRange;
+        break;
+      }
+      case "education": {
+        const edu = data.education?.find((e) => e.id === itemId);
+        english.titleEn = edu?.degreeEn || french.title;
+        english.subtitleEn = french.subtitle;
+        english.dateRangeEn = french.dateRange ? toEnglishDateRange(french.dateRange) : french.dateRange;
+        break;
+      }
+      case "skills":
+      case "languages": {
+        const skill = data.skills?.find((s) => s.id === itemId);
+        english.titleEn = skill?.nameEn || french.title;
+        break;
+      }
+      case "projects": {
+        const project = data.projects?.find((p) => p.id === itemId);
+        english.titleEn = project?.titleEn || french.title;
+        english.descriptionEn = project?.descriptionEn || french.description;
+        english.technologiesEn = french.technologies;
+        break;
+      }
+      case "certifications": {
+        const cert = data.certifications?.find((c) => c.id === itemId);
+        english.titleEn = cert?.degreeEn || french.title;
+        english.subtitleEn = french.subtitle;
+        english.dateRangeEn = french.dateRange ? toEnglishDateRange(french.dateRange) : french.dateRange;
+        break;
+      }
+      default:
+        break;
+    }
+  }
+  return english;
+}
+
+function getSectionLabelForInput(
+  label: string | null | undefined,
+  locale: "fr" | "en"
+): string {
+  if (label?.startsWith("EN:")) {
+    return locale === "en" ? label.slice(3) : "";
+  }
+  return label || "";
 }
 
 function SortableCvSectionItem({
   section,
+  locale,
   onToggle,
   onLabelChange,
 }: {
   section: CvPrintSectionConfig;
+  locale: "fr" | "en";
   onToggle: (key: CvPrintSectionConfig["key"]) => void;
   onLabelChange: (key: CvPrintSectionConfig["key"], label: string) => void;
 }) {
@@ -428,9 +563,9 @@ function SortableCvSectionItem({
       />
       <input
         type="text"
-        value={section.label || ""}
+        value={getSectionLabelForInput(section.label, locale)}
         onChange={(e) => onLabelChange(section.key, e.target.value)}
-        placeholder={DEFAULT_SECTION_LABELS[section.key]}
+        placeholder={getDefaultSectionLabel(section.key, locale)}
         className="flex-1 min-w-0 px-2 py-1.5 rounded-md bg-background border border-border focus:border-primary focus:outline-none text-sm"
       />
     </div>
@@ -496,6 +631,7 @@ function SortableSectionContentItem({
 function OverrideEditor({
   sectionKey,
   itemTitle,
+  locale,
   draft,
   onChange,
   onSave,
@@ -504,24 +640,32 @@ function OverrideEditor({
 }: {
   sectionKey: CvPrintSectionConfig["key"];
   itemTitle: string;
+  locale: "fr" | "en";
   draft: CvPrintItemOverride;
   onChange: (draft: CvPrintItemOverride) => void;
   onSave: () => void;
   onCancel: () => void;
   onRemove: () => void;
 }) {
-  const fields = getOverrideFields(sectionKey);
+  const fields = getOverrideFields(sectionKey, locale);
+  const isEn = locale === "en";
 
   const updateField = <K extends keyof CvPrintItemOverride>(key: K, value: CvPrintItemOverride[K]) => {
     onChange({ ...draft, [key]: value });
   };
+
+  const titleField: keyof CvPrintItemOverride = isEn ? "titleEn" : "title";
+  const subtitleField: keyof CvPrintItemOverride = isEn ? "subtitleEn" : "subtitle";
+  const descriptionField: keyof CvPrintItemOverride = isEn ? "descriptionEn" : "description";
+  const dateRangeField: keyof CvPrintItemOverride = isEn ? "dateRangeEn" : "dateRange";
+  const technologiesField: keyof CvPrintItemOverride = isEn ? "technologiesEn" : "technologies";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
       <div className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-card border border-border rounded-xl p-5 shadow-lg space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-foreground">
-            Modifier « {itemTitle} »
+            {isEn ? "Edit" : "Modifier"} « {itemTitle} »
           </h3>
           <button
             type="button"
@@ -533,55 +677,65 @@ function OverrideEditor({
         </div>
 
         <div className="space-y-3">
-          {fields.includes("title") && (
+          {fields.includes(titleField) && (
             <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">Titre</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">
+                {isEn ? "Title" : "Titre"}
+              </label>
               <input
                 type="text"
-                value={draft.title || ""}
-                onChange={(e) => updateField("title", e.target.value)}
+                value={(draft[titleField] as string) || ""}
+                onChange={(e) => updateField(titleField, e.target.value)}
                 className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm"
               />
             </div>
           )}
-          {fields.includes("subtitle") && (
+          {fields.includes(subtitleField) && (
             <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">Sous-titre</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">
+                {isEn ? "Subtitle" : "Sous-titre"}
+              </label>
               <input
                 type="text"
-                value={draft.subtitle || ""}
-                onChange={(e) => updateField("subtitle", e.target.value)}
+                value={(draft[subtitleField] as string) || ""}
+                onChange={(e) => updateField(subtitleField, e.target.value)}
                 className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm"
               />
             </div>
           )}
-          {fields.includes("description") && (
+          {fields.includes(descriptionField) && (
             <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">Description</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">
+                {isEn ? "Description" : "Description"}
+              </label>
               <textarea
-                value={draft.description || ""}
-                onChange={(e) => updateField("description", e.target.value)}
+                value={(draft[descriptionField] as string) || ""}
+                onChange={(e) => updateField(descriptionField, e.target.value)}
                 rows={4}
                 className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm resize-none"
               />
             </div>
           )}
-          {fields.includes("dateRange") && (
+          {fields.includes(dateRangeField) && (
             <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">Période</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">
+                {isEn ? "Period" : "Période"}
+              </label>
               <input
                 type="text"
-                value={draft.dateRange || ""}
-                onChange={(e) => updateField("dateRange", e.target.value)}
-                placeholder="ex: Janv. 2020 — Présent"
+                value={(draft[dateRangeField] as string) || ""}
+                onChange={(e) => updateField(dateRangeField, e.target.value)}
+                placeholder={isEn ? "e.g. Jan. 2020 — Present" : "ex: Janv. 2020 — Présent"}
                 className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm"
               />
             </div>
           )}
-          {fields.includes("technologies") && (
+          {fields.includes(technologiesField) && (
             <TechnologyEditor
-              technologies={draft.technologies || []}
-              onChange={(technologies) => updateField("technologies", technologies)}
+              technologies={(draft[technologiesField] as string[]) || []}
+              onChange={(technologies) => updateField(technologiesField, technologies)}
+              addLabel={isEn ? "Add" : "Ajouter"}
+              placeholder={isEn ? "Add a technology..." : "Ajouter une technologie..."}
             />
           )}
         </div>
@@ -593,21 +747,21 @@ function OverrideEditor({
             className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
           >
             <Save size={16} />
-            Enregistrer
+            {isEn ? "Save" : "Enregistrer"}
           </button>
           <button
             type="button"
             onClick={onRemove}
             className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-destructive text-destructive bg-destructive/5 rounded-lg text-sm font-medium hover:bg-destructive/10 transition-colors"
           >
-            Réinitialiser
+            {isEn ? "Reset" : "Réinitialiser"}
           </button>
           <button
             type="button"
             onClick={onCancel}
             className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-border bg-background text-foreground rounded-lg text-sm font-medium hover:bg-muted transition-colors"
           >
-            Annuler
+            {isEn ? "Cancel" : "Annuler"}
           </button>
         </div>
       </div>
@@ -618,9 +772,13 @@ function OverrideEditor({
 function TechnologyEditor({
   technologies,
   onChange,
+  addLabel = "Ajouter",
+  placeholder = "Ajouter une technologie...",
 }: {
   technologies: string[];
   onChange: (technologies: string[]) => void;
+  addLabel?: string;
+  placeholder?: string;
 }) {
   const [value, setValue] = useState("");
 
@@ -644,7 +802,7 @@ function TechnologyEditor({
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), add())}
-          placeholder="Ajouter une technologie..."
+          placeholder={placeholder}
           className="flex-1 px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm"
         />
         <button
@@ -652,7 +810,7 @@ function TechnologyEditor({
           onClick={add}
           className="inline-flex items-center gap-1 px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 text-sm"
         >
-          <Plus size={14} /> Ajouter
+          <Plus size={14} /> {addLabel}
         </button>
       </div>
       <div className="flex flex-wrap gap-2">
@@ -685,13 +843,16 @@ export default function AdminCVPrintPage() {
   const [cvForm, setCvForm] = useState<CvPrintFormData>({
     cvPrintFullName: "",
     cvPrintTitle: "",
+    cvPrintTitleEn: "",
     cvPrintEmail: "",
     cvPrintPhone: "",
     cvPrintLocation: "",
     cvPrintLinkedin: "",
     cvPrintWebsite: "",
     cvPrintBio: "",
+    cvPrintBioEn: "",
   });
+  const [activeLocale, setActiveLocale] = useState<"fr" | "en">("fr");
   const [cvConfig, setCvConfig] = useState<CvPrintConfig>(() =>
     getDefaultCvPrintConfig([], [], [], [], [])
   );
@@ -712,19 +873,19 @@ export default function AdminCVPrintPage() {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  const fetchStatus = async () => {
+  const fetchStatus = async (locale: "fr" | "en" = activeLocale) => {
     try {
-      const res = await fetch("/api/cv/status");
+      const res = await fetch(`/api/cv/status?locale=${locale}`);
       if (res.ok) setStatus(await res.json());
     } catch (error) {
       console.error("Failed to fetch CV status:", error);
     }
   };
 
-  const fetchLogs = async () => {
+  const fetchLogs = async (locale: "fr" | "en" = activeLocale) => {
     setLogsLoading(true);
     try {
-      const res = await fetch("/api/cv/logs");
+      const res = await fetch(`/api/cv/logs?locale=${locale}`);
       if (res.ok) setLogs(await res.json());
     } catch (error) {
       console.error("Failed to fetch CV logs:", error);
@@ -742,12 +903,14 @@ export default function AdminCVPrintPage() {
         setCvForm({
           cvPrintFullName: p.cvPrintFullName || "",
           cvPrintTitle: p.cvPrintTitle || "",
+          cvPrintTitleEn: p.cvPrintTitleEn || "",
           cvPrintEmail: p.cvPrintEmail || "",
           cvPrintPhone: p.cvPrintPhone || "",
           cvPrintLocation: p.cvPrintLocation || "",
           cvPrintLinkedin: p.cvPrintLinkedin || "",
           cvPrintWebsite: p.cvPrintWebsite || "",
           cvPrintBio: p.cvPrintBio || "",
+          cvPrintBioEn: p.cvPrintBioEn || "",
         });
         setCvConfig(
           parseCvPrintConfig(
@@ -767,6 +930,11 @@ export default function AdminCVPrintPage() {
     fetchLogs();
   }, []);
 
+  useEffect(() => {
+    fetchStatus(activeLocale);
+    fetchLogs(activeLocale);
+  }, [activeLocale]);
+
   const showMessage = (text: string, type: "success" | "error") => {
     setMessage({ text, type });
     setTimeout(() => setMessage(null), 5000);
@@ -783,12 +951,14 @@ export default function AdminCVPrintPage() {
     setCvForm({
       cvPrintFullName: p.cvPrintFullName || "",
       cvPrintTitle: p.cvPrintTitle || "",
+      cvPrintTitleEn: p.cvPrintTitleEn || "",
       cvPrintEmail: p.cvPrintEmail || "",
       cvPrintPhone: p.cvPrintPhone || "",
       cvPrintLocation: p.cvPrintLocation || "",
       cvPrintLinkedin: p.cvPrintLinkedin || "",
       cvPrintWebsite: p.cvPrintWebsite || "",
       cvPrintBio: p.cvPrintBio || "",
+      cvPrintBioEn: p.cvPrintBioEn || "",
     });
     setCvConfig(
       parseCvPrintConfig(
@@ -828,12 +998,14 @@ export default function AdminCVPrintPage() {
           // Convert empty strings to null so the template falls back to public profile fields
           cvPrintFullName: cvForm.cvPrintFullName.trim() || null,
           cvPrintTitle: cvForm.cvPrintTitle.trim() || null,
+          cvPrintTitleEn: cvForm.cvPrintTitleEn.trim() || null,
           cvPrintEmail: cvForm.cvPrintEmail.trim() || null,
           cvPrintPhone: cvForm.cvPrintPhone.trim() || null,
           cvPrintLocation: cvForm.cvPrintLocation.trim() || null,
           cvPrintLinkedin: cvForm.cvPrintLinkedin.trim() || null,
           cvPrintWebsite: cvForm.cvPrintWebsite.trim() || null,
           cvPrintBio: cvForm.cvPrintBio.trim() || null,
+          cvPrintBioEn: cvForm.cvPrintBioEn.trim() || null,
           cvPrintConfig: cleanConfigForSave(cvConfig),
         }),
       });
@@ -894,13 +1066,13 @@ export default function AdminCVPrintPage() {
       const res = await fetch("/api/cv/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ method: "HEADLESS" }),
+        body: JSON.stringify({ method: "HEADLESS", locale: activeLocale }),
       });
       const result = await res.json();
       if (res.ok) {
         showMessage(`PDF régénéré avec succès (${result.fileSizeKb} Ko)`, "success");
-        fetchStatus();
-        fetchLogs();
+        fetchStatus(activeLocale);
+        fetchLogs(activeLocale);
       } else {
         showMessage("Erreur : " + (result.error || "Échec de la régénération"), "error");
       }
@@ -957,10 +1129,22 @@ export default function AdminCVPrintPage() {
   };
 
   const updateSectionLabel = (key: CvPrintSectionConfig["key"], label: string) => {
-    setCvConfig((prev) => ({
-      ...prev,
-      sections: prev.sections.map((s) => (s.key === key ? { ...s, label: label || null } : s)),
-    }));
+    setCvConfig((prev) => {
+      const current = prev.sections.find((s) => s.key === key);
+      const rawLabel = label.trim();
+      let storedLabel: string | null;
+      if (activeLocale === "en") {
+        storedLabel = rawLabel ? `EN:${rawLabel}` : null;
+      } else {
+        // French mode: preserve an existing English label if the input is left empty
+        const existingEnglishLabel = current?.label?.startsWith("EN:") ? current.label : null;
+        storedLabel = rawLabel || existingEnglishLabel || null;
+      }
+      return {
+        ...prev,
+        sections: prev.sections.map((s) => (s.key === key ? { ...s, label: storedLabel } : s)),
+      };
+    });
     setFormChanged(true);
   };
 
@@ -1012,20 +1196,33 @@ export default function AdminCVPrintPage() {
   };
 
   const isOverridden = (sectionKey: CvPrintSectionConfig["key"], itemId: string) => {
-    return !!cvConfig.itemOverrides[getOverrideKey(sectionKey, itemId)];
+    const override = cvConfig.itemOverrides[getOverrideKey(sectionKey, itemId)];
+    if (!override) return false;
+    const fields = getOverrideFields(sectionKey, activeLocale);
+    return fields.some((field) => {
+      const value = override[field];
+      return value !== null && value !== undefined && (Array.isArray(value) ? value.length > 0 : true);
+    });
   };
 
   const openOverrideEditor = (sectionKey: CvPrintSectionConfig["key"], itemId: string) => {
     const key = getOverrideKey(sectionKey, itemId);
-    const original = data ? getItemOriginalValues(sectionKey, itemId, data as HomepageData) : {};
+    const original = data
+      ? getItemOriginalValuesForLocale(sectionKey, itemId, data as HomepageData, activeLocale)
+      : {};
     const existing = cvConfig.itemOverrides[key] || {};
-    setOverrideDraft({
-      title: existing.title ?? original.title ?? "",
-      subtitle: existing.subtitle ?? original.subtitle ?? "",
-      description: existing.description ?? original.description ?? "",
-      dateRange: existing.dateRange ?? original.dateRange ?? "",
-      technologies: existing.technologies ?? original.technologies ?? [],
+    const fields = getOverrideFields(sectionKey, activeLocale);
+    const draft: CvPrintItemOverride = {};
+    fields.forEach((field) => {
+      const existingValue = existing[field];
+      const originalValue = original[field as keyof CvPrintItemOverride];
+      if (field === "technologies" || field === "technologiesEn") {
+        draft[field] = (existingValue as string[] | undefined) ?? (originalValue as string[] | undefined) ?? [];
+      } else {
+        draft[field] = (existingValue as string | null | undefined) ?? (originalValue as string | undefined) ?? "";
+      }
     });
+    setOverrideDraft(draft);
     setEditingOverride({ sectionKey, itemId });
   };
 
@@ -1033,27 +1230,39 @@ export default function AdminCVPrintPage() {
     if (!editingOverride || !data) return;
     const { sectionKey, itemId } = editingOverride;
     const key = getOverrideKey(sectionKey, itemId);
-    const original = getItemOriginalValues(sectionKey, itemId, data as HomepageData);
+    const original = getItemOriginalValuesForLocale(sectionKey, itemId, data as HomepageData, activeLocale);
+    const fields = getOverrideFields(sectionKey, activeLocale);
 
-    const changed: CvPrintItemOverride = {};
-    (["title", "subtitle", "description", "dateRange"] as const).forEach((field) => {
+    const changed: CvPrintItemOverride = { ...cvConfig.itemOverrides[key] };
+    fields.forEach((field) => {
       const draftValue = overrideDraft[field];
-      const origValue = original[field];
-      const normalizedDraft = typeof draftValue === "string" ? draftValue.trim() : draftValue;
-      const normalizedOrig = typeof origValue === "string" ? origValue.trim() : origValue;
-      if (normalizedDraft && normalizedDraft !== normalizedOrig) {
-        changed[field] = normalizedDraft;
+      const origValue = original[field as keyof CvPrintItemOverride];
+      if (field === "technologies" || field === "technologiesEn") {
+        const draftTechs = (draftValue as string[] | undefined) || [];
+        const origTechs = (origValue as string[] | undefined) || [];
+        const techsChanged =
+          draftTechs.length !== origTechs.length ||
+          draftTechs.some((t, i) => t.trim() !== (origTechs[i] || "").trim());
+        if (techsChanged && draftTechs.length > 0) {
+          changed[field] = draftTechs.map((t) => t.trim()).filter(Boolean);
+        } else if (draftTechs.length === 0 && origTechs.length > 0) {
+          changed[field] = null;
+        } else {
+          delete changed[field];
+        }
+      } else {
+        const normalizedDraft = typeof draftValue === "string" ? draftValue.trim() : "";
+        const normalizedOrig = typeof origValue === "string" ? origValue.trim() : "";
+        const stringField = field as "title" | "subtitle" | "description" | "dateRange" | "titleEn" | "subtitleEn" | "descriptionEn" | "dateRangeEn";
+        if (normalizedDraft && normalizedDraft !== normalizedOrig) {
+          changed[stringField] = normalizedDraft;
+        } else if (!normalizedDraft && normalizedOrig) {
+          changed[stringField] = null;
+        } else {
+          delete changed[stringField];
+        }
       }
     });
-
-    const draftTechs = overrideDraft.technologies || [];
-    const origTechs = original.technologies || [];
-    const techsChanged =
-      draftTechs.length !== origTechs.length ||
-      draftTechs.some((t, i) => t.trim() !== (origTechs[i] || "").trim());
-    if (techsChanged && draftTechs.length > 0) {
-      changed.technologies = draftTechs.map((t) => t.trim()).filter(Boolean);
-    }
 
     setCvConfig((prev) => {
       const next = { ...prev.itemOverrides };
@@ -1070,9 +1279,18 @@ export default function AdminCVPrintPage() {
 
   const removeOverride = (sectionKey: CvPrintSectionConfig["key"], itemId: string) => {
     const key = getOverrideKey(sectionKey, itemId);
+    const fields = getOverrideFields(sectionKey, activeLocale);
     setCvConfig((prev) => {
       const next = { ...prev.itemOverrides };
-      delete next[key];
+      const existing = next[key];
+      if (existing) {
+        fields.forEach((field) => delete existing[field]);
+        if (Object.keys(existing).length === 0) {
+          delete next[key];
+        } else {
+          next[key] = existing;
+        }
+      }
       return { ...prev, itemOverrides: next };
     });
     setFormChanged(true);
@@ -1196,12 +1414,14 @@ export default function AdminCVPrintPage() {
                   // Use public profile values as placeholders for empty cvPrint fields in the live preview
                   cvPrintFullName: cvForm.cvPrintFullName || data.profile.fullName,
                   cvPrintTitle: cvForm.cvPrintTitle || data.profile.title,
+                  cvPrintTitleEn: cvForm.cvPrintTitleEn || data.profile.titleEn || data.profile.title,
                   cvPrintEmail: cvForm.cvPrintEmail || data.profile.email,
                   cvPrintPhone: cvForm.cvPrintPhone || data.profile.phone,
                   cvPrintLocation: cvForm.cvPrintLocation || data.profile.location,
                   cvPrintLinkedin: cvForm.cvPrintLinkedin || data.profile.linkedin,
                   cvPrintWebsite: cvForm.cvPrintWebsite || "abdenour-hellas.online",
                   cvPrintBio: cvForm.cvPrintBio || data.profile.bio,
+                  cvPrintBioEn: cvForm.cvPrintBioEn || data.profile.bioEn || data.profile.bio,
                 }}
                 experiences={data.experiences || []}
                 education={data.education || []}
@@ -1209,6 +1429,7 @@ export default function AdminCVPrintPage() {
                 projects={data.projects || []}
                 certifications={data.certifications || []}
                 config={cvConfig}
+                locale={activeLocale}
               />
             </div>
           </div>
@@ -1216,6 +1437,41 @@ export default function AdminCVPrintPage() {
 
         {/* Control panel */}
         <div className="space-y-5">
+          {/* Locale switcher */}
+          <section className="bg-card border border-border rounded-xl p-5">
+            <h2 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+              <Layers size={18} className="text-primary" />
+              Langue du CV
+            </h2>
+            <div className="inline-flex bg-muted rounded-lg p-1 border border-border w-full">
+              <button
+                type="button"
+                onClick={() => setActiveLocale("fr")}
+                className={`flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  activeLocale === "fr"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                FR
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveLocale("en")}
+                className={`flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  activeLocale === "en"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                EN
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              Basculer entre les versions française et anglaise du CV.
+            </p>
+          </section>
+
           {/* Status card */}
           <section className="bg-card border border-border rounded-xl p-5">
             <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -1282,16 +1538,29 @@ export default function AdminCVPrintPage() {
                   className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">Titre / poste</label>
-                <input
-                  type="text"
-                  value={cvForm.cvPrintTitle}
-                  onChange={(e) => updateFormField("cvPrintTitle", e.target.value)}
-                  placeholder={data.profile.title}
-                  className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
-                />
-              </div>
+              {activeLocale === "fr" ? (
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">Titre / poste</label>
+                  <input
+                    type="text"
+                    value={cvForm.cvPrintTitle}
+                    onChange={(e) => updateFormField("cvPrintTitle", e.target.value)}
+                    placeholder={data.profile.title}
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                  />
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">Title / position</label>
+                  <input
+                    type="text"
+                    value={cvForm.cvPrintTitleEn}
+                    onChange={(e) => updateFormField("cvPrintTitleEn", e.target.value)}
+                    placeholder={data.profile.titleEn || data.profile.title}
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+                  />
+                </div>
+              )}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-medium text-muted-foreground mb-1">Email</label>
@@ -1346,16 +1615,29 @@ export default function AdminCVPrintPage() {
                   />
                 </div>
               </div>
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">Bio / profil</label>
-                <textarea
-                  value={cvForm.cvPrintBio}
-                  onChange={(e) => updateFormField("cvPrintBio", e.target.value)}
-                  placeholder={data.profile.bio}
-                  rows={4}
-                  className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none resize-none"
-                />
-              </div>
+              {activeLocale === "fr" ? (
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">Bio / profil</label>
+                  <textarea
+                    value={cvForm.cvPrintBio}
+                    onChange={(e) => updateFormField("cvPrintBio", e.target.value)}
+                    placeholder={data.profile.bio}
+                    rows={4}
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none resize-none"
+                  />
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">Bio / profile</label>
+                  <textarea
+                    value={cvForm.cvPrintBioEn}
+                    onChange={(e) => updateFormField("cvPrintBioEn", e.target.value)}
+                    placeholder={data.profile.bioEn || data.profile.bio}
+                    rows={4}
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none resize-none"
+                  />
+                </div>
+              )}
 
               {/* Sections card */}
               <div className="pt-2 border-t border-border space-y-3">
@@ -1387,6 +1669,7 @@ export default function AdminCVPrintPage() {
                         <SortableCvSectionItem
                           key={section.key}
                           section={section}
+                          locale={activeLocale}
                           onToggle={toggleSectionVisibility}
                           onLabelChange={updateSectionLabel}
                         />
@@ -1424,7 +1707,7 @@ export default function AdminCVPrintPage() {
                           className="w-full flex items-center justify-between p-3 text-left hover:bg-muted/50 transition-colors"
                         >
                           <span className="font-medium text-sm flex items-center gap-2">
-                            {SECTION_UI_LABELS[sectionKey]}
+                            {getSectionUiLabel(sectionKey, activeLocale)}
                             <span className="text-xs text-muted-foreground font-normal">
                               ({selectedItems.length}/{items.length})
                             </span>
@@ -1628,6 +1911,7 @@ export default function AdminCVPrintPage() {
             getSectionItems(editingOverride.sectionKey, data).find((i) => i.id === editingOverride.itemId)
               ?.title || ""
           }
+          locale={activeLocale}
           draft={overrideDraft}
           onChange={setOverrideDraft}
           onSave={saveOverride}
