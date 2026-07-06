@@ -196,7 +196,7 @@ export default function CVPrintTemplate({
   return (
     <div id="cv-print-content" style={containerStyle}>
       {/* Header */}
-      <header style={{ textAlign: "center", marginBottom: "12px" }}>
+      <header style={{ textAlign: "center", marginBottom: "12px", breakInside: "avoid" }}>
         <h1 style={{ fontSize: "26pt", fontWeight: 700, letterSpacing: "-0.5px", margin: 0, color: "#111" }}>
           {fullName}
         </h1>
@@ -210,7 +210,7 @@ export default function CVPrintTemplate({
 
       {/* Profile */}
       {bio && (
-        <section>
+        <section style={{ breakInside: "avoid" }}>
           <h2 style={sectionTitleStyle}>{labels.profile}</h2>
           <p style={textStyle}>{bio}</p>
         </section>
@@ -218,11 +218,11 @@ export default function CVPrintTemplate({
 
       {/* Main Experience */}
       {mainExperiences.length > 0 && (
-        <section>
+        <section style={{ breakInside: "avoid" }}>
           <h2 style={sectionTitleStyle}>{labels.experience}</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {mainExperiences.map((exp) => (
-              <div key={exp.id}>
+              <div key={exp.id} style={{ breakInside: "avoid" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
                   <span style={itemTitleStyle}>{locale === "en" ? exp.titleEn || exp.title : exp.title}</span>
                   <span style={dateStyle}>{formatDateRange(exp.startDate, exp.endDate, exp.current, locale)}</span>
@@ -243,11 +243,11 @@ export default function CVPrintTemplate({
 
       {/* Additional Experience */}
       {additionalExperiences.length > 0 && (
-        <section>
+        <section style={{ breakInside: "avoid" }}>
           <h2 style={sectionTitleStyle}>{labels.additionalExperience}</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {additionalExperiences.map((exp) => (
-              <div key={exp.id}>
+              <div key={exp.id} style={{ breakInside: "avoid" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
                   <span style={itemTitleStyle}>{locale === "en" ? exp.titleEn || exp.title : exp.title}</span>
                   <span style={dateStyle}>{formatDateRange(exp.startDate, exp.endDate, exp.current, locale)}</span>
@@ -268,11 +268,11 @@ export default function CVPrintTemplate({
 
       {/* Education */}
       {education.length > 0 && (
-        <section>
+        <section style={{ breakInside: "avoid" }}>
           <h2 style={sectionTitleStyle}>{labels.education}</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {education.map((edu) => (
-              <div key={edu.id}>
+              <div key={edu.id} style={{ breakInside: "avoid" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
                   <span style={itemTitleStyle}>{locale === "en" ? edu.degreeEn || edu.degree : edu.degree}</span>
                   <span style={dateStyle}>{formatYearRange(edu.startDate, edu.endDate, edu.current, locale)}</span>
@@ -288,11 +288,11 @@ export default function CVPrintTemplate({
 
       {/* Skills */}
       {Object.keys(skillGroups).length > 0 && (
-        <section>
+        <section style={{ breakInside: "avoid" }}>
           <h2 style={sectionTitleStyle}>{labels.skills}</h2>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 24px" }}>
             {Object.entries(skillGroups).map(([category, items]) => (
-              <div key={category}>
+              <div key={category} style={{ breakInside: "avoid" }}>
                 <div style={{ fontSize: "9.5pt", fontWeight: 600, color: "#374151", marginBottom: "2px" }}>
                   {category}
                 </div>
@@ -307,11 +307,11 @@ export default function CVPrintTemplate({
 
       {/* Languages */}
       {languages.length > 0 && (
-        <section>
+        <section style={{ breakInside: "avoid" }}>
           <h2 style={sectionTitleStyle}>{labels.languages}</h2>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
             {languages.map((lang) => (
-              <span key={lang.id} style={{ fontSize: "9.5pt", color: "#374151" }}>
+              <span key={lang.id} style={{ fontSize: "9.5pt", color: "#374151", breakInside: "avoid" }}>
                 {locale === "en" ? lang.nameEn || lang.name : lang.name} — {languageLevel(lang.level, locale)}
               </span>
             ))}
@@ -321,11 +321,11 @@ export default function CVPrintTemplate({
 
       {/* Projects */}
       {projects.length > 0 && (
-        <section>
+        <section style={{ breakInside: "avoid" }}>
           <h2 style={sectionTitleStyle}>{labels.projects}</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {projects.map((p) => (
-              <div key={p.id}>
+              <div key={p.id} style={{ breakInside: "avoid" }}>
                 <div style={itemTitleStyle}>{locale === "en" ? p.titleEn || p.title : p.title}</div>
                 <p style={{ ...textStyle, margin: "2px 0 0" }}>
                   {locale === "en" ? p.descriptionEn || p.description : p.description}
@@ -343,11 +343,11 @@ export default function CVPrintTemplate({
 
       {/* Certifications */}
       {certifications.length > 0 && (
-        <section>
+        <section style={{ breakInside: "avoid" }}>
           <h2 style={sectionTitleStyle}>{labels.certifications}</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {certifications.map((cert) => (
-              <div key={cert.id}>
+              <div key={cert.id} style={{ breakInside: "avoid" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
                   <span style={itemTitleStyle}>{locale === "en" ? cert.degreeEn || cert.degree : cert.degree}</span>
                   <span style={dateStyle}>{formatDateRange(cert.startDate, cert.endDate, cert.current, locale)}</span>
