@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Save, Upload, FileText } from "lucide-react";
+import { Save, Upload, FileText, X } from "lucide-react";
 import SpellCheck from "@/components/admin/SpellCheck";
 
 export default function ProfilePage() {
@@ -175,14 +175,24 @@ export default function ProfilePage() {
           <label className="block text-sm font-medium mb-2">CV PDF</label>
           <div className="flex items-center gap-4">
             {profile.cvUrl && (
-              <a href={profile.cvUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
-                <FileText size={16} className="inline mr-1" />
-                {profile.cvFileName || "cv.pdf"}
-              </a>
+              <>
+                <a href={profile.cvUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
+                  <FileText size={16} className="inline mr-1" />
+                  {profile.cvFileName || "cv.pdf"}
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setProfile({ ...profile, cvUrl: null, cvFileName: null })}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 text-xs text-destructive border border-destructive/30 rounded-lg hover:bg-destructive/10 transition-colors"
+                >
+                  <X size={14} />
+                  Retirer
+                </button>
+              </>
             )}
             <label className="inline-flex items-center gap-2 px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors cursor-pointer">
               <Upload size={16} />
-              {loadingCV ? "Chargement..." : "Uploader un CV"}
+              {loadingCV ? "Chargement..." : (profile.cvUrl ? "Changer le CV" : "Uploader un CV")}
               <input type="file" accept=".pdf" className="hidden" onChange={handleCVUpload} />
             </label>
           </div>
