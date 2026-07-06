@@ -138,95 +138,84 @@ export default function CVPrintTemplate({
 
   const languages = skills.filter((s) => s.category === "langue");
 
-  const containerStyle: React.CSSProperties = {
-    width: "210mm",
-    minHeight: "297mm",
-    padding: "12mm 16mm",
-    fontFamily: '"Inter", "Calibri", "Segoe UI", sans-serif',
-    fontSize: "9.5pt",
-    lineHeight: 1.35,
-    color: "#1a1a1a",
-    background: "#fff",
-    boxSizing: "border-box",
-    direction: isRTL ? "rtl" : "ltr",
-  };
-
-  const sectionTitleStyle: React.CSSProperties = {
-    fontSize: "9.5pt",
-    fontWeight: 700,
-    textTransform: "uppercase",
-    letterSpacing: "0.08em",
-    color: "#1a1a1a",
-    borderBottom: "1px solid #1a1a1a",
-    paddingBottom: "3px",
-    marginBottom: "6px",
-    marginTop: "10px",
-  };
-
-  const itemTitleStyle: React.CSSProperties = {
-    fontSize: "9.5pt",
-    fontWeight: 700,
-    color: "#1a1a1a",
-  };
-
-  const itemMetaStyle: React.CSSProperties = {
-    fontSize: "9pt",
-    color: "#4b5563",
-    fontStyle: "italic",
-  };
-
-  const dateStyle: React.CSSProperties = {
-    fontSize: "8.5pt",
-    color: "#6b7280",
-    whiteSpace: "nowrap",
-  };
-
-  const textStyle: React.CSSProperties = {
-    fontSize: "9pt",
-    color: "#374151",
-    textAlign: "justify",
-  };
-
   return (
-    <div id="cv-print-content" style={containerStyle}>
+    <div id="cv-print-content" className="cv-page" style={{ ["--cv-scale" as any]: 1, direction: isRTL ? "rtl" : "ltr" }}>
+      <style>{`
+        .cv-page {
+          width: 210mm;
+          min-height: 297mm;
+          padding: calc(12mm * var(--cv-scale)) calc(16mm * var(--cv-scale));
+          font-family: "Inter", "Calibri", "Segoe UI", sans-serif;
+          font-size: calc(9.5pt * var(--cv-scale));
+          line-height: 1.35;
+          color: #1a1a1a;
+          background: #fff;
+          box-sizing: border-box;
+        }
+        .cv-header { text-align: center; margin-bottom: calc(10px * var(--cv-scale)); }
+        .cv-name { font-size: calc(24pt * var(--cv-scale)); font-weight: 700; letter-spacing: -0.5px; margin: 0; color: #111; }
+        .cv-title { font-size: calc(10.5pt * var(--cv-scale)); font-weight: 500; color: #374151; margin: calc(3px * var(--cv-scale)) 0 0; text-transform: uppercase; letter-spacing: 0.05em; }
+        .cv-contacts { font-size: calc(8.5pt * var(--cv-scale)); color: #4b5563; margin: calc(4px * var(--cv-scale)) 0 0; }
+        .cv-section { margin-top: calc(10px * var(--cv-scale)); }
+        .cv-section-title {
+          font-size: calc(9.5pt * var(--cv-scale));
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: #1a1a1a;
+          border-bottom: 1px solid #1a1a1a;
+          padding-bottom: calc(3px * var(--cv-scale));
+          margin-bottom: calc(6px * var(--cv-scale));
+          break-after: avoid;
+        }
+        .cv-item { break-inside: avoid; }
+        .cv-item-title { font-size: calc(9.5pt * var(--cv-scale)); font-weight: 700; color: #1a1a1a; }
+        .cv-item-meta { font-size: calc(9pt * var(--cv-scale)); color: #4b5563; font-style: italic; }
+        .cv-date { font-size: calc(8.5pt * var(--cv-scale)); color: #6b7280; white-space: nowrap; }
+        .cv-text { font-size: calc(9pt * var(--cv-scale)); color: #374151; text-align: justify; }
+        .cv-bullets { margin: calc(2px * var(--cv-scale)) 0 0; padding-left: calc(14px * var(--cv-scale)); font-size: calc(9pt * var(--cv-scale)); color: #374151; }
+        .cv-bullets li { margin-bottom: calc(1px * var(--cv-scale)); }
+        .cv-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+        .cv-skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: calc(5px * var(--cv-scale)) calc(20px * var(--cv-scale)); }
+        .cv-skill-category { font-size: calc(9pt * var(--cv-scale)); font-weight: 600; color: #374151; margin-bottom: calc(1px * var(--cv-scale)); }
+        .cv-skill-list { font-size: calc(8.5pt * var(--cv-scale)); color: #4b5563; }
+        .cv-lang-list { display: flex; flex-wrap: wrap; gap: calc(10px * var(--cv-scale)); font-size: calc(9pt * var(--cv-scale)); color: #374151; }
+        .cv-tech { font-size: calc(8.5pt * var(--cv-scale)); color: #6b7280; margin-top: calc(1px * var(--cv-scale)); }
+        .cv-stack { display: flex; flex-direction: column; gap: calc(5px * var(--cv-scale)); }
+      `}</style>
+
       {/* Header */}
-      <header style={{ textAlign: "center", marginBottom: "10px" }}>
-        <h1 style={{ fontSize: "24pt", fontWeight: 700, letterSpacing: "-0.5px", margin: 0, color: "#111" }}>
-          {fullName}
-        </h1>
-        <p style={{ fontSize: "10.5pt", fontWeight: 500, color: "#374151", margin: "3px 0 0", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-          {title}
-        </p>
-        <p style={{ fontSize: "8.5pt", color: "#4b5563", margin: "4px 0 0" }}>
-          {contacts.join("  ·  ")}
-        </p>
+      <header className="cv-header">
+        <h1 className="cv-name">{fullName}</h1>
+        <p className="cv-title">{title}</p>
+        <p className="cv-contacts">{contacts.join("  ·  ")}</p>
       </header>
 
       {/* Profile */}
       {bio && (
-        <section>
-          <h2 style={sectionTitleStyle}>{labels.profile}</h2>
-          <p style={textStyle}>{bio}</p>
+        <section className="cv-section">
+          <h2 className="cv-section-title">{labels.profile}</h2>
+          <p className="cv-text">{bio}</p>
         </section>
       )}
 
       {/* Main Experience */}
       {mainExperiences.length > 0 && (
-        <section>
-          <h2 style={sectionTitleStyle}>{labels.experience}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
+        <section className="cv-section">
+          <h2 className="cv-section-title">{labels.experience}</h2>
+          <div className="cv-stack" style={{ gap: "calc(7px * var(--cv-scale))" }}>
             {mainExperiences.map((exp) => (
-              <div key={exp.id} style={{ breakInside: "avoid" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                  <span style={itemTitleStyle}>{locale === "en" ? exp.titleEn || exp.title : exp.title}</span>
-                  <span style={dateStyle}>{formatDateRange(exp.startDate, exp.endDate, exp.current, locale)}</span>
+              <div key={exp.id} className="cv-item">
+                <div className="cv-row">
+                  <span className="cv-item-title">{locale === "en" ? exp.titleEn || exp.title : exp.title}</span>
+                  <span className="cv-date">{formatDateRange(exp.startDate, exp.endDate, exp.current, locale)}</span>
                 </div>
-                <div style={itemMetaStyle}>
+                <div className="cv-item-meta">
                   {exp.company}{exp.location ? `, ${exp.location}` : ""}
                 </div>
-                <ul style={{ margin: "2px 0 0", paddingLeft: isRTL ? 0 : "14px", paddingRight: isRTL ? "14px" : 0, fontSize: "9pt", color: "#374151" }}>
+                <ul className="cv-bullets">
                   {toBullets(locale === "en" ? exp.descriptionEn || exp.description : exp.description).slice(0, 3).map((b, i) => (
-                    <li key={i} style={{ marginBottom: "1px" }}>{b}</li>
+                    <li key={i}>{b}</li>
                   ))}
                 </ul>
               </div>
@@ -237,16 +226,16 @@ export default function CVPrintTemplate({
 
       {/* Additional Experience */}
       {additionalExperiences.length > 0 && (
-        <section>
-          <h2 style={sectionTitleStyle}>{labels.additionalExperience}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+        <section className="cv-section">
+          <h2 className="cv-section-title">{labels.additionalExperience}</h2>
+          <div className="cv-stack" style={{ gap: "calc(5px * var(--cv-scale))" }}>
             {additionalExperiences.map((exp) => (
-              <div key={exp.id} style={{ breakInside: "avoid" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                  <span style={itemTitleStyle}>{locale === "en" ? exp.titleEn || exp.title : exp.title}</span>
-                  <span style={dateStyle}>{formatDateRange(exp.startDate, exp.endDate, exp.current, locale)}</span>
+              <div key={exp.id} className="cv-item">
+                <div className="cv-row">
+                  <span className="cv-item-title">{locale === "en" ? exp.titleEn || exp.title : exp.title}</span>
+                  <span className="cv-date">{formatDateRange(exp.startDate, exp.endDate, exp.current, locale)}</span>
                 </div>
-                <div style={itemMetaStyle}>
+                <div className="cv-item-meta">
                   {exp.company}{exp.location ? `, ${exp.location}` : ""}
                 </div>
               </div>
@@ -257,16 +246,16 @@ export default function CVPrintTemplate({
 
       {/* Education */}
       {education.length > 0 && (
-        <section>
-          <h2 style={sectionTitleStyle}>{labels.education}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+        <section className="cv-section">
+          <h2 className="cv-section-title">{labels.education}</h2>
+          <div className="cv-stack" style={{ gap: "calc(5px * var(--cv-scale))" }}>
             {education.slice(0, 4).map((edu) => (
-              <div key={edu.id} style={{ breakInside: "avoid" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                  <span style={itemTitleStyle}>{locale === "en" ? edu.degreeEn || edu.degree : edu.degree}</span>
-                  <span style={dateStyle}>{formatYearRange(edu.startDate, edu.endDate, edu.current, locale)}</span>
+              <div key={edu.id} className="cv-item">
+                <div className="cv-row">
+                  <span className="cv-item-title">{locale === "en" ? edu.degreeEn || edu.degree : edu.degree}</span>
+                  <span className="cv-date">{formatYearRange(edu.startDate, edu.endDate, edu.current, locale)}</span>
                 </div>
-                <div style={itemMetaStyle}>
+                <div className="cv-item-meta">
                   {edu.school}{edu.location ? `, ${edu.location}` : ""}
                 </div>
               </div>
@@ -277,15 +266,13 @@ export default function CVPrintTemplate({
 
       {/* Skills */}
       {Object.keys(skillGroups).length > 0 && (
-        <section>
-          <h2 style={sectionTitleStyle}>{labels.skills}</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5px 20px" }}>
+        <section className="cv-section">
+          <h2 className="cv-section-title">{labels.skills}</h2>
+          <div className="cv-skill-grid">
             {Object.entries(skillGroups).map(([category, items]) => (
-              <div key={category} style={{ breakInside: "avoid" }}>
-                <div style={{ fontSize: "9pt", fontWeight: 600, color: "#374151", marginBottom: "1px" }}>
-                  {category}
-                </div>
-                <div style={{ fontSize: "8.5pt", color: "#4b5563" }}>
+              <div key={category} className="cv-item">
+                <div className="cv-skill-category">{category}</div>
+                <div className="cv-skill-list">
                   {items.map((s) => (locale === "en" ? s.nameEn || s.name : s.name)).join(" · ")}
                 </div>
               </div>
@@ -296,11 +283,11 @@ export default function CVPrintTemplate({
 
       {/* Languages */}
       {languages.length > 0 && (
-        <section>
-          <h2 style={sectionTitleStyle}>{labels.languages}</h2>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+        <section className="cv-section">
+          <h2 className="cv-section-title">{labels.languages}</h2>
+          <div className="cv-lang-list">
             {languages.map((lang) => (
-              <span key={lang.id} style={{ fontSize: "9pt", color: "#374151" }}>
+              <span key={lang.id}>
                 {locale === "en" ? lang.nameEn || lang.name : lang.name} — {languageLevel(lang.level, locale)}
               </span>
             ))}
@@ -310,19 +297,17 @@ export default function CVPrintTemplate({
 
       {/* Projects */}
       {projects.length > 0 && (
-        <section>
-          <h2 style={sectionTitleStyle}>{labels.projects}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+        <section className="cv-section">
+          <h2 className="cv-section-title">{labels.projects}</h2>
+          <div className="cv-stack" style={{ gap: "calc(5px * var(--cv-scale))" }}>
             {projects.slice(0, 2).map((p) => (
-              <div key={p.id} style={{ breakInside: "avoid" }}>
-                <div style={itemTitleStyle}>{locale === "en" ? p.titleEn || p.title : p.title}</div>
-                <p style={{ ...textStyle, margin: "1px 0 0" }}>
+              <div key={p.id} className="cv-item">
+                <div className="cv-item-title">{locale === "en" ? p.titleEn || p.title : p.title}</div>
+                <p className="cv-text" style={{ margin: "calc(1px * var(--cv-scale)) 0 0" }}>
                   {locale === "en" ? p.descriptionEn || p.description : p.description}
                 </p>
                 {p.technologies?.length > 0 && (
-                  <div style={{ fontSize: "8.5pt", color: "#6b7280", marginTop: "1px" }}>
-                    {p.technologies.join(" · ")}
-                  </div>
+                  <div className="cv-tech">{p.technologies.join(" · ")}</div>
                 )}
               </div>
             ))}
@@ -332,16 +317,16 @@ export default function CVPrintTemplate({
 
       {/* Certifications */}
       {certifications.length > 0 && (
-        <section>
-          <h2 style={sectionTitleStyle}>{labels.certifications}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+        <section className="cv-section">
+          <h2 className="cv-section-title">{labels.certifications}</h2>
+          <div className="cv-stack" style={{ gap: "calc(5px * var(--cv-scale))" }}>
             {certifications.slice(0, 2).map((cert) => (
-              <div key={cert.id} style={{ breakInside: "avoid" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                  <span style={itemTitleStyle}>{locale === "en" ? cert.degreeEn || cert.degree : cert.degree}</span>
-                  <span style={dateStyle}>{formatDateRange(cert.startDate, cert.endDate, cert.current, locale)}</span>
+              <div key={cert.id} className="cv-item">
+                <div className="cv-row">
+                  <span className="cv-item-title">{locale === "en" ? cert.degreeEn || cert.degree : cert.degree}</span>
+                  <span className="cv-date">{formatDateRange(cert.startDate, cert.endDate, cert.current, locale)}</span>
                 </div>
-                <div style={itemMetaStyle}>{cert.school}{cert.location ? `, ${cert.location}` : ""}</div>
+                <div className="cv-item-meta">{cert.school}{cert.location ? `, ${cert.location}` : ""}</div>
               </div>
             ))}
           </div>

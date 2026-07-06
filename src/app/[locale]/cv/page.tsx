@@ -46,11 +46,30 @@ export default function CVPage() {
     }
   };
 
+  const fitToPage = async (el: HTMLElement) => {
+    const A4_HEIGHT_PX = 297 * 3.7795;
+    let scale = 1;
+    el.style.setProperty("--cv-scale", "1");
+    const originalMinHeight = el.style.minHeight;
+    el.style.minHeight = "auto";
+    await new Promise((r) => setTimeout(r, 50));
+
+    while (el.scrollHeight > A4_HEIGHT_PX && scale > 0.85) {
+      scale -= 0.02;
+      el.style.setProperty("--cv-scale", scale.toFixed(2));
+      await new Promise((r) => setTimeout(r, 20));
+    }
+
+    el.style.minHeight = originalMinHeight;
+    return scale;
+  };
+
   const handleDownloadGenerated = async () => {
     if (!cvRef.current) return;
     setGenerating(true);
     await trackDownload();
     try {
+      await fitToPage(cvRef.current);
       const html2pdf = (await import("html2pdf.js")).default;
       const opt = {
         margin: 0,
