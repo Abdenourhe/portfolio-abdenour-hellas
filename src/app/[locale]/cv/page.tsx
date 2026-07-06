@@ -47,20 +47,24 @@ export default function CVPage() {
   };
 
   const fitToPage = async (el: HTMLElement) => {
+    const pageEl = el.querySelector("#cv-print-content") as HTMLElement | null;
+    if (!pageEl) return 1;
+
     const A4_HEIGHT_PX = 297 * 3.7795;
     let scale = 1;
-    el.style.setProperty("--cv-scale", "1");
-    const originalMinHeight = el.style.minHeight;
-    el.style.minHeight = "auto";
+    pageEl.style.setProperty("--cv-scale", "1");
+    const originalMinHeight = pageEl.style.minHeight;
+    pageEl.style.minHeight = "auto";
+    pageEl.style.maxHeight = "none";
     await new Promise((r) => setTimeout(r, 50));
 
-    while (el.scrollHeight > A4_HEIGHT_PX && scale > 0.85) {
+    while (pageEl.scrollHeight > A4_HEIGHT_PX && scale > 0.85) {
       scale -= 0.02;
-      el.style.setProperty("--cv-scale", scale.toFixed(2));
+      pageEl.style.setProperty("--cv-scale", scale.toFixed(2));
       await new Promise((r) => setTimeout(r, 20));
     }
 
-    el.style.minHeight = originalMinHeight;
+    pageEl.style.minHeight = originalMinHeight;
     return scale;
   };
 
