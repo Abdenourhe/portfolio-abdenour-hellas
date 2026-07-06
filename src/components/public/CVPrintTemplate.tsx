@@ -147,12 +147,10 @@ export default function CVPrintTemplate({
   const containerStyle: React.CSSProperties = {
     width: "210mm",
     minHeight: "297mm",
-    maxHeight: "297mm",
-    overflow: "hidden",
-    padding: "8mm 10mm",
+    padding: "14mm 18mm",
     fontFamily: '"Inter", "Calibri", "Segoe UI", sans-serif',
-    fontSize: "8.5pt",
-    lineHeight: 1.15,
+    fontSize: "10pt",
+    lineHeight: 1.4,
     color: "#1a1a1a",
     background: "#fff",
     boxSizing: "border-box",
@@ -160,37 +158,37 @@ export default function CVPrintTemplate({
   };
 
   const sectionTitleStyle: React.CSSProperties = {
-    fontSize: "9pt",
+    fontSize: "10pt",
     fontWeight: 700,
     textTransform: "uppercase",
     letterSpacing: "0.08em",
     color: "#1a1a1a",
     borderBottom: "1px solid #1a1a1a",
-    paddingBottom: "2px",
-    marginBottom: "4px",
-    marginTop: "8px",
+    paddingBottom: "4px",
+    marginBottom: "8px",
+    marginTop: "14px",
   };
 
   const itemTitleStyle: React.CSSProperties = {
-    fontSize: "9pt",
+    fontSize: "10pt",
     fontWeight: 700,
     color: "#1a1a1a",
   };
 
   const itemMetaStyle: React.CSSProperties = {
-    fontSize: "8pt",
+    fontSize: "9.5pt",
     color: "#4b5563",
     fontStyle: "italic",
   };
 
   const dateStyle: React.CSSProperties = {
-    fontSize: "8pt",
+    fontSize: "9pt",
     color: "#6b7280",
     whiteSpace: "nowrap",
   };
 
   const textStyle: React.CSSProperties = {
-    fontSize: "8.5pt",
+    fontSize: "9.5pt",
     color: "#374151",
     textAlign: "justify",
   };
@@ -198,14 +196,14 @@ export default function CVPrintTemplate({
   return (
     <div id="cv-print-content" style={containerStyle}>
       {/* Header */}
-      <header style={{ textAlign: "center", marginBottom: "8px" }}>
-        <h1 style={{ fontSize: "20pt", fontWeight: 700, letterSpacing: "-0.5px", margin: 0, color: "#111" }}>
+      <header style={{ textAlign: "center", marginBottom: "12px" }}>
+        <h1 style={{ fontSize: "26pt", fontWeight: 700, letterSpacing: "-0.5px", margin: 0, color: "#111" }}>
           {fullName}
         </h1>
-        <p style={{ fontSize: "10pt", fontWeight: 500, color: "#374151", margin: "2px 0 0", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+        <p style={{ fontSize: "11pt", fontWeight: 500, color: "#374151", margin: "4px 0 0", textTransform: "uppercase", letterSpacing: "0.05em" }}>
           {title}
         </p>
-        <p style={{ fontSize: "8pt", color: "#4b5563", margin: "4px 0 0" }}>
+        <p style={{ fontSize: "9pt", color: "#4b5563", margin: "6px 0 0" }}>
           {contacts.join("  ·  ")}
         </p>
       </header>
@@ -222,28 +220,23 @@ export default function CVPrintTemplate({
       {mainExperiences.length > 0 && (
         <section>
           <h2 style={sectionTitleStyle}>{labels.experience}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-            {mainExperiences.map((exp) => {
-              const bullets = toBullets(locale === "en" ? exp.descriptionEn || exp.description : exp.description).slice(0, 3);
-              return (
-                <div key={exp.id}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                    <span style={itemTitleStyle}>{locale === "en" ? exp.titleEn || exp.title : exp.title}</span>
-                    <span style={dateStyle}>{formatDateRange(exp.startDate, exp.endDate, exp.current, locale)}</span>
-                  </div>
-                  <div style={itemMetaStyle}>
-                    {exp.company}{exp.location ? `, ${exp.location}` : ""}
-                  </div>
-                  {bullets.length > 0 && (
-                    <ul style={{ margin: "2px 0 0", paddingLeft: isRTL ? 0 : "12px", paddingRight: isRTL ? "12px" : 0, fontSize: "8pt", color: "#374151" }}>
-                      {bullets.map((b, i) => (
-                        <li key={i} style={{ marginBottom: "0px" }}>{b}</li>
-                      ))}
-                    </ul>
-                  )}
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            {mainExperiences.map((exp) => (
+              <div key={exp.id}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
+                  <span style={itemTitleStyle}>{locale === "en" ? exp.titleEn || exp.title : exp.title}</span>
+                  <span style={dateStyle}>{formatDateRange(exp.startDate, exp.endDate, exp.current, locale)}</span>
                 </div>
-              );
-            })}
+                <div style={itemMetaStyle}>
+                  {exp.company}{exp.location ? `, ${exp.location}` : ""}
+                </div>
+                <ul style={{ margin: "3px 0 0", paddingLeft: isRTL ? 0 : "16px", paddingRight: isRTL ? "16px" : 0, fontSize: "9.5pt", color: "#374151" }}>
+                  {toBullets(locale === "en" ? exp.descriptionEn || exp.description : exp.description).map((b, i) => (
+                    <li key={i} style={{ marginBottom: "1px" }}>{b}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </section>
       )}
@@ -252,16 +245,21 @@ export default function CVPrintTemplate({
       {additionalExperiences.length > 0 && (
         <section>
           <h2 style={sectionTitleStyle}>{labels.additionalExperience}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {additionalExperiences.map((exp) => (
-              <div key={exp.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                <div>
+              <div key={exp.id}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
                   <span style={itemTitleStyle}>{locale === "en" ? exp.titleEn || exp.title : exp.title}</span>
-                  <span style={{ ...itemMetaStyle, marginLeft: "4px" }}>
-                    — {exp.company}{exp.location ? `, ${exp.location}` : ""}
-                  </span>
+                  <span style={dateStyle}>{formatDateRange(exp.startDate, exp.endDate, exp.current, locale)}</span>
                 </div>
-                <span style={dateStyle}>{formatDateRange(exp.startDate, exp.endDate, exp.current, locale)}</span>
+                <div style={itemMetaStyle}>
+                  {exp.company}{exp.location ? `, ${exp.location}` : ""}
+                </div>
+                <ul style={{ margin: "3px 0 0", paddingLeft: isRTL ? 0 : "16px", paddingRight: isRTL ? "16px" : 0, fontSize: "9.5pt", color: "#374151" }}>
+                  {toBullets(locale === "en" ? exp.descriptionEn || exp.description : exp.description).map((b, i) => (
+                    <li key={i} style={{ marginBottom: "1px" }}>{b}</li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
@@ -272,14 +270,16 @@ export default function CVPrintTemplate({
       {education.length > 0 && (
         <section>
           <h2 style={sectionTitleStyle}>{labels.education}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {education.map((edu) => (
-              <div key={edu.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                <div>
+              <div key={edu.id}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
                   <span style={itemTitleStyle}>{locale === "en" ? edu.degreeEn || edu.degree : edu.degree}</span>
-                  <span style={{ ...itemMetaStyle, marginLeft: "4px" }}>— {edu.school}{edu.location ? `, ${edu.location}` : ""}</span>
+                  <span style={dateStyle}>{formatYearRange(edu.startDate, edu.endDate, edu.current, locale)}</span>
                 </div>
-                <span style={dateStyle}>{formatYearRange(edu.startDate, edu.endDate, edu.current, locale)}</span>
+                <div style={itemMetaStyle}>
+                  {edu.school}{edu.location ? `, ${edu.location}` : ""}
+                </div>
               </div>
             ))}
           </div>
@@ -290,13 +290,13 @@ export default function CVPrintTemplate({
       {Object.keys(skillGroups).length > 0 && (
         <section>
           <h2 style={sectionTitleStyle}>{labels.skills}</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "4px 12px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 24px" }}>
             {Object.entries(skillGroups).map(([category, items]) => (
               <div key={category}>
-                <div style={{ fontSize: "8pt", fontWeight: 600, color: "#374151", marginBottom: "1px" }}>
+                <div style={{ fontSize: "9.5pt", fontWeight: 600, color: "#374151", marginBottom: "2px" }}>
                   {category}
                 </div>
-                <div style={{ fontSize: "7.5pt", color: "#4b5563" }}>
+                <div style={{ fontSize: "9pt", color: "#4b5563" }}>
                   {items.map((s) => (locale === "en" ? s.nameEn || s.name : s.name)).join(" · ")}
                 </div>
               </div>
@@ -309,9 +309,9 @@ export default function CVPrintTemplate({
       {languages.length > 0 && (
         <section>
           <h2 style={sectionTitleStyle}>{labels.languages}</h2>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
             {languages.map((lang) => (
-              <span key={lang.id} style={{ fontSize: "8pt", color: "#374151" }}>
+              <span key={lang.id} style={{ fontSize: "9.5pt", color: "#374151" }}>
                 {locale === "en" ? lang.nameEn || lang.name : lang.name} — {languageLevel(lang.level, locale)}
               </span>
             ))}
@@ -323,15 +323,15 @@ export default function CVPrintTemplate({
       {projects.length > 0 && (
         <section>
           <h2 style={sectionTitleStyle}>{labels.projects}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-            {projects.slice(0, 3).map((p) => (
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {projects.map((p) => (
               <div key={p.id}>
                 <div style={itemTitleStyle}>{locale === "en" ? p.titleEn || p.title : p.title}</div>
-                <p style={{ ...textStyle, margin: "1px 0 0", fontSize: "8pt" }}>
+                <p style={{ ...textStyle, margin: "2px 0 0" }}>
                   {locale === "en" ? p.descriptionEn || p.description : p.description}
                 </p>
                 {p.technologies?.length > 0 && (
-                  <div style={{ fontSize: "7.5pt", color: "#6b7280", marginTop: "1px" }}>
+                  <div style={{ fontSize: "9pt", color: "#6b7280", marginTop: "2px" }}>
                     {p.technologies.join(" · ")}
                   </div>
                 )}
@@ -345,14 +345,14 @@ export default function CVPrintTemplate({
       {certifications.length > 0 && (
         <section>
           <h2 style={sectionTitleStyle}>{labels.certifications}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {certifications.map((cert) => (
-              <div key={cert.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                <div>
+              <div key={cert.id}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
                   <span style={itemTitleStyle}>{locale === "en" ? cert.degreeEn || cert.degree : cert.degree}</span>
-                  <span style={{ ...itemMetaStyle, marginLeft: "4px" }}>— {cert.school}{cert.location ? `, ${cert.location}` : ""}</span>
+                  <span style={dateStyle}>{formatDateRange(cert.startDate, cert.endDate, cert.current, locale)}</span>
                 </div>
-                <span style={dateStyle}>{formatDateRange(cert.startDate, cert.endDate, cert.current, locale)}</span>
+                <div style={itemMetaStyle}>{cert.school}{cert.location ? `, ${cert.location}` : ""}</div>
               </div>
             ))}
           </div>
