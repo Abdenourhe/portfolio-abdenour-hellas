@@ -13,52 +13,11 @@ export interface Profile {
   photoUrl?: string | null;
   cvUrl?: string | null;
   cvFileName?: string | null;
-  cvUrlEn?: string | null;
-  cvFileNameEn?: string | null;
-  lastCvGeneratedAtEn?: Date | null;
-  cvTemplateHashEn?: string | null;
-  cvLastSyncedAtEn?: Date | null;
   linkedin?: string | null;
   github?: string | null;
   twitter?: string | null;
   facebook?: string | null;
-  cvPrintFullName?: string | null;
-  cvPrintTitle?: string | null;
-  cvPrintEmail?: string | null;
-  cvPrintPhone?: string | null;
-  cvPrintLocation?: string | null;
-  cvPrintLinkedin?: string | null;
-  cvPrintWebsite?: string | null;
-  cvPrintBio?: string | null;
-  cvPrintTitleEn?: string | null;
-  cvPrintBioEn?: string | null;
-  cvPrintConfig?: CvPrintConfig | null;
   updatedAt: Date;
-}
-
-export interface CvPrintConfig {
-  sections: CvPrintSectionConfig[];
-  itemOverrides: Record<string, CvPrintItemOverride>;
-}
-
-export interface CvPrintSectionConfig {
-  key: "header" | "profile" | "experience" | "skills" | "languages" | "education" | "projects" | "certifications";
-  visible: boolean;
-  label?: string | null;
-  itemIds?: string[] | null;
-}
-
-export interface CvPrintItemOverride {
-  title?: string | null;
-  subtitle?: string | null;
-  description?: string | null;
-  dateRange?: string | null;
-  technologies?: string[] | null;
-  titleEn?: string | null;
-  subtitleEn?: string | null;
-  descriptionEn?: string | null;
-  dateRangeEn?: string | null;
-  technologiesEn?: string[] | null;
 }
 
 export interface Experience {

@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "generate:cv": "node scripts/build-cv-html.js --locale=fr && node scripts/generate-cv-pdf.js --locale=fr && node scripts/build-cv-html.js --locale=en && node scripts/generate-cv-pdf.js --locale=en",
     "postinstall": "prisma generate"
   },
   "dependencies": {

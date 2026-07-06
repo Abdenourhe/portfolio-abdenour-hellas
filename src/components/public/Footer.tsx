@@ -26,14 +26,6 @@ export default function Footer({ locale, messages }: { locale: string; messages:
 
           <div className="flex items-center gap-4">
             <Link
-              href={`/${locale}/cv`}
-              prefetch={false}
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              CV
-            </Link>
-            <span className="text-border">·</span>
-            <Link
               href={`/${locale}/contact`}
               prefetch={false}
               className="text-xs text-muted-foreground hover:text-foreground transition-colors"

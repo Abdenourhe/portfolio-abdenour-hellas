@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, useInView, animate } from "framer-motion";
-import { FileText, Send, Download, ArrowRight, Calendar, Briefcase, GraduationCap, Wrench, MapPin, ZoomIn } from "lucide-react";
+import { Send, Download, ArrowRight, Calendar, Briefcase, GraduationCap, Wrench, MapPin, ZoomIn } from "lucide-react";
 import { useState, useRef, useCallback, useEffect } from "react";
 import SocialIcons from "@/components/public/SocialIcons";
 import { useT } from "@/components/public/I18nProvider";
@@ -59,7 +59,6 @@ function AnimatedNumber({ value, suffix = "" }: { value: number; suffix?: string
 export default function HomePageClient({ data }: HomePageClientProps) {
   const t = useT();
   const locale = useLocale();
-  const cvPath = useLocalizedPath("/cv");
   const contactPath = useLocalizedPath("/contact");
 
   const profile = data.profile;
@@ -358,16 +357,6 @@ export default function HomePageClient({ data }: HomePageClientProps) {
                 variants={heroItem}
                 className="mt-10 flex flex-wrap gap-4 justify-center lg:justify-start"
               >
-                <MagneticButton>
-                  <Link
-                    href={cvPath}
-                    className="group inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg text-[0.8rem] tracking-wide font-normal hover:bg-primary/90 transition-colors"
-                  >
-                    <FileText size={16} />
-                    {t("hero.viewCv")}
-                    <ArrowRight size={14} className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                  </Link>
-                </MagneticButton>
                 <MagneticButton>
                   <Link
                     href={contactPath}

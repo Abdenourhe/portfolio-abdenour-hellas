@@ -21,11 +21,6 @@ enum Role {
   ADMIN
 }
 
-enum CvGenerationMethod {
-  HEADLESS
-  HTML2PDF
-}
-
 model Profile {
   id           String   @id @default(cuid())
   fullName     String
@@ -41,34 +36,6 @@ model Profile {
   photoUrl          String?
   cvUrl             String?
   cvFileName        String?
-  lastCvGeneratedAt DateTime?
-  cvTemplateHash    String?
-  cvLastSyncedAt    DateTime?
-  cvGenerationMode  CvGenerationMethod @default(HEADLESS)
-
-  // CV print metadata for English version
-  cvUrlEn             String?
-  cvFileNameEn        String?
-  lastCvGeneratedAtEn DateTime?
-  cvTemplateHashEn    String?
-  cvLastSyncedAtEn    DateTime?
-
-  // CV print specific content (optional overrides)
-  cvPrintFullName   String?
-  cvPrintTitle      String?
-  cvPrintEmail      String?
-  cvPrintPhone      String?
-  cvPrintLocation   String?
-  cvPrintBio        String?  @db.Text
-  cvPrintLinkedin   String?
-  cvPrintWebsite    String?
-
-  // CV print English overrides
-  cvPrintTitleEn    String?
-  cvPrintBioEn      String?  @db.Text
-
-  // Full CV print configuration (sections, item selection/order, item text overrides)
-  cvPrintConfig     Json?
 
   linkedin          String?
   github       String?
@@ -237,14 +204,3 @@ model HomepageSettings {
   updatedAt           DateTime @updatedAt
 }
 
-model CvGenerationLog {
-  id          String           @id @default(cuid())
-  generatedAt DateTime         @default(now())
-  method      CvGenerationMethod
-  fileSizeKb  Int?
-  success     Boolean
-  error       String?
-  locale      String           @default("fr")
-
-  @@index([locale, generatedAt(sort: Desc)])
-}
