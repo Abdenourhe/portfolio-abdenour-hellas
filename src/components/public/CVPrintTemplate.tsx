@@ -141,10 +141,10 @@ export default function CVPrintTemplate({
   const containerStyle: React.CSSProperties = {
     width: "210mm",
     minHeight: "297mm",
-    padding: "12mm 16mm",
+    padding: "10mm 12mm",
     fontFamily: '"Inter", "Calibri", "Segoe UI", sans-serif',
-    fontSize: "9.5pt",
-    lineHeight: 1.35,
+    fontSize: "9pt",
+    lineHeight: 1.25,
     color: "#1a1a1a",
     background: "#fff",
     boxSizing: "border-box",
@@ -152,37 +152,37 @@ export default function CVPrintTemplate({
   };
 
   const sectionTitleStyle: React.CSSProperties = {
-    fontSize: "9.5pt",
+    fontSize: "9pt",
     fontWeight: 700,
     textTransform: "uppercase",
     letterSpacing: "0.08em",
     color: "#1a1a1a",
     borderBottom: "1px solid #1a1a1a",
-    paddingBottom: "3px",
-    marginBottom: "6px",
-    marginTop: "10px",
+    paddingBottom: "2px",
+    marginBottom: "4px",
+    marginTop: "8px",
   };
 
   const itemTitleStyle: React.CSSProperties = {
-    fontSize: "9.5pt",
+    fontSize: "9pt",
     fontWeight: 700,
     color: "#1a1a1a",
   };
 
   const itemMetaStyle: React.CSSProperties = {
-    fontSize: "9pt",
+    fontSize: "8.5pt",
     color: "#4b5563",
     fontStyle: "italic",
   };
 
   const dateStyle: React.CSSProperties = {
-    fontSize: "8.5pt",
+    fontSize: "8pt",
     color: "#6b7280",
     whiteSpace: "nowrap",
   };
 
   const textStyle: React.CSSProperties = {
-    fontSize: "9pt",
+    fontSize: "8.5pt",
     color: "#374151",
     textAlign: "justify",
   };
@@ -190,14 +190,14 @@ export default function CVPrintTemplate({
   return (
     <div id="cv-print-content" style={containerStyle}>
       {/* Header */}
-      <header style={{ textAlign: "center", marginBottom: "10px" }}>
-        <h1 style={{ fontSize: "24pt", fontWeight: 700, letterSpacing: "-0.5px", margin: 0, color: "#111" }}>
+      <header style={{ textAlign: "center", marginBottom: "8px" }}>
+        <h1 style={{ fontSize: "22pt", fontWeight: 700, letterSpacing: "-0.5px", margin: 0, color: "#111" }}>
           {fullName}
         </h1>
-        <p style={{ fontSize: "10.5pt", fontWeight: 500, color: "#374151", margin: "3px 0 0", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+        <p style={{ fontSize: "10pt", fontWeight: 500, color: "#374151", margin: "2px 0 0", textTransform: "uppercase", letterSpacing: "0.05em" }}>
           {title}
         </p>
-        <p style={{ fontSize: "8.5pt", color: "#4b5563", margin: "4px 0 0" }}>
+        <p style={{ fontSize: "8pt", color: "#4b5563", margin: "3px 0 0" }}>
           {contacts.join("  ·  ")}
         </p>
       </header>
@@ -214,7 +214,7 @@ export default function CVPrintTemplate({
       {mainExperiences.length > 0 && (
         <section>
           <h2 style={sectionTitleStyle}>{labels.experience}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
             {mainExperiences.map((exp) => (
               <div key={exp.id} style={{ breakInside: "avoid" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
@@ -224,9 +224,9 @@ export default function CVPrintTemplate({
                 <div style={itemMetaStyle}>
                   {exp.company}{exp.location ? `, ${exp.location}` : ""}
                 </div>
-                <ul style={{ margin: "2px 0 0", paddingLeft: isRTL ? 0 : "14px", paddingRight: isRTL ? "14px" : 0, fontSize: "9pt", color: "#374151" }}>
-                  {toBullets(locale === "en" ? exp.descriptionEn || exp.description : exp.description).slice(0, 3).map((b, i) => (
-                    <li key={i} style={{ marginBottom: "1px" }}>{b}</li>
+                <ul style={{ margin: "1px 0 0", paddingLeft: isRTL ? 0 : "12px", paddingRight: isRTL ? "12px" : 0, fontSize: "8.5pt", color: "#374151" }}>
+                  {toBullets(locale === "en" ? exp.descriptionEn || exp.description : exp.description).slice(0, 2).map((b, i) => (
+                    <li key={i} style={{ marginBottom: "0px" }}>{b}</li>
                   ))}
                 </ul>
               </div>
@@ -239,7 +239,7 @@ export default function CVPrintTemplate({
       {additionalExperiences.length > 0 && (
         <section>
           <h2 style={sectionTitleStyle}>{labels.additionalExperience}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
             {additionalExperiences.map((exp) => (
               <div key={exp.id} style={{ breakInside: "avoid" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
@@ -259,7 +259,7 @@ export default function CVPrintTemplate({
       {education.length > 0 && (
         <section>
           <h2 style={sectionTitleStyle}>{labels.education}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
             {education.slice(0, 4).map((edu) => (
               <div key={edu.id} style={{ breakInside: "avoid" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
@@ -279,13 +279,13 @@ export default function CVPrintTemplate({
       {Object.keys(skillGroups).length > 0 && (
         <section>
           <h2 style={sectionTitleStyle}>{labels.skills}</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5px 20px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3px 16px" }}>
             {Object.entries(skillGroups).map(([category, items]) => (
               <div key={category} style={{ breakInside: "avoid" }}>
-                <div style={{ fontSize: "9pt", fontWeight: 600, color: "#374151", marginBottom: "1px" }}>
+                <div style={{ fontSize: "8.5pt", fontWeight: 600, color: "#374151", marginBottom: "0px" }}>
                   {category}
                 </div>
-                <div style={{ fontSize: "8.5pt", color: "#4b5563" }}>
+                <div style={{ fontSize: "8pt", color: "#4b5563" }}>
                   {items.map((s) => (locale === "en" ? s.nameEn || s.name : s.name)).join(" · ")}
                 </div>
               </div>
@@ -298,9 +298,9 @@ export default function CVPrintTemplate({
       {languages.length > 0 && (
         <section>
           <h2 style={sectionTitleStyle}>{labels.languages}</h2>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
             {languages.map((lang) => (
-              <span key={lang.id} style={{ fontSize: "9pt", color: "#374151" }}>
+              <span key={lang.id} style={{ fontSize: "8.5pt", color: "#374151" }}>
                 {locale === "en" ? lang.nameEn || lang.name : lang.name} — {languageLevel(lang.level, locale)}
               </span>
             ))}
@@ -312,15 +312,15 @@ export default function CVPrintTemplate({
       {projects.length > 0 && (
         <section>
           <h2 style={sectionTitleStyle}>{labels.projects}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
             {projects.slice(0, 2).map((p) => (
               <div key={p.id} style={{ breakInside: "avoid" }}>
                 <div style={itemTitleStyle}>{locale === "en" ? p.titleEn || p.title : p.title}</div>
-                <p style={{ ...textStyle, margin: "1px 0 0" }}>
+                <p style={{ ...textStyle, margin: "0px 0 0", fontSize: "8pt" }}>
                   {locale === "en" ? p.descriptionEn || p.description : p.description}
                 </p>
                 {p.technologies?.length > 0 && (
-                  <div style={{ fontSize: "8.5pt", color: "#6b7280", marginTop: "1px" }}>
+                  <div style={{ fontSize: "8pt", color: "#6b7280", marginTop: "0px" }}>
                     {p.technologies.join(" · ")}
                   </div>
                 )}
@@ -334,7 +334,7 @@ export default function CVPrintTemplate({
       {certifications.length > 0 && (
         <section>
           <h2 style={sectionTitleStyle}>{labels.certifications}</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
             {certifications.slice(0, 2).map((cert) => (
               <div key={cert.id} style={{ breakInside: "avoid" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
