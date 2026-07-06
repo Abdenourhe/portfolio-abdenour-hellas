@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <title>CV — Abdenour Hellas</title>
   <style>
-    @page { size: A4; margin: 8mm 10mm; }
+    @page { size: A4; margin: 3mm 5mm; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: "Inter", "Calibri", "Segoe UI", sans-serif;
       color: #111827;
-      font-size: 8pt;
-      line-height: 1.2;
+      font-size: 7pt;
+      line-height: 1.05;
       background: #fff;
     }
     .page {
@@ -19,16 +19,16 @@
       display: flex;
       flex-direction: column;
     }
-    header { margin-bottom: 7px; }
-    .name { font-size: 17pt; font-weight: 700; color: #111827; letter-spacing: -0.2px; }
-    .title { font-size: 9.5pt; font-weight: 500; color: #1e3a5f; margin-top: 1px; }
-    .header-line { height: 2px; background: linear-gradient(90deg, #1e3a5f 70%, #C9A962 100%); margin-top: 5px; }
+    header { margin-bottom: 5px; }
+    .name { font-size: 15pt; font-weight: 700; color: #111827; letter-spacing: -0.2px; }
+    .title { font-size: 8pt; font-weight: 500; color: #1e3a5f; margin-top: 1px; }
+    .header-line { height: 1.5px; background: linear-gradient(90deg, #1e3a5f 70%, #C9A962 100%); margin-top: 4px; }
     .contact {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px 16px;
-      margin-top: 5px;
-      font-size: 8pt;
+      gap: 2px 10px;
+      margin-top: 3px;
+      font-size: 7pt;
       color: #4b5563;
     }
     .contact span { display: inline-flex; align-items: center; gap: 5px; }
@@ -38,7 +38,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 8.5pt;
+      font-size: 8pt;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -50,20 +50,20 @@
     }
     h2 .line { display: none; }
 
-    section { margin-bottom: 8px; }
-    .profile { text-align: justify; font-size: 8pt; color: #111827; }
-    .item { margin-bottom: 3px; }
+    section { margin-bottom: 4px; }
+    .profile { text-align: justify; font-size: 7pt; color: #111827; }
+    .item { margin-bottom: 1px; }
     .item-header { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
-    .item-title { font-weight: 700; font-size: 8.5pt; color: #111827; }
-    .item-date { font-size: 8pt; color: #C9A962; white-space: nowrap; flex-shrink: 0; font-weight: 500; }
-    .item-sub { font-size: 8pt; font-weight: 600; color: #4b5563; margin-bottom: 1px; }
-    .item-desc { font-size: 8pt; color: #111827; margin-top: 1px; text-align: justify; }
-    .item-desc ul { margin: 2px 0 0 0; padding-left: 10px; list-style-type: disc; }
-    .item-desc li { margin-bottom: 1px; text-align: justify; }
-    .two-col { display: flex; gap: 10px; flex: 1; }
-    .col-left { width: 80mm; flex-shrink: 0; }
+    .item-title { font-weight: 700; font-size: 8pt; color: #111827; }
+    .item-date { font-size: 7pt; color: #C9A962; white-space: nowrap; flex-shrink: 0; font-weight: 500; }
+    .item-sub { font-size: 7pt; font-weight: 600; color: #4b5563; margin-bottom: 1px; }
+    .item-desc { font-size: 7pt; color: #111827; margin-top: 1px; text-align: justify; }
+    .item-desc ul { margin: 1px 0 0 0; padding-left: 9px; list-style-type: disc; }
+    .item-desc li { margin-bottom: 0px; text-align: justify; }
+    .two-col { display: flex; gap: 8px; flex: 1; }
+    .col-left { width: 78mm; flex-shrink: 0; }
     .col-right { flex: 1; }
-    .skill-group { margin-bottom: 4px; }
+    .skill-group { margin-bottom: 2px; }
     .skill-group h3 {
       font-size: 8pt;
       font-weight: 700;
@@ -71,13 +71,13 @@
       text-transform: uppercase;
       margin-bottom: 2px;
     }
-    .skill-row { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
-    .skill-name { width: 66px; flex-shrink: 0; font-size: 7.5pt; color: #111827; }
-    .skill-bar { flex: 1; height: 4px; background: #e5e7eb; border-radius: 2px; overflow: hidden; }
-    .skill-fill { height: 100%; background: #1e3a5f; border-radius: 2px; }
-    .skill-list { font-size: 8pt; color: #111827; text-align: justify; }
-    .lang { display: flex; justify-content: space-between; font-size: 8pt; color: #111827; margin-bottom: 1px; }
-    .lang span:last-child { font-size: 8pt; color: #4b5563; white-space: nowrap; }
+    .skill-row { display: flex; align-items: center; gap: 3px; margin-bottom: 1px; }
+    .skill-name { width: 58px; flex-shrink: 0; font-size: 6.5pt; color: #111827; }
+    .skill-bar { flex: 1; height: 2px; background: #e5e7eb; border-radius: 1px; overflow: hidden; }
+    .skill-fill { height: 100%; background: #1e3a5f; border-radius: 1px; }
+    .skill-list { font-size: 7pt; color: #111827; text-align: justify; }
+    .lang { display: flex; justify-content: space-between; font-size: 7pt; color: #111827; margin-bottom: 1px; }
+    .lang span:last-child { font-size: 7pt; color: #4b5563; white-space: nowrap; }
     .tech {
       display: inline-block;
       background: #eef3fa;
@@ -91,9 +91,9 @@
     }
     footer {
       margin-top: auto;
-      padding-top: 6px;
+      padding-top: 3px;
       border-top: 1px solid #d1d5db;
-      font-size: 7pt;
+      font-size: 6.5pt;
       color: #4b5563;
       text-align: center;
     }

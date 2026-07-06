@@ -411,10 +411,10 @@ export default function CVPrintTemplate({
         minHeight: "297mm",
         maxHeight: "297mm",
         overflow: "hidden",
-        padding: "8mm 10mm 8mm 10mm",
+        padding: "3mm 5mm 3mm 5mm",
         fontFamily: '"Inter", "Calibri", "Segoe UI", sans-serif',
-        fontSize: "8pt",
-        lineHeight: 1.2,
+        fontSize: "7pt",
+        lineHeight: 1.05,
         color: THEME.text,
         backgroundColor: THEME.bg,
         boxSizing: "border-box",
@@ -423,10 +423,10 @@ export default function CVPrintTemplate({
       }}
     >
       {/* Header */}
-      <header style={{ marginBottom: "7px" }}>
+      <header style={{ marginBottom: "5px" }}>
         <h1
           style={{
-            fontSize: "17pt",
+            fontSize: "15pt",
             fontWeight: 700,
             color: THEME.text,
             margin: 0,
@@ -437,7 +437,7 @@ export default function CVPrintTemplate({
         </h1>
         <p
           style={{
-            fontSize: "9.5pt",
+            fontSize: "8pt",
             fontWeight: 500,
             color: THEME.primary,
             margin: "1px 0 0 0",
@@ -449,14 +449,14 @@ export default function CVPrintTemplate({
           style={{
             display: "flex",
             flexWrap: "wrap",
-            gap: "3px 12px",
-            marginTop: "5px",
-            fontSize: "8pt",
+            gap: "2px 10px",
+            marginTop: "3px",
+            fontSize: "7pt",
             color: THEME.muted,
           }}
         >
           {headerContacts.map((c, i) => (
-            <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}>
+            <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
               {c.icon}
               {c.text}
             </span>
@@ -467,9 +467,9 @@ export default function CVPrintTemplate({
 
       {/* Profile */}
       {profileSection.visible && (
-        <section style={{ marginBottom: "8px" }}>
+        <section style={{ marginBottom: "4px" }}>
           <SectionTitle>{profileSection.label}</SectionTitle>
-          <p style={{ textAlign: "justify", margin: 0, fontSize: "8pt", color: THEME.text }}>
+          <p style={{ textAlign: "justify", margin: 0, fontSize: "7pt", color: THEME.text }}>
             {cvBio}
           </p>
         </section>
@@ -477,9 +477,9 @@ export default function CVPrintTemplate({
 
       {/* Main Experiences */}
       {experienceSection.visible && mainExperiences.length > 0 && (
-        <section style={{ marginBottom: "8px" }}>
+        <section style={{ marginBottom: "4px" }}>
           <SectionTitle>{experienceSection.label}</SectionTitle>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
             {mainExperiences.map((exp) => {
               const over = getOverride(itemOverrides, "experience", exp.id);
               const title =
@@ -498,13 +498,13 @@ export default function CVPrintTemplate({
               return (
                 <div key={exp.id}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                    <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
+                    <span style={{ fontWeight: 700, fontSize: "8pt", color: THEME.text }}>
                       {title}
                     </span>
                     <span
                       className="item-date"
                       style={{
-                        fontSize: "8pt",
+                        fontSize: "7pt",
                         color: THEME.accent,
                         whiteSpace: "nowrap",
                         flexShrink: 0,
@@ -513,7 +513,7 @@ export default function CVPrintTemplate({
                       {dateRange}
                     </span>
                   </div>
-                  <div style={{ fontSize: "8pt", fontWeight: 600, color: THEME.muted, marginBottom: "1px" }}>
+                  <div style={{ fontSize: "7pt", fontWeight: 600, color: THEME.muted, marginBottom: "1px" }}>
                     {subtitle}
                   </div>
                   <BulletList items={toBullets(description)} />
@@ -526,9 +526,9 @@ export default function CVPrintTemplate({
 
       {/* Additional Experiences */}
       {experienceSection.visible && additionalExperiences.length > 0 && (
-        <section style={{ marginBottom: "8px" }}>
+        <section style={{ marginBottom: "4px" }}>
           <SectionTitle>{ADDITIONAL_EXPERIENCE_LABEL[locale]}</SectionTitle>
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
             {additionalExperiences.map((exp) => {
               const over = getOverride(itemOverrides, "experience", exp.id);
               const title =
@@ -547,13 +547,13 @@ export default function CVPrintTemplate({
               return (
                 <div key={exp.id}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                    <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
+                    <span style={{ fontWeight: 700, fontSize: "8pt", color: THEME.text }}>
                       {title}
                     </span>
                     <span
                       className="item-date"
                       style={{
-                        fontSize: "8pt",
+                        fontSize: "7pt",
                         color: THEME.accent,
                         whiteSpace: "nowrap",
                         flexShrink: 0,
@@ -562,7 +562,7 @@ export default function CVPrintTemplate({
                       {dateRange}
                     </span>
                   </div>
-                  <div style={{ fontSize: "8pt", fontWeight: 600, color: THEME.muted, marginBottom: "1px" }}>
+                  <div style={{ fontSize: "7pt", fontWeight: 600, color: THEME.muted, marginBottom: "1px" }}>
                     {subtitle}
                   </div>
                   <BulletList items={toBullets(description)} />
@@ -574,19 +574,19 @@ export default function CVPrintTemplate({
       )}
 
       {/* Two columns */}
-      <div style={{ display: "flex", gap: "10px", flex: 1 }}>
+      <div style={{ display: "flex", gap: "8px", flex: 1 }}>
         {/* Left column */}
-        <div style={{ width: "80mm", flexShrink: 0 }}>
+        <div style={{ width: "78mm", flexShrink: 0 }}>
           {/* Skills */}
           {skillsSection.visible && skillCategories.length > 0 && (
-            <section style={{ marginBottom: "7px" }}>
+            <section style={{ marginBottom: "4px" }}>
               <SectionTitle>{skillsSection.label}</SectionTitle>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 {skillCategories.map((cat) => (
                   <div key={cat}>
                     <div
                       style={{
-                        fontSize: "8pt",
+                        fontSize: "7pt",
                         fontWeight: 700,
                         color: THEME.primary,
                         textTransform: "uppercase",
@@ -595,7 +595,7 @@ export default function CVPrintTemplate({
                     >
                       {skillCategoryLabels[cat] || cat}
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
                       {skillGroups[cat].map((s) => {
                         const over = getOverride(itemOverrides, "skill", s.id);
                         const skillName =
@@ -609,18 +609,18 @@ export default function CVPrintTemplate({
                                 display: "flex",
                                 justifyContent: "space-between",
                                 alignItems: "center",
-                                fontSize: "8pt",
+                                fontSize: "7pt",
                                 color: THEME.text,
                               }}
                             >
                               <span>{skillName}</span>
-                              <span style={{ fontSize: "7.5pt", color: THEME.muted }}>{s.level}%</span>
+                              <span style={{ fontSize: "7pt", color: THEME.muted }}>{s.level}%</span>
                             </div>
                             <div
                               style={{
-                                height: "3px",
+                                height: "2px",
                                 backgroundColor: "#e5e7eb",
-                                borderRadius: "2px",
+                                borderRadius: "1px",
                                 marginTop: "1px",
                                 overflow: "hidden",
                               }}
@@ -630,7 +630,7 @@ export default function CVPrintTemplate({
                                   width: `${s.level}%`,
                                   height: "100%",
                                   backgroundColor: THEME.primary,
-                                  borderRadius: "2px",
+                                  borderRadius: "1px",
                                 }}
                               />
                             </div>
@@ -646,7 +646,7 @@ export default function CVPrintTemplate({
 
           {/* Languages */}
           {languagesSection.visible && visibleLanguages.length > 0 && (
-            <section style={{ marginBottom: "7px" }}>
+            <section style={{ marginBottom: "4px" }}>
               <SectionTitle>{languagesSection.label}</SectionTitle>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 {visibleLanguages.map((lang) => {
@@ -658,10 +658,10 @@ export default function CVPrintTemplate({
                   return (
                     <div
                       key={lang.id}
-                      style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "8pt", color: THEME.text }}
+                      style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "7pt", color: THEME.text }}
                     >
                       <span>{langName}</span>
-                      <span className="item-date" style={{ fontSize: "8pt", color: THEME.accent, whiteSpace: "nowrap" }}>
+                      <span className="item-date" style={{ fontSize: "7pt", color: THEME.accent, whiteSpace: "nowrap" }}>
                         {lang.level}% — {languageLevel(lang.level, locale)}
                       </span>
                     </div>
@@ -676,9 +676,9 @@ export default function CVPrintTemplate({
         <div style={{ flex: 1 }}>
           {/* Education */}
           {educationSection.visible && visibleEducation.length > 0 && (
-            <section style={{ marginBottom: "7px" }}>
+            <section style={{ marginBottom: "4px" }}>
               <SectionTitle>{educationSection.label}</SectionTitle>
-              <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 {visibleEducation.map((edu) => {
                   const over = getOverride(itemOverrides, "education", edu.id);
                   const title =
@@ -693,14 +693,14 @@ export default function CVPrintTemplate({
                   return (
                     <div key={edu.id}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                        <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
+                        <span style={{ fontWeight: 700, fontSize: "8pt", color: THEME.text }}>
                           {title}
                         </span>
-                        <span className="item-date" style={{ fontSize: "8pt", color: THEME.accent, whiteSpace: "nowrap", flexShrink: 0 }}>
+                        <span className="item-date" style={{ fontSize: "7pt", color: THEME.accent, whiteSpace: "nowrap", flexShrink: 0 }}>
                           {dateRange}
                         </span>
                       </div>
-                      <div style={{ fontSize: "8pt", color: THEME.muted }}>
+                      <div style={{ fontSize: "7pt", color: THEME.muted }}>
                         {subtitle}
                       </div>
                     </div>
@@ -712,9 +712,9 @@ export default function CVPrintTemplate({
 
           {/* Projects */}
           {projectsSection.visible && visibleProjects.length > 0 && (
-            <section style={{ marginBottom: "7px" }}>
+            <section style={{ marginBottom: "4px" }}>
               <SectionTitle>{projectsSection.label}</SectionTitle>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 {visibleProjects.map((project) => {
                   const over = getOverride(itemOverrides, "project", project.id);
                   const title =
@@ -730,14 +730,14 @@ export default function CVPrintTemplate({
                   return (
                     <div key={project.id}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "8px" }}>
-                        <span style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
+                        <span style={{ fontWeight: 700, fontSize: "8pt", color: THEME.text }}>
                           {title}
                         </span>
                       </div>
-                      <p style={{ margin: 0, fontSize: "8pt", color: THEME.text, textAlign: "justify" }}>
+                      <p style={{ margin: 0, fontSize: "7pt", color: THEME.text, textAlign: "justify" }}>
                         {description}
                       </p>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "3px", marginTop: "2px" }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "2px", marginTop: "2px" }}>
                         {technologies.map((tech) => (
                           <span
                             key={tech}
@@ -763,7 +763,7 @@ export default function CVPrintTemplate({
 
           {/* Certifications */}
           {certificationsSection.visible && visibleCertifications.length > 0 && (
-            <section style={{ marginBottom: "7px" }}>
+            <section style={{ marginBottom: "4px" }}>
               <SectionTitle>{certificationsSection.label}</SectionTitle>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 {visibleCertifications.map((cert) => {
@@ -779,10 +779,10 @@ export default function CVPrintTemplate({
                     formatDateRange(cert.startDate, cert.endDate, cert.current, locale);
                   return (
                     <div key={cert.id}>
-                      <div style={{ fontWeight: 700, fontSize: "8.5pt", color: THEME.text }}>
+                      <div style={{ fontWeight: 700, fontSize: "8pt", color: THEME.text }}>
                         {title}
                       </div>
-                      <div style={{ fontSize: "8pt", color: THEME.muted }}>
+                      <div style={{ fontSize: "7pt", color: THEME.muted }}>
                         {subtitle} — <span className="item-date" style={{ color: THEME.accent }}>{dateRange}</span>
                       </div>
                     </div>
@@ -798,7 +798,7 @@ export default function CVPrintTemplate({
       <footer
         style={{
           marginTop: "auto",
-          paddingTop: "6px",
+          paddingTop: "3px",
           borderTop: `1px solid ${THEME.border}`,
           fontSize: "7pt",
           color: THEME.muted,
@@ -818,12 +818,12 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
         display: "flex",
         alignItems: "center",
         gap: "8px",
-        fontSize: "8.5pt",
+        fontSize: "8pt",
         fontWeight: 700,
         textTransform: "uppercase",
         letterSpacing: "0.05em",
         color: THEME.primary,
-        marginBottom: "5px",
+        marginBottom: "4px",
         marginTop: 0,
         borderBottom: `1px solid ${THEME.border}`,
         paddingBottom: "2px",
@@ -836,10 +836,10 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 function BulletList({ items }: { items: string[] }) {
   if (items.length <= 1) {
-    return <p style={{ margin: 0, fontSize: "8.5pt", color: THEME.text, textAlign: "justify" }}>{items[0] || ""}</p>;
+    return <p style={{ margin: 0, fontSize: "8pt", color: THEME.text, textAlign: "justify" }}>{items[0] || ""}</p>;
   }
   return (
-    <ul style={{ margin: "1px 0 0 0", paddingLeft: "10px", fontSize: "8pt", color: THEME.text, listStyleType: "disc" }}>
+    <ul style={{ margin: "1px 0 0 0", paddingLeft: "10px", fontSize: "7pt", color: THEME.text, listStyleType: "disc" }}>
       {items.map((item, i) => (
         <li key={i} style={{ marginBottom: "1px", textAlign: "justify" }}>
           {item}
