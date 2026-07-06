@@ -17,6 +17,8 @@ export interface Profile {
   github?: string | null;
   twitter?: string | null;
   facebook?: string | null;
+  instagram?: string | null;
+  whatsapp?: string | null;
   updatedAt: Date;
 }
 

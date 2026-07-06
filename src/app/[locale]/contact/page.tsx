@@ -7,7 +7,7 @@ import { z } from "zod";
 import SocialIcons from "@/components/public/SocialIcons";
 import SectionHeader from "@/components/public/SectionHeader";
 import { useT } from "@/components/public/I18nProvider";
-import { useLocale } from "@/hooks/useLocale";
+import { useLocale, useLocalizedPath } from "@/hooks/useLocale";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Nom trop court"),
@@ -19,6 +19,7 @@ const contactSchema = z.object({
 export default function ContactPage() {
   const t = useT();
   useLocale();
+  const cvPath = useLocalizedPath("/cv");
   const [profile, setProfile] = useState<any>(null);
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", content: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -66,14 +67,6 @@ export default function ContactPage() {
     }
   };
 
-  const handleDownloadCV = async () => {
-    await fetch("/api/stats", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "cv_download" }),
-    });
-  };
-
   return (
     <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
       <SectionHeader title={t("contact.title")} subtitle={t("contact.subtitle")} />
@@ -116,17 +109,13 @@ export default function ContactPage() {
           <h2 className="text-base font-semibold text-primary mt-8 mb-4">{t("contact.social")}</h2>
           <SocialIcons />
 
-          {profile?.cvUrl && (
-            <a
-              href={profile.cvUrl}
-              download
-              onClick={handleDownloadCV}
-              className="mt-8 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary border border-primary/20 rounded-lg hover:bg-primary/5 transition-colors"
-            >
-              <FileText size={14} />
-              {t("contact.downloadCv")}
-            </a>
-          )}
+          <a
+            href={cvPath}
+            className="mt-8 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary border border-primary/20 rounded-lg hover:bg-primary/5 transition-colors"
+          >
+            <FileText size={14} />
+            {t("hero.viewCv")}
+          </a>
         </motion.div>
 
         <motion.div
