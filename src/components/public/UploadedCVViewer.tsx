@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-import { FileText, Loader2 } from "lucide-react";
+import { FileText, Loader2, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
 
@@ -15,47 +15,103 @@ interface UploadedCVViewerProps {
 
 const PAGE_LABELS = ["Version française", "English version"];
 const A4_WIDTH = 794; // px at ~96dpi
+const MIN_ZOOM = 0.5;
+const MAX_ZOOM = 2.5;
+const ZOOM_STEP = 0.25;
 
 export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [numPages, setNumPages] = useState<number>(0);
-  const [pageWidth, setPageWidth] = useState<number>(A4_WIDTH);
+  const [baseWidth, setBaseWidth] = useState<number>(A4_WIDTH);
+  const [zoom, setZoom] = useState<number>(1);
   const [sideBySide, setSideBySide] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  const computeLayout = (containerWidth: number, currentZoom: number, pages: number) => {
+    const available = containerWidth - 48; // padding
+    const minSideBySide = A4_WIDTH * 0.55 * 2 + 32; // ~910px threshold
+    const targetBaseWidth = available >= minSideBySide
+      ? Math.min((available - 32) / 2, A4_WIDTH)
+      : Math.min(available, A4_WIDTH);
+
+    const displayWidth = Math.round(targetBaseWidth * currentZoom);
+    const fitsSideBySide = pages > 1 && available >= displayWidth * pages + 32 * (pages - 1);
+
+    setBaseWidth(targetBaseWidth);
+    setSideBySide(fitsSideBySide);
+  };
+
   useEffect(() => {
     if (!containerRef.current) return;
-    const compute = (width: number) => {
-      const available = width - 48; // padding
-      const minSideBySide = A4_WIDTH * 0.55 * 2 + 32; // ~910px threshold
-      if (available >= minSideBySide) {
-        setSideBySide(true);
-        setPageWidth(Math.min((available - 32) / 2, A4_WIDTH));
-      } else {
-        setSideBySide(false);
-        setPageWidth(Math.min(available, A4_WIDTH));
-      }
-    };
-
     const obs = new ResizeObserver((entries) => {
-      const cr = entries[0].contentRect;
-      compute(cr.width);
+      computeLayout(entries[0].contentRect.width, zoom, numPages);
     });
     obs.observe(containerRef.current);
     return () => obs.disconnect();
-  }, []);
+  }, [zoom, numPages]);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      computeLayout(containerRef.current.clientWidth, zoom, numPages);
+    }
+  }, [zoom, numPages]);
+
+  const pageWidth = Math.round(baseWidth * zoom);
+
+  const handleZoomIn = () => setZoom((z) => Math.min(MAX_ZOOM, Math.round((z + ZOOM_STEP) * 100) / 100));
+  const handleZoomOut = () => setZoom((z) => Math.max(MIN_ZOOM, Math.round((z - ZOOM_STEP) * 100) / 100));
+  const handleResetZoom = () => setZoom(1);
 
   return (
     <div className="w-full max-w-[1600px] mx-auto bg-card rounded-xl shadow-xl overflow-hidden border border-border">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-background/50">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-b border-border bg-background/50">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <FileText size={16} />
-          <span className="truncate max-w-[200px] sm:max-w-sm">{fileName || "CV.pdf"}</span>
+          <span className="truncate max-w-[150px] sm:max-w-sm">{fileName || "CV.pdf"}</span>
         </div>
-        <span className="text-xs text-muted-foreground">
-          {numPages > 0 ? `${numPages} pages` : ""}
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-muted-foreground hidden sm:inline">
+            {numPages > 0 ? `${numPages} pages` : ""}
+          </span>
+          <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+            <button
+              type="button"
+              onClick={handleZoomOut}
+              disabled={zoom <= MIN_ZOOM}
+              aria-label="Zoom arrière"
+              className="p-1.5 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+            >
+              <ZoomOut size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={handleResetZoom}
+              className="min-w-[3.5rem] px-2 py-1 text-xs font-medium rounded-md hover:bg-background transition-colors"
+              title="Réinitialiser le zoom"
+            >
+              {Math.round(zoom * 100)}%
+            </button>
+            <button
+              type="button"
+              onClick={handleZoomIn}
+              disabled={zoom >= MAX_ZOOM}
+              aria-label="Zoom avant"
+              className="p-1.5 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+            >
+              <ZoomIn size={16} />
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={handleResetZoom}
+            aria-label="Réinitialiser"
+            className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+            title="Réinitialiser le zoom"
+          >
+            <RotateCcw size={16} />
+          </button>
+        </div>
       </div>
       <div
         ref={containerRef}
