@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
@@ -64,7 +65,12 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
   const handleResetZoom = () => setZoom(1);
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto bg-card rounded-xl shadow-xl overflow-hidden border border-border">
+    <motion.div
+      initial={{ opacity: 0, y: 24, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="w-full max-w-[1600px] mx-auto bg-card rounded-xl shadow-xl overflow-hidden border border-border"
+    >
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-b border-border bg-background/50">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <FileText size={16} />
@@ -74,43 +80,51 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
           <span className="text-xs text-muted-foreground hidden sm:inline">
             {numPages > 0 ? `${numPages} pages` : ""}
           </span>
-          <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
-            <button
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            className="flex items-center gap-1 bg-muted rounded-lg p-1"
+          >
+            <motion.button
               type="button"
+              whileTap={{ scale: 0.92 }}
               onClick={handleZoomOut}
               disabled={zoom <= MIN_ZOOM}
               aria-label="Zoom arrière"
               className="p-1.5 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
             >
               <ZoomOut size={16} />
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               type="button"
+              whileTap={{ scale: 0.95 }}
               onClick={handleResetZoom}
               className="min-w-[3.5rem] px-2 py-1 text-xs font-medium rounded-md hover:bg-background transition-colors"
               title="Réinitialiser le zoom"
             >
               {Math.round(zoom * 100)}%
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               type="button"
+              whileTap={{ scale: 0.92 }}
               onClick={handleZoomIn}
               disabled={zoom >= MAX_ZOOM}
               aria-label="Zoom avant"
               className="p-1.5 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
             >
               <ZoomIn size={16} />
-            </button>
-          </div>
-          <button
+            </motion.button>
+          </motion.div>
+          <motion.button
             type="button"
+            whileHover={{ scale: 1.08, rotate: -90 }}
+            whileTap={{ scale: 0.92 }}
             onClick={handleResetZoom}
             aria-label="Réinitialiser"
             className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
             title="Réinitialiser le zoom"
           >
             <RotateCcw size={16} />
-          </button>
+          </motion.button>
         </div>
       </div>
       <div
@@ -141,7 +155,13 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
             className={`flex ${sideBySide ? "flex-row" : "flex-col"} items-start justify-center gap-6 md:gap-8`}
           >
             {Array.from({ length: numPages }, (_, i) => (
-              <div key={i} className="flex flex-col items-center gap-2">
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 28, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.5, delay: i * 0.15, ease: "easeOut" }}
+                className="flex flex-col items-center gap-2"
+              >
                 <span className="text-sm font-medium text-muted-foreground">
                   {PAGE_LABELS[i] || `Page ${i + 1}`}
                 </span>
@@ -158,11 +178,11 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
                     />
                   }
                 />
-              </div>
+              </motion.div>
             ))}
           </Document>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
