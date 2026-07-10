@@ -2,10 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Download, Loader2, FileText } from "lucide-react";
+import { Download, Loader2 } from "lucide-react";
 import { useT } from "@/components/public/I18nProvider";
 import { useLocale } from "@/hooks/useLocale";
+import dynamic from "next/dynamic";
 import CVPrintTemplate from "@/components/public/CVPrintTemplate";
+
+const UploadedCVViewer = dynamic(
+  () => import("@/components/public/UploadedCVViewer"),
+  { ssr: false, loading: () => (
+    <div className="w-full max-w-[220mm] mx-auto h-[500px] flex items-center justify-center bg-card rounded-xl border border-border shadow-xl">
+      <Loader2 className="w-8 h-8 animate-spin text-primary" />
+    </div>
+  ) }
+);
 
 interface CVData {
   profile: any;
@@ -157,28 +167,8 @@ export default function CVPage() {
           className="flex justify-center print:block print:p-0 print:m-0"
         >
           {cvUrl ? (
-            <div className="w-full max-w-[220mm] no-print">
-              <div className="bg-card border border-border rounded-xl shadow-xl overflow-hidden">
-                <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-background/50">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <FileText size={16} />
-                    <span>{profile?.cvFileName || "CV.pdf"}</span>
-                  </div>
-                  <a
-                    href={cvUrl}
-                    download
-                    className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
-                  >
-                    <Download size={14} />
-                    Télécharger
-                  </a>
-                </div>
-                <iframe
-                  src={cvUrl}
-                  title="CV PDF"
-                  className="w-full h-[80vh] min-h-[500px] border-0 bg-white"
-                />
-              </div>
+            <div className="w-full no-print">
+              <UploadedCVViewer cvUrl={cvUrl} fileName={profile?.cvFileName} />
             </div>
           ) : (
             <div ref={cvRef} className="shadow-lg print:shadow-none">
