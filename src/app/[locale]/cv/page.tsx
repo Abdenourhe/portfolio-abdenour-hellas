@@ -99,9 +99,28 @@ export default function CVPage() {
     }
   };
 
-  const handleDownloadUploaded = async (cvUrl: string) => {
+  const handleDownloadUploaded = async (cvUrl: string, fileName?: string) => {
     await trackDownload();
-    window.open(cvUrl, "_blank");
+    try {
+      const res = await fetch(cvUrl);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName || "CV.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch {
+      // Fallback for very large data URLs or unsupported environments
+      const link = document.createElement("a");
+      link.href = cvUrl;
+      link.download = fileName || "CV.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   if (loading) {
@@ -141,7 +160,7 @@ export default function CVPage() {
         <div className="max-w-[210mm] mx-auto mb-8 flex flex-wrap justify-center gap-3 no-print">
           {cvUrl ? (
             <button
-              onClick={() => handleDownloadUploaded(cvUrl)}
+              onClick={() => handleDownloadUploaded(cvUrl, profile?.cvFileName)}
               className="inline-flex items-center gap-2 px-5 py-3 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors min-h-[48px]"
             >
               <Download size={16} />
