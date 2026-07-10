@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Download, Loader2 } from "lucide-react";
+import { Download, Loader2, FileText } from "lucide-react";
 import { useT } from "@/components/public/I18nProvider";
 import { useLocale } from "@/hooks/useLocale";
 import CVPrintTemplate from "@/components/public/CVPrintTemplate";
@@ -157,12 +157,28 @@ export default function CVPage() {
           className="flex justify-center print:block print:p-0 print:m-0"
         >
           {cvUrl ? (
-            <div className="w-full max-w-[210mm] bg-white shadow-lg print:shadow-none overflow-hidden rounded-sm">
-              <iframe
-                src={cvUrl}
-                title="CV PDF"
-                className="w-full h-[297mm] border-0"
-              />
+            <div className="w-full max-w-[220mm] no-print">
+              <div className="bg-card border border-border rounded-xl shadow-xl overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-background/50">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <FileText size={16} />
+                    <span>{profile?.cvFileName || "CV.pdf"}</span>
+                  </div>
+                  <a
+                    href={cvUrl}
+                    download
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                  >
+                    <Download size={14} />
+                    Télécharger
+                  </a>
+                </div>
+                <iframe
+                  src={cvUrl}
+                  title="CV PDF"
+                  className="w-full h-[80vh] min-h-[500px] border-0 bg-white"
+                />
+              </div>
             </div>
           ) : (
             <div ref={cvRef} className="shadow-lg print:shadow-none">
