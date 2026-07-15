@@ -19,6 +19,7 @@ const TABS = [
   { label: "English", code: "en" },
 ];
 const A4_WIDTH = 794; // px at ~96dpi
+const MAX_PAGE_WIDTH = 1100;
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 2.5;
 const ZOOM_STEP = 0.25;
@@ -36,7 +37,7 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
     if (!containerRef.current) return;
     const obs = new ResizeObserver((entries) => {
       const width = entries[0].contentRect.width;
-      setBaseWidth(Math.min(width, A4_WIDTH));
+      setBaseWidth(Math.min(width, MAX_PAGE_WIDTH));
     });
     obs.observe(containerRef.current);
     return () => obs.disconnect();
@@ -53,7 +54,7 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
       initial={{ opacity: 0, y: 24, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="w-full max-w-[900px] mx-auto bg-card rounded-xl shadow-xl overflow-hidden border border-border"
+      className="w-full max-w-[1200px] mx-auto bg-card rounded-xl shadow-xl overflow-hidden border border-border"
     >
       {/* Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-b border-border bg-background/50">
