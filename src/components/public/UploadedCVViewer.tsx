@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
@@ -14,7 +14,10 @@ interface UploadedCVViewerProps {
   fileName?: string;
 }
 
-const PAGE_LABELS = ["Version française", "English version"];
+const TABS = [
+  { label: "Français", code: "fr" },
+  { label: "English", code: "en" },
+];
 const A4_WIDTH = 794; // px at ~96dpi
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 2.5;
@@ -25,31 +28,19 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
   const [numPages, setNumPages] = useState<number>(0);
   const [baseWidth, setBaseWidth] = useState<number>(A4_WIDTH);
   const [zoom, setZoom] = useState<number>(1);
-  const [sideBySide, setSideBySide] = useState(false);
+  const [activePage, setActivePage] = useState<number>(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-
-  const computeLayout = (contentWidth: number, currentZoom: number, pages: number) => {
-    const available = Math.max(0, contentWidth);
-    const minSideBySide = A4_WIDTH * 0.45 * 2 + 32; // ~747px threshold
-    const useSideBySide = pages > 1 && available >= minSideBySide;
-    const targetBaseWidth = useSideBySide
-      ? Math.min((available - 32) / pages, A4_WIDTH)
-      : Math.min(available, A4_WIDTH);
-
-    setBaseWidth(targetBaseWidth);
-    setSideBySide(useSideBySide);
-  };
 
   useEffect(() => {
     if (!containerRef.current) return;
     const obs = new ResizeObserver((entries) => {
-      // contentRect.width is the content box width (excludes padding)
-      computeLayout(entries[0].contentRect.width, zoom, numPages);
+      const width = entries[0].contentRect.width;
+      setBaseWidth(Math.min(width, A4_WIDTH));
     });
     obs.observe(containerRef.current);
     return () => obs.disconnect();
-  }, [zoom, numPages]);
+  }, []);
 
   const pageWidth = Math.round(baseWidth * zoom);
 
@@ -62,21 +53,39 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
       initial={{ opacity: 0, y: 24, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="w-full max-w-[1600px] mx-auto bg-card rounded-xl shadow-xl overflow-hidden border border-border"
+      className="w-full max-w-[900px] mx-auto bg-card rounded-xl shadow-xl overflow-hidden border border-border"
     >
+      {/* Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-b border-border bg-background/50">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <FileText size={16} />
-          <span className="truncate max-w-[150px] sm:max-w-sm">{fileName || "CV.pdf"}</span>
+          <span className="truncate max-w-[120px] sm:max-w-sm">{fileName || "CV.pdf"}</span>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-muted-foreground hidden sm:inline">
-            {numPages > 0 ? `${numPages} pages` : ""}
-          </span>
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="flex items-center gap-1 bg-muted rounded-lg p-1"
-          >
+
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Language tabs */}
+          <div className="inline-flex items-center bg-muted rounded-lg p-1">
+            {TABS.map((tab, index) => {
+              const isActive = activePage === index + 1;
+              return (
+                <button
+                  key={tab.code}
+                  type="button"
+                  onClick={() => setActivePage(index + 1)}
+                  className={`px-3 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-colors ${
+                    isActive
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground hover:bg-background"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Zoom controls */}
+          <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
             <motion.button
               type="button"
               whileTap={{ scale: 0.92 }}
@@ -91,7 +100,7 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
               type="button"
               whileTap={{ scale: 0.95 }}
               onClick={handleResetZoom}
-              className="min-w-[3.5rem] px-2 py-1 text-xs font-medium rounded-md hover:bg-background transition-colors"
+              className="min-w-[3rem] px-1.5 py-1 text-xs font-medium rounded-md hover:bg-background transition-colors"
               title="Réinitialiser le zoom"
             >
               {Math.round(zoom * 100)}%
@@ -106,23 +115,26 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
             >
               <ZoomIn size={16} />
             </motion.button>
-          </motion.div>
+          </div>
+
           <motion.button
             type="button"
             whileHover={{ scale: 1.08, rotate: -90 }}
             whileTap={{ scale: 0.92 }}
             onClick={handleResetZoom}
             aria-label="Réinitialiser"
-            className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+            className="hidden sm:flex p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
             title="Réinitialiser le zoom"
           >
             <RotateCcw size={16} />
           </motion.button>
         </div>
       </div>
+
+      {/* Page viewer */}
       <div
         ref={containerRef}
-        className="relative bg-muted/30 p-4 md:p-6 overflow-auto min-h-[500px]"
+        className="relative bg-muted/30 p-4 md:p-6 overflow-auto min-h-[500px] flex justify-center"
       >
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -134,32 +146,29 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
             Impossible d&apos;afficher l&apos;aperçu du CV.
           </div>
         ) : (
-          <Document
-            file={cvUrl}
-            onLoadSuccess={({ numPages }) => {
-              setNumPages(numPages);
-              setLoading(false);
-            }}
-            onLoadError={() => {
-              setError(true);
-              setLoading(false);
-            }}
-            loading={null}
-            className={`flex ${sideBySide ? "flex-row" : "flex-col"} items-start justify-center gap-6 md:gap-8`}
-          >
-            {Array.from({ length: numPages }, (_, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 28, scale: 0.96 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.5, delay: i * 0.15, ease: "easeOut" }}
-                className="flex flex-col items-center gap-2"
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activePage}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="flex justify-center"
+            >
+              <Document
+                file={cvUrl}
+                onLoadSuccess={({ numPages }) => {
+                  setNumPages(numPages);
+                  setLoading(false);
+                }}
+                onLoadError={() => {
+                  setError(true);
+                  setLoading(false);
+                }}
+                loading={null}
               >
-                <span className="text-sm font-medium text-muted-foreground">
-                  {PAGE_LABELS[i] || `Page ${i + 1}`}
-                </span>
                 <Page
-                  pageNumber={i + 1}
+                  pageNumber={activePage}
                   width={pageWidth}
                   renderAnnotationLayer={false}
                   renderTextLayer={false}
@@ -171,9 +180,9 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
                     />
                   }
                 />
-              </motion.div>
-            ))}
-          </Document>
+              </Document>
+            </motion.div>
+          </AnimatePresence>
         )}
       </div>
     </motion.div>
