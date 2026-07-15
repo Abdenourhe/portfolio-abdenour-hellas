@@ -135,7 +135,7 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
       {/* Page viewer */}
       <div
         ref={containerRef}
-        className="relative bg-muted/30 p-4 md:p-6 overflow-auto min-h-[500px] flex justify-center"
+        className="relative bg-muted/30 p-4 md:p-6 overflow-auto min-h-[500px] text-center whitespace-nowrap"
       >
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -154,7 +154,7 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="flex-shrink-0"
+              className="inline-block text-left align-top"
             >
               <Document
                 file={cvUrl}
