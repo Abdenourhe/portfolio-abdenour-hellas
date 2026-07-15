@@ -29,33 +29,26 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const computeLayout = (containerWidth: number, currentZoom: number, pages: number) => {
-    const available = containerWidth - 48; // padding
-    const minSideBySide = A4_WIDTH * 0.55 * 2 + 32; // ~910px threshold
-    const targetBaseWidth = available >= minSideBySide
-      ? Math.min((available - 32) / 2, A4_WIDTH)
+  const computeLayout = (contentWidth: number, currentZoom: number, pages: number) => {
+    const available = Math.max(0, contentWidth);
+    const minSideBySide = A4_WIDTH * 0.45 * 2 + 32; // ~747px threshold
+    const useSideBySide = pages > 1 && available >= minSideBySide;
+    const targetBaseWidth = useSideBySide
+      ? Math.min((available - 32) / pages, A4_WIDTH)
       : Math.min(available, A4_WIDTH);
 
-    const displayWidth = Math.round(targetBaseWidth * currentZoom);
-    const fitsSideBySide = pages > 1 && available >= displayWidth * pages + 32 * (pages - 1);
-
     setBaseWidth(targetBaseWidth);
-    setSideBySide(fitsSideBySide);
+    setSideBySide(useSideBySide);
   };
 
   useEffect(() => {
     if (!containerRef.current) return;
     const obs = new ResizeObserver((entries) => {
+      // contentRect.width is the content box width (excludes padding)
       computeLayout(entries[0].contentRect.width, zoom, numPages);
     });
     obs.observe(containerRef.current);
     return () => obs.disconnect();
-  }, [zoom, numPages]);
-
-  useEffect(() => {
-    if (containerRef.current) {
-      computeLayout(containerRef.current.clientWidth, zoom, numPages);
-    }
   }, [zoom, numPages]);
 
   const pageWidth = Math.round(baseWidth * zoom);
