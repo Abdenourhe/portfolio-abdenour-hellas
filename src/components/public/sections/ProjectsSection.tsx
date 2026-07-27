@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Project } from "@/types";
 import { ExternalLink, Code, Star, FolderGit } from "lucide-react";
@@ -128,11 +129,13 @@ export default function ProjectsSection({ data, compact = false, limit, featured
           <ElectricCard className="rounded-xl h-full">
             <div className="bg-card overflow-hidden rounded-xl hover:shadow-lg transition-all h-full">
               {project.imageUrl ? (
-                <div className="w-full h-44 md:h-52 overflow-hidden">
-                  <img
+                <div className="relative w-full h-44 md:h-52 overflow-hidden">
+                  <Image
                     src={project.imageUrl}
                     alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                   />
                 </div>
               ) : (

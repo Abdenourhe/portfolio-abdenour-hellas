@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -81,11 +82,15 @@ export default function ArticlePage() {
         </h1>
 
         {article.imageUrl ? (
-          <img
-            src={article.imageUrl}
-            alt={article.title}
-            className="w-full h-56 md:h-72 object-cover rounded-xl mb-8"
-          />
+          <div className="relative w-full h-56 md:h-72 rounded-xl mb-8 overflow-hidden">
+            <Image
+              src={article.imageUrl}
+              alt={article.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 48rem"
+              className="object-cover"
+            />
+          </div>
         ) : (
           <div className="w-full h-56 md:h-72 bg-muted rounded-xl mb-8 flex items-center justify-center">
             <FileText className="w-10 h-10 text-primary/20" />

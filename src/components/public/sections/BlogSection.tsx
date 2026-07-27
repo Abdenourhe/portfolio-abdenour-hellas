@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Article } from "@/types";
@@ -66,11 +67,13 @@ export default function BlogSection({ data, compact = false, limit }: BlogSectio
               <ElectricCard className="rounded-xl h-full">
                 <div className="bg-card overflow-hidden rounded-xl hover:shadow-lg transition-all h-full">
               {article.imageUrl ? (
-                <div className="w-full h-44 overflow-hidden">
-                  <img
+                <div className="relative w-full h-44 overflow-hidden">
+                  <Image
                     src={article.imageUrl}
                     alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                   />
                 </div>
               ) : (

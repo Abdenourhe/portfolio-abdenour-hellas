@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Testimonial } from "@/types";
 import { Quote, User, ChevronLeft, ChevronRight } from "lucide-react";
@@ -115,7 +116,7 @@ export default function TestimonialsSection({ data, compact = false, limit }: Te
               <p className="text-base text-muted-foreground leading-relaxed flex-1">{item.content}</p>
               <div className="flex items-center gap-3 mt-5 pt-4 border-t border-border/60">
                 {item.imageUrl ? (
-                  <img src={item.imageUrl} alt={item.name} className="w-9 h-9 rounded-full object-cover" />
+                  <Image src={item.imageUrl} alt={item.name} width={36} height={36} className="rounded-full object-cover" />
                 ) : (
                   <div className="w-9 h-9 rounded-full bg-primary/15 flex items-center justify-center">
                     <User className="w-4 h-4 text-primary/60" />

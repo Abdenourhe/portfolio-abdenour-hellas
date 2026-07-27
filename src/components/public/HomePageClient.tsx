@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion, useInView, animate } from "framer-motion";
 import { FileText, Send, Download, ArrowRight, Calendar, Briefcase, GraduationCap, Wrench, MapPin, ZoomIn } from "lucide-react";
 import { useState, useRef, useCallback, useEffect } from "react";
@@ -271,10 +272,13 @@ export default function HomePageClient({ data }: HomePageClientProps) {
                 onClick={() => profile?.photoUrl && setLightboxOpen(true)}
               >
                 {profile?.photoUrl ? (
-                  <img
+                  <Image
                     src={profile.photoUrl}
                     alt={profile.fullName}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    fill
+                    sizes="(max-width: 768px) 10rem, 16rem"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    priority
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-muted">

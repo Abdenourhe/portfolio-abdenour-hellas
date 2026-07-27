@@ -122,6 +122,22 @@ html[dir="rtl"] {
   direction: rtl;
 }
 
+/* Smooth theme transitions */
+html.transition-theme,
+html.transition-theme *,
+html.transition-theme *::before,
+html.transition-theme *::after {
+  transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, fill 0.35s ease, stroke 0.35s ease !important;
+}
+
+/* Disable transition on page load */
+html.no-transition,
+html.no-transition *,
+html.no-transition *::before,
+html.no-transition *::after {
+  transition: none !important;
+}
+
 ::selection {
   background: var(--primary);
   color: var(--primary-foreground);

@@ -17,7 +17,7 @@ const amiri = Amiri({
   variable: "--font-serif-ar",
   display: "swap",
 });
-import Header from "@/components/public/Header";
+import Header, { ScrollToTop } from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 import { ThemeProvider } from "@/components/public/ThemeProvider";
 import { I18nProvider } from "@/components/public/I18nProvider";
@@ -143,27 +143,48 @@ export default async function LocaleLayout({
     : null;
 
   return (
-    <ThemeProvider>
-      <I18nProvider messages={messages}>
-        {personSchema && (
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
-          />
-        )}
-        <NetworkCanvas />
-        <div lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={`min-h-screen flex flex-col relative z-10 ${playfair.variable} ${amiri.variable}`}>
-          <ReadingProgress />
-          <CustomCursor />
-          <div className="print:hidden">
-            <Header locale={locale as Locale} messages={messages} />
+    <>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              var theme = localStorage.getItem('theme');
+              var dark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+              if (dark) document.documentElement.classList.add('dark');
+              document.documentElement.classList.add('no-transition');
+              window.addEventListener('load', function() {
+                setTimeout(function() {
+                  document.documentElement.classList.remove('no-transition');
+                  document.documentElement.classList.add('transition-theme');
+                }, 100);
+              });
+            })();
+          `,
+        }}
+      />
+      <ThemeProvider>
+        <I18nProvider messages={messages}>
+          {personSchema && (
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+            />
+          )}
+          <NetworkCanvas />
+          <div lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={`min-h-screen flex flex-col relative z-10 ${playfair.variable} ${amiri.variable}`}>
+            <ReadingProgress />
+            <CustomCursor />
+            <div className="print:hidden">
+              <Header locale={locale as Locale} messages={messages} />
+            </div>
+            <main className="flex-1">{children}</main>
+            <div className="print:hidden">
+              <Footer locale={locale} messages={messages} />
+            </div>
+            <ScrollToTop />
           </div>
-          <main className="flex-1">{children}</main>
-          <div className="print:hidden">
-            <Footer locale={locale} messages={messages} />
-          </div>
-        </div>
-      </I18nProvider>
-    </ThemeProvider>
+        </I18nProvider>
+      </ThemeProvider>
+    </>
   );
 }

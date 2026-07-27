@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Trophy, Bike, Waves, Plane, MapPin, Mail, Phone } from "lucide-react";
 import SocialIcons from "@/components/public/SocialIcons";
 import SectionHeader from "@/components/public/SectionHeader";
@@ -35,12 +36,14 @@ export default function AboutPageClient({ profile }: AboutPageClientProps) {
             transition={{ duration: 0.5 }}
             className="flex-shrink-0 mx-auto md:mx-0"
           >
-            <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden ring-2 ring-primary/20 bg-muted">
+            <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden ring-2 ring-primary/20 bg-muted">
               {profile?.photoUrl ? (
-                <img
+                <Image
                   src={profile.photoUrl}
                   alt={profile.fullName}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="10rem"
+                  className="object-cover"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
