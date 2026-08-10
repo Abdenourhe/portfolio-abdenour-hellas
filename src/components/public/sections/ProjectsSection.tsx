@@ -9,6 +9,8 @@ import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
 import ElectricCard from "@/components/public/ElectricCard";
+import ShareButtons from "@/components/public/ShareButtons";
+import { useLocale } from "@/hooks/useLocale";
 
 function ProjectPlaceholder({ title }: { title: string }) {
   return (
@@ -26,8 +28,15 @@ interface ProjectsSectionProps {
   featuredIds?: string[];
 }
 
+function getBaseUrl() {
+  if (typeof window !== "undefined") return window.location.origin;
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
+  return "https://abdenour-hellas.online";
+}
+
 export default function ProjectsSection({ data, compact = false, limit, featuredIds }: ProjectsSectionProps) {
   const t = useT();
+  const locale = useLocale();
   const [projects, setProjects] = useState<Project[]>(data || []);
   const [activeFilter, setActiveFilter] = useState<string>("Tous");
   const [loading, setLoading] = useState(!data);
@@ -168,30 +177,37 @@ export default function ProjectsSection({ data, compact = false, limit, featured
                 </span>
               )}
             </div>
-            <div className="flex gap-4">
-              {project.demoUrl && (
-                <a
-                  href={project.demoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-sm text-primary hover:text-secondary transition-colors"
-                >
-                  <ExternalLink size={12} />
-                  {t("projects.viewProject")}
-                </a>
-              )}
-              {project.githubUrl && (
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <Code size={12} />
-                  {t("projects.sourceCode")}
-                </a>
-              )}
-                </div>
+            <div className="flex items-center justify-between">
+              <div className="flex gap-4">
+                {project.demoUrl && (
+                  <a
+                    href={project.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm text-primary hover:text-secondary transition-colors"
+                  >
+                    <ExternalLink size={12} />
+                    {t("projects.viewProject")}
+                  </a>
+                )}
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <Code size={12} />
+                    {t("projects.sourceCode")}
+                  </a>
+                )}
+              </div>
+              <ShareButtons
+                url={`${getBaseUrl()}/${locale}/projects`}
+                title={project.title}
+                description={project.description}
+              />
+            </div>
               </div>
             </div>
           </ElectricCard>

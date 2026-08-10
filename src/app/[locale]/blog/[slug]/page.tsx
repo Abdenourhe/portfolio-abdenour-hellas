@@ -1,108 +1,75 @@
-"use client";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import ArticleContent from "@/components/public/ArticleContent";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { useParams } from "next/navigation";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { Article } from "@/types";
-import { Calendar, ArrowLeft, FileText } from "lucide-react";
-import { Skeleton } from "@/components/public/Skeleton";
-import { useT } from "@/components/public/I18nProvider";
-import { useLocale } from "@/hooks/useLocale";
+function getBaseUrl() {
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return "https://abdenour-hellas.online";
+}
 
-export default function ArticlePage() {
-  const t = useT();
-  const locale = useLocale();
-  const params = useParams();
-  const slug = params.slug as string;
-  const [article, setArticle] = useState<Article | null>(null);
-  const [loading, setLoading] = useState(true);
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const baseUrl = getBaseUrl();
 
-  useEffect(() => {
-    if (!slug) return;
-    fetch(`/api/articles?slug=${slug}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setArticle(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, [slug]);
+  const article = await prisma.article.findUnique({
+    where: { slug },
+  });
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28 max-w-3xl">
-        <Skeleton className="h-4 w-32 mb-8" />
-        <Skeleton className="h-3 w-24 mb-4" />
-        <Skeleton className="h-10 w-3/4 mb-8" />
-        <Skeleton className="h-64 w-full rounded-xl mb-8" />
-        <div className="space-y-3">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-5/6" />
-        </div>
-      </div>
-    );
+  if (!article || !article.published) {
+    return {
+      title: locale === "fr" ? "Article non trouvé" : locale === "ar" ? "المقال غير موجود" : "Article not found",
+      metadataBase: new URL(baseUrl),
+    };
   }
 
-  if (!article) {
-    return (
-      <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28 text-center max-w-3xl">
-        <h1 className="text-xl font-semibold text-primary mb-3">{t("blog.notFound")}</h1>
-        <Link href={`/${locale}/blog`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
-          {t("blog.back")}
-        </Link>
-      </div>
-    );
+  const title = article.title;
+  const description = article.excerpt;
+  const ogImage = article.imageUrl || undefined;
+
+  return {
+    title: `${title} — Blog | Abdenour Hellas`,
+    description,
+    metadataBase: new URL(baseUrl),
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      publishedTime: article.createdAt.toISOString(),
+      modifiedTime: article.updatedAt.toISOString(),
+      locale: locale === "ar" ? "ar_SA" : locale,
+      url: `${baseUrl}/${locale}/blog/${slug}`,
+      images: ogImage ? [{ url: ogImage }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ogImage ? [ogImage] : undefined,
+    },
+    alternates: {
+      canonical: `${baseUrl}/${locale}/blog/${slug}`,
+    },
+  };
+}
+
+export default async function ArticlePage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+  const { locale, slug } = await params;
+
+  const article = await prisma.article.findUnique({
+    where: { slug },
+  });
+
+  if (!article || !article.published) {
+    notFound();
   }
+
+  const messages = (await import(`@/i18n/messages/${locale}.json`)).default;
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28 max-w-3xl">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        <Link
-          href={`/${locale}/blog`}
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
-        >
-          <ArrowLeft size={14} />
-          {t("blog.back")}
-        </Link>
-
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3">
-          <Calendar size={11} />
-          {new Date(article.createdAt).toLocaleDateString(locale === "fr" ? "fr-CA" : locale === "ar" ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric" })}
-        </div>
-
-        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-primary mb-6">
-          {article.title}
-        </h1>
-
-        {article.imageUrl ? (
-          <div className="relative w-full h-56 md:h-72 rounded-xl mb-8 overflow-hidden">
-            <Image
-              src={article.imageUrl}
-              alt={article.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 48rem"
-              className="object-cover"
-            />
-          </div>
-        ) : (
-          <div className="w-full h-56 md:h-72 bg-muted rounded-xl mb-8 flex items-center justify-center">
-            <FileText className="w-10 h-10 text-primary/20" />
-          </div>
-        )}
-
-        <p className="text-base text-muted-foreground mb-6 leading-relaxed">{article.excerpt}</p>
-
-        <div className="prose prose-stone dark:prose-invert max-w-none text-sm leading-relaxed">
-          <div className="whitespace-pre-wrap text-foreground">{article.content}</div>
-        </div>
-      </motion.div>
+      <ArticleContent article={article} locale={locale} backText={messages.blog.back} />
     </div>
   );
 }

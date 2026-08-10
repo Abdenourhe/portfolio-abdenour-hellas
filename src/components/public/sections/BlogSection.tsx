@@ -5,12 +5,13 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Article } from "@/types";
-import { Calendar, ArrowRight, FileText } from "lucide-react";
+import { Calendar, ArrowRight, FileText, Clock } from "lucide-react";
 import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 import { useLocale } from "@/hooks/useLocale";
 import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
 import ElectricCard from "@/components/public/ElectricCard";
+import { readingTime } from "@/lib/readingTime";
 
 interface BlogSectionProps {
   data?: Article[];
@@ -82,9 +83,15 @@ export default function BlogSection({ data, compact = false, limit }: BlogSectio
                 </div>
               )}
               <div className={compact ? "p-4" : "p-5"}>
-                <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-2">
-                  <Calendar size={11} />
-                  {new Date(article.createdAt).toLocaleDateString(locale === "fr" ? "fr-CA" : locale === "ar" ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric" })}
+                <div className="flex items-center gap-3 text-sm text-muted-foreground mb-2">
+                  <span className="inline-flex items-center gap-1.5">
+                    <Calendar size={11} />
+                    {new Date(article.createdAt).toLocaleDateString(locale === "fr" ? "fr-CA" : locale === "ar" ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric" })}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <Clock size={11} />
+                    {readingTime(article.content)}
+                  </span>
                 </div>
                 <h3 className="text-lg font-semibold text-primary group-hover:text-primary/80 transition-colors mb-2">
                   {article.title}
