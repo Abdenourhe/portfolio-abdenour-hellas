@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send, CheckCircle, XCircle, FileText } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail, Phone, MapPin, Send, CheckCircle, XCircle, FileText, X } from "lucide-react";
 import { z } from "zod";
 import SocialIcons from "@/components/public/SocialIcons";
 import SectionHeader from "@/components/public/SectionHeader";
@@ -25,12 +25,20 @@ export default function ContactPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [submitting, setSubmitting] = useState(false);
+  const statusRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("/api/profile")
       .then((r) => r.json())
       .then((data) => setProfile(data));
   }, []);
+
+  // Auto-dismiss status after 6 seconds
+  useEffect(() => {
+    if (status === "idle") return;
+    const timer = setTimeout(() => setStatus("idle"), 6000);
+    return () => clearTimeout(timer);
+  }, [status]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,6 +65,8 @@ export default function ContactPage() {
       if (res.ok) {
         setStatus("success");
         setFormData({ name: "", email: "", subject: "", content: "" });
+        // Focus sur la notification pour les screen readers
+        setTimeout(() => statusRef.current?.focus(), 100);
       } else {
         setStatus("error");
       }
@@ -125,18 +135,20 @@ export default function ContactPage() {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <h2 className="text-base font-semibold text-primary mb-5">{t("contact.sendMessage")}</h2>
-          <form onSubmit={handleSubmit} className="space-y-3">
+          <form onSubmit={handleSubmit} className="space-y-3" aria-label={t("contact.sendMessage")}>
             <div>
               <input
                 type="text"
                 placeholder={t("contact.name")}
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                aria-invalid={!!errors.name}
+                aria-describedby={errors.name ? "name-error" : undefined}
                 className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm transition-colors placeholder:text-muted-foreground/60 ${
                   errors.name ? "border-destructive" : "border-border hover:border-primary/30 focus:border-primary focus:outline-none"
                 }`}
               />
-              {errors.name && <p className="text-destructive text-xs mt-1">{errors.name}</p>}
+              {errors.name && <p id="name-error" className="text-destructive text-xs mt-1" role="alert">{errors.name}</p>}
             </div>
             <div>
               <input
@@ -144,11 +156,13 @@ export default function ContactPage() {
                 placeholder={t("contact.email")}
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? "email-error" : undefined}
                 className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm transition-colors placeholder:text-muted-foreground/60 ${
                   errors.email ? "border-destructive" : "border-border hover:border-primary/30 focus:border-primary focus:outline-none"
                 }`}
               />
-              {errors.email && <p className="text-destructive text-xs mt-1">{errors.email}</p>}
+              {errors.email && <p id="email-error" className="text-destructive text-xs mt-1" role="alert">{errors.email}</p>}
             </div>
             <div>
               <input
@@ -156,11 +170,13 @@ export default function ContactPage() {
                 placeholder={t("contact.subject")}
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                aria-invalid={!!errors.subject}
+                aria-describedby={errors.subject ? "subject-error" : undefined}
                 className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm transition-colors placeholder:text-muted-foreground/60 ${
                   errors.subject ? "border-destructive" : "border-border hover:border-primary/30 focus:border-primary focus:outline-none"
                 }`}
               />
-              {errors.subject && <p className="text-destructive text-xs mt-1">{errors.subject}</p>}
+              {errors.subject && <p id="subject-error" className="text-destructive text-xs mt-1" role="alert">{errors.subject}</p>}
             </div>
             <div>
               <textarea
@@ -168,11 +184,13 @@ export default function ContactPage() {
                 rows={5}
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                aria-invalid={!!errors.content}
+                aria-describedby={errors.content ? "content-error" : undefined}
                 className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm resize-none transition-colors placeholder:text-muted-foreground/60 ${
                   errors.content ? "border-destructive" : "border-border hover:border-primary/30 focus:border-primary focus:outline-none"
                 }`}
               />
-              {errors.content && <p className="text-destructive text-xs mt-1">{errors.content}</p>}
+              {errors.content && <p id="content-error" className="text-destructive text-xs mt-1" role="alert">{errors.content}</p>}
             </div>
             <button
               type="submit"
@@ -183,26 +201,58 @@ export default function ContactPage() {
               {submitting ? t("contact.sending") : t("contact.send")}
             </button>
 
-            {status === "success" && (
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 p-3 rounded-lg bg-secondary/15 text-[#8B6914] text-sm"
-              >
-                <CheckCircle size={14} />
-                {t("contact.success")}
-              </motion.div>
-            )}
-            {status === "error" && (
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 text-destructive text-sm"
-              >
-                <XCircle size={14} />
-                {t("contact.error")}
-              </motion.div>
-            )}
+            {/* Live region pour screen readers */}
+            <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+              {status === "success" && t("contact.success")}
+              {status === "error" && t("contact.error")}
+            </div>
+
+            <AnimatePresence>
+              {status === "success" && (
+                <motion.div
+                  ref={statusRef}
+                  tabIndex={-1}
+                  initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex items-center gap-2 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 text-sm border border-emerald-200 dark:border-emerald-800"
+                >
+                  <CheckCircle size={16} className="flex-shrink-0" />
+                  <span className="flex-1">{t("contact.success")}</span>
+                  <button
+                    type="button"
+                    onClick={() => setStatus("idle")}
+                    className="p-1 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 rounded transition-colors"
+                    aria-label="Fermer la notification"
+                  >
+                    <X size={14} />
+                  </button>
+                </motion.div>
+              )}
+              {status === "error" && (
+                <motion.div
+                  ref={statusRef}
+                  tabIndex={-1}
+                  initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 text-destructive text-sm border border-destructive/20"
+                >
+                  <XCircle size={16} className="flex-shrink-0" />
+                  <span className="flex-1">{t("contact.error")}</span>
+                  <button
+                    type="button"
+                    onClick={() => setStatus("idle")}
+                    className="p-1 hover:bg-destructive/20 rounded transition-colors"
+                    aria-label="Fermer la notification"
+                  >
+                    <X size={14} />
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </form>
         </motion.div>
       </div>

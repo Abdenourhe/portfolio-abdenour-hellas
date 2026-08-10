@@ -3,9 +3,15 @@
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
+function isTouchDevice() {
+  if (typeof window === "undefined") return false;
+  return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+}
+
 export default function CustomCursor() {
   const [hovering, setHovering] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
@@ -14,6 +20,12 @@ export default function CustomCursor() {
   const cursorYSpring = useSpring(cursorY, springConfig);
 
   useEffect(() => {
+    // Désactiver complètement sur les appareils tactiles
+    if (isTouchDevice()) {
+      setIsMobile(true);
+      return;
+    }
+
     const moveCursor = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
@@ -59,6 +71,9 @@ export default function CustomCursor() {
       document.removeEventListener("mouseenter", handleMouseEnter);
     };
   }, [cursorX, cursorY]);
+
+  // Ne rien rendre sur mobile
+  if (isMobile) return null;
 
   return (
     <motion.div

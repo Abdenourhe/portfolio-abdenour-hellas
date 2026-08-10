@@ -32,7 +32,7 @@ export function generateStaticParams() {
 function getBaseUrl() {
   if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return "https://abdenour-hellas.online";
+  return "https://www.abdenour-hellas.online";
 }
 
 async function getProfile() {
@@ -73,11 +73,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     baseTitle.fr;
 
   const ogImage = profile?.photoUrl || undefined;
+  const baseUrl = getBaseUrl();
 
   return {
     title,
     description,
-    metadataBase: new URL(getBaseUrl()),
+    metadataBase: new URL(baseUrl),
     openGraph: {
       title,
       description,
@@ -96,10 +97,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       follow: true,
     },
     alternates: {
+      canonical: `${baseUrl}/${locale}`,
       languages: {
-        fr: "/fr",
-        en: "/en",
-        ar: "/ar",
+        fr: `${baseUrl}/fr`,
+        en: `${baseUrl}/en`,
+        ar: `${baseUrl}/ar`,
       },
     },
   };
@@ -142,8 +144,16 @@ export default async function LocaleLayout({
       }
     : null;
 
+  const skipLabel = locale === "fr" ? "Passer au contenu" : locale === "ar" ? "تخطي إلى المحتوى" : "Skip to content";
+
   return (
     <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
+      >
+        {skipLabel}
+      </a>
       <script
         dangerouslySetInnerHTML={{
           __html: `
@@ -177,7 +187,9 @@ export default async function LocaleLayout({
             <div className="print:hidden">
               <Header locale={locale as Locale} messages={messages} />
             </div>
-            <main className="flex-1">{children}</main>
+            <main id="main-content" className="flex-1" tabIndex={-1}>
+              {children}
+            </main>
             <div className="print:hidden">
               <Footer locale={locale} messages={messages} />
             </div>
