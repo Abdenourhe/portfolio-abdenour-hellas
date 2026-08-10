@@ -34,7 +34,7 @@ export function generateStaticParams() {
 function getBaseUrl() {
   if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return "https://www.abdenour-hellas.online";
+  return "https://abdenour-hellas.online";
 }
 
 async function getProfile() {
