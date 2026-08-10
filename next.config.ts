@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
         hostname: "**",
       },
     ],
-    unoptimized: true,
+    // unoptimized: true, // désactivé : Next.js optimise automatiquement (WebP, redimensionnement)
   },
   experimental: {
     serverActions: {

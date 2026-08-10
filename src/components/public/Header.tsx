@@ -34,15 +34,15 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
   }, [mobileMenuOpen]);
 
   const navItems = [
-    { href: `/${locale}`, label: messages.nav.home },
-    { href: `/${locale}/about`, label: messages.nav.about },
-    { href: `/${locale}/education`, label: messages.nav.education },
-    { href: `/${locale}/experience`, label: messages.nav.experience },
-    { href: `/${locale}/skills`, label: messages.nav.skills },
-    { href: `/${locale}/projects`, label: messages.nav.projects },
-    { href: `/${locale}/testimonials`, label: messages.nav.testimonials },
-    { href: `/${locale}/blog`, label: messages.nav.blog },
-    { href: `/${locale}/contact`, label: messages.nav.contact },
+    { href: `/${locale}`, label: messages.nav.home, prefetch: true },
+    { href: `/${locale}/about`, label: messages.nav.about, prefetch: true },
+    { href: `/${locale}/education`, label: messages.nav.education, prefetch: false },
+    { href: `/${locale}/experience`, label: messages.nav.experience, prefetch: false },
+    { href: `/${locale}/skills`, label: messages.nav.skills, prefetch: false },
+    { href: `/${locale}/projects`, label: messages.nav.projects, prefetch: false },
+    { href: `/${locale}/testimonials`, label: messages.nav.testimonials, prefetch: false },
+    { href: `/${locale}/blog`, label: messages.nav.blog, prefetch: false },
+    { href: `/${locale}/contact`, label: messages.nav.contact, prefetch: true },
   ];
 
   const isActive = (href: string) => {
@@ -73,6 +73,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={item.prefetch}
                 aria-current={active ? "page" : undefined}
                 className={`relative text-[0.82rem] tracking-[0.03em] font-normal transition-colors pb-0.5 ${
                   active
@@ -117,6 +118,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={item.prefetch}
                   aria-current={active ? "page" : undefined}
                   className={`px-3 py-3 text-sm tracking-wide transition-colors min-h-[44px] flex items-center rounded-md ${
                     active

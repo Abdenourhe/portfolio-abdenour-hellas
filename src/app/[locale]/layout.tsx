@@ -24,6 +24,8 @@ import { I18nProvider } from "@/components/public/I18nProvider";
 import NetworkCanvas from "@/components/public/NetworkCanvas";
 import ReadingProgress from "@/components/public/ReadingProgress";
 import CustomCursor from "@/components/public/CustomCursor";
+import BreadcrumbSchema from "@/components/public/BreadcrumbSchema";
+import StickyMobileCTA from "@/components/public/StickyMobileCTA";
 
 export function generateStaticParams() {
   return [{ locale: "fr" }, { locale: "en" }, { locale: "ar" }];
@@ -61,16 +63,19 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       : `${profile.fullName} — ${profile.title || baseTitle[locale as keyof typeof baseTitle]}`
     : baseTitle[locale as keyof typeof baseTitle] || baseTitle.fr;
 
+  // Descriptions enrichies avec mots-clés ciblés pour le SEO
+  const defaultDescriptions = {
+    fr: "Ingénieur en génie électrique et développeur web full-stack. 5+ ans d'expérience en automatisation industrielle, maintenance électrique et conception de systèmes énergétiques. Disponible pour des opportunités au Canada et à l'international.",
+    en: "Electrical engineer and full-stack web developer. 5+ years of experience in industrial automation, electrical maintenance and energy systems design. Open to opportunities in Canada and internationally.",
+    ar: "مهندس كهربائي ومطور ويب متكامل. أكثر من 5 سنوات من الخبرة في الأتمتة الصناعية والصيانة الكهربائية وتصميم أنظمة الطاقة. متاح لفرص في كندا ودولياً.",
+  };
+
   const description =
     (locale === "ar" && profile?.bioAr) ||
     (locale === "en" && profile?.bioEn) ||
     profile?.bio ||
-    {
-      fr: "Portfolio d'Abdenour Hellas, spécialiste en génie électrique et développement web.",
-      en: "Portfolio of Abdenour Hellas, electrical engineering specialist and web developer.",
-      ar: "محفظة عبد النور حلاس، أخصائي في الهندسة الكهربائية وتطوير الويب.",
-    }[locale] ||
-    baseTitle.fr;
+    defaultDescriptions[locale as keyof typeof defaultDescriptions] ||
+    defaultDescriptions.fr;
 
   const ogImage = profile?.photoUrl || undefined;
   const baseUrl = getBaseUrl();
@@ -78,6 +83,18 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title,
     description,
+    keywords: [
+      "ingénieur électrique",
+      "génie électrique",
+      "développeur web",
+      "automatisation industrielle",
+      "PLC",
+      "maintenance électrique",
+      "React",
+      "Next.js",
+      "Canada",
+      "Abdenour Hellas",
+    ],
     metadataBase: new URL(baseUrl),
     openGraph: {
       title,
@@ -145,6 +162,7 @@ export default async function LocaleLayout({
     : null;
 
   const skipLabel = locale === "fr" ? "Passer au contenu" : locale === "ar" ? "تخطي إلى المحتوى" : "Skip to content";
+  const baseUrl = getBaseUrl();
 
   return (
     <>
@@ -180,6 +198,7 @@ export default async function LocaleLayout({
               dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
             />
           )}
+          <BreadcrumbSchema locale={locale} baseUrl={baseUrl} />
           <NetworkCanvas />
           <div lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={`min-h-screen flex flex-col relative z-10 ${playfair.variable} ${amiri.variable}`}>
             <ReadingProgress />
@@ -193,6 +212,7 @@ export default async function LocaleLayout({
             <div className="print:hidden">
               <Footer locale={locale} messages={messages} />
             </div>
+            <StickyMobileCTA />
             <ScrollToTop />
           </div>
         </I18nProvider>
