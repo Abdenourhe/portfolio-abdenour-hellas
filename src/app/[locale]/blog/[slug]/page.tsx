@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   const title = article.title;
   const description = article.excerpt;
-  const ogImage = isValidOgImage(article.imageUrl) ? article.imageUrl : undefined;
+  const ogImage = isValidOgImage(article.imageUrl) ? article.imageUrl : `${baseUrl}/og-default.jpg`;
 
   return {
     title: `${title} — Blog | Abdenour Hellas`,

@@ -4,6 +4,15 @@ import { Playfair_Display, Amiri } from "next/font/google";
 import { isValidLocale, Locale } from "@/i18n/config";
 import { prisma } from "@/lib/prisma";
 import { isValidOgImage } from "@/lib/isValidOgImage";
+import Header, { ScrollToTop } from "@/components/public/Header";
+import Footer from "@/components/public/Footer";
+import { ThemeProvider } from "@/components/public/ThemeProvider";
+import { I18nProvider } from "@/components/public/I18nProvider";
+import NetworkCanvas from "@/components/public/NetworkCanvas";
+import ReadingProgress from "@/components/public/ReadingProgress";
+import CustomCursor from "@/components/public/CustomCursor";
+import BreadcrumbSchema from "@/components/public/BreadcrumbSchema";
+import StickyMobileCTA from "@/components/public/StickyMobileCTA";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -18,15 +27,6 @@ const amiri = Amiri({
   variable: "--font-serif-ar",
   display: "swap",
 });
-import Header, { ScrollToTop } from "@/components/public/Header";
-import Footer from "@/components/public/Footer";
-import { ThemeProvider } from "@/components/public/ThemeProvider";
-import { I18nProvider } from "@/components/public/I18nProvider";
-import NetworkCanvas from "@/components/public/NetworkCanvas";
-import ReadingProgress from "@/components/public/ReadingProgress";
-import CustomCursor from "@/components/public/CustomCursor";
-import BreadcrumbSchema from "@/components/public/BreadcrumbSchema";
-import StickyMobileCTA from "@/components/public/StickyMobileCTA";
 
 export function generateStaticParams() {
   return [{ locale: "fr" }, { locale: "en" }, { locale: "ar" }];
@@ -64,7 +64,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       : `${profile.fullName} — ${profile.title || baseTitle[locale as keyof typeof baseTitle]}`
     : baseTitle[locale as keyof typeof baseTitle] || baseTitle.fr;
 
-  // Descriptions enrichies avec mots-clés ciblés pour le SEO
   const defaultDescriptions = {
     fr: "Ingénieur en génie électrique et développeur web full-stack. 5+ ans d'expérience en automatisation industrielle, maintenance électrique et conception de systèmes énergétiques. Disponible pour des opportunités au Canada et à l'international.",
     en: "Electrical engineer and full-stack web developer. 5+ years of experience in industrial automation, electrical maintenance and energy systems design. Open to opportunities in Canada and internationally.",
@@ -78,8 +77,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     defaultDescriptions[locale as keyof typeof defaultDescriptions] ||
     defaultDescriptions.fr;
 
-  const ogImage = isValidOgImage(profile?.photoUrl) ? profile.photoUrl : undefined;
   const baseUrl = getBaseUrl();
+  const ogImage = isValidOgImage(profile?.photoUrl) ? profile.photoUrl : `${baseUrl}/og-default.jpg`;
 
   return {
     title,
@@ -102,13 +101,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       description,
       type: "website",
       locale: locale === "ar" ? "ar_SA" : locale,
-      images: ogImage ? [{ url: ogImage }] : undefined,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ogImage ? [ogImage] : undefined,
+      images: [ogImage],
     },
     robots: {
       index: true,
@@ -121,6 +120,15 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
         en: `${baseUrl}/en`,
         ar: `${baseUrl}/ar`,
       },
+    },
+    manifest: `${baseUrl}/manifest.json`,
+    themeColor: "#1E3A5F",
+    icons: {
+      icon: [
+        { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
+        { url: "/icon-512x512.png", sizes: "512x512", type: "image/png" },
+      ],
+      apple: { url: "/icon-192x192.png", sizes: "192x192" },
     },
   };
 }
@@ -164,6 +172,8 @@ export default async function LocaleLayout({
 
   const skipLabel = locale === "fr" ? "Passer au contenu" : locale === "ar" ? "تخطي إلى المحتوى" : "Skip to content";
   const baseUrl = getBaseUrl();
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const clarityId = process.env.NEXT_PUBLIC_CLARITY_ID;
 
   return (
     <>
@@ -188,6 +198,45 @@ export default async function LocaleLayout({
                 }, 100);
               });
             })();
+          `,
+        }}
+      />
+      {gaId && (
+        <>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaId}', { page_location: window.location.href });
+              `,
+            }}
+          />
+        </>
+      )}
+      {clarityId && (
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+              })(window, document, "clarity", "script", "${clarityId}");
+            `,
+          }}
+        />
+      )}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js');
+              });
+            }
           `,
         }}
       />
