@@ -1,13 +1,8 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { getBaseUrl } from "@/lib/getBaseUrl";
 import SectionHeader from "@/components/public/SectionHeader";
 import ProjectsSection from "@/components/public/sections/ProjectsSection";
-
-function getBaseUrl() {
-  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return "https://abdenour-hellas.online";
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;

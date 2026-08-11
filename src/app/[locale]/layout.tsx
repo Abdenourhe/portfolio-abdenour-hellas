@@ -4,6 +4,7 @@ import { Playfair_Display, Amiri } from "next/font/google";
 import { isValidLocale, Locale } from "@/i18n/config";
 import { prisma } from "@/lib/prisma";
 import { isValidOgImage } from "@/lib/isValidOgImage";
+import { getBaseUrl } from "@/lib/getBaseUrl";
 import Header, { ScrollToTop } from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 import { ThemeProvider } from "@/components/public/ThemeProvider";
@@ -30,12 +31,6 @@ const amiri = Amiri({
 
 export function generateStaticParams() {
   return [{ locale: "fr" }, { locale: "en" }, { locale: "ar" }];
-}
-
-function getBaseUrl() {
-  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return "https://abdenour-hellas.online";
 }
 
 async function getProfile() {
