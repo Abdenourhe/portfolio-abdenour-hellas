@@ -73,14 +73,20 @@ export default function HomePageClient({ data }: HomePageClientProps) {
   const homepageSettings = data.homepageSettings || null;
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
+  const cvUrl = profile?.cvUrl || "/cv/Abdenour_Hellas_CV.pdf";
+
   const handleDownloadCV = async () => {
     await fetch("/api/stats", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type: "cv_download" }),
     });
-    const cvUrl = profile?.cvUrl || "/cv/Abdenour_Hellas_CV.pdf";
-    window.open(cvUrl, "_blank");
+    const link = document.createElement("a");
+    link.href = cvUrl;
+    link.download = profile?.cvFileName || "Abdenour_Hellas_CV.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const getBio = useCallback(() => {
