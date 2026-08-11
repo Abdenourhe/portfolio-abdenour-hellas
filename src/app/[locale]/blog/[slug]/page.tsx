@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { isValidOgImage } from "@/lib/isValidOgImage";
 import ArticleContent from "@/components/public/ArticleContent";
 
 function getBaseUrl() {
@@ -26,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   const title = article.title;
   const description = article.excerpt;
-  const ogImage = article.imageUrl || undefined;
+  const ogImage = isValidOgImage(article.imageUrl) ? article.imageUrl : undefined;
 
   return {
     title: `${title} — Blog | Abdenour Hellas`,

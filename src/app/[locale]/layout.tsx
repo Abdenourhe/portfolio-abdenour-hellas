@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Playfair_Display, Amiri } from "next/font/google";
 import { isValidLocale, Locale } from "@/i18n/config";
 import { prisma } from "@/lib/prisma";
+import { isValidOgImage } from "@/lib/isValidOgImage";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -77,7 +78,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     defaultDescriptions[locale as keyof typeof defaultDescriptions] ||
     defaultDescriptions.fr;
 
-  const ogImage = profile?.photoUrl || undefined;
+  const ogImage = isValidOgImage(profile?.photoUrl) ? profile.photoUrl : undefined;
   const baseUrl = getBaseUrl();
 
   return {
