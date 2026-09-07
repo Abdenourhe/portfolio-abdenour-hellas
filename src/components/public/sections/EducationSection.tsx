@@ -6,6 +6,8 @@ import { Education } from "@/types";
 import { GraduationCap, Calendar, MapPin, ExternalLink, ImageIcon } from "lucide-react";
 import { SkeletonList } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
+import { useLocale } from "@/hooks/useLocale";
+import { getLocalizedField } from "@/lib/localized";
 import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
 import ElectricCard from "@/components/public/ElectricCard";
 import ImageLightbox from "@/components/public/ImageLightbox";
@@ -18,6 +20,7 @@ interface EducationSectionProps {
 
 export default function EducationSection({ data, compact = false, limit }: EducationSectionProps) {
   const t = useT();
+  const locale = useLocale();
   const [education, setEducation] = useState<Education[]>(data || []);
   const [loading, setLoading] = useState(!data);
   const [error, setError] = useState(false);
@@ -85,7 +88,7 @@ export default function EducationSection({ data, compact = false, limit }: Educa
                     <GraduationCap className="w-4 h-4 text-primary/70" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-semibold text-primary">{edu.degree}</h3>
+                    <h3 className="text-base font-semibold text-primary">{getLocalizedField(edu, "degree", locale)}</h3>
                     <p className="text-sm text-muted-foreground mt-0.5">{edu.school}</p>
                     <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-2 text-xs text-muted-foreground">
                       <span className="inline-flex items-center gap-1">
@@ -104,7 +107,7 @@ export default function EducationSection({ data, compact = false, limit }: Educa
                     </div>
                     {edu.description && (
                       <p className={`text-muted-foreground mt-2 ${compact ? "text-sm line-clamp-2" : "text-sm leading-relaxed"}`}>
-                        {edu.description}
+                        {getLocalizedField(edu, "description", locale)}
                       </p>
                     )}
                     <div className="flex flex-wrap gap-2 mt-3">

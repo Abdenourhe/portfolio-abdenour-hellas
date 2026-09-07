@@ -7,6 +7,7 @@ import { Calendar, ArrowLeft, FileText, Clock } from "lucide-react";
 import { Article } from "@/types";
 import ShareButtons from "@/components/public/ShareButtons";
 import { readingTime } from "@/lib/readingTime";
+import { getLocalizedField } from "@/lib/localized";
 
 interface ArticleContentProps {
   article: Article;
@@ -15,6 +16,7 @@ interface ArticleContentProps {
 }
 
 export default function ArticleContent({ article, locale, backText }: ArticleContentProps) {
+  const localizedTitle = getLocalizedField(article, "title", locale);
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -41,14 +43,14 @@ export default function ArticleContent({ article, locale, backText }: ArticleCon
       </div>
 
       <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-primary mb-6">
-        {article.title}
+        {localizedTitle}
       </h1>
 
       {article.imageUrl ? (
         <div className="relative w-full h-56 md:h-72 rounded-xl mb-8 overflow-hidden">
           <Image
             src={article.imageUrl}
-            alt={article.title}
+            alt={localizedTitle}
             fill
             sizes="(max-width: 768px) 100vw, 48rem"
             className="object-cover"
@@ -70,7 +72,7 @@ export default function ArticleContent({ article, locale, backText }: ArticleCon
       <div className="mt-10 pt-6 border-t border-border">
         <ShareButtons
           url={typeof window !== "undefined" ? window.location.href : `https://abdenour-hellas.online/${locale}/blog/${article.slug}`}
-          title={article.title}
+          title={localizedTitle}
           description={article.excerpt}
         />
       </div>

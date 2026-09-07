@@ -9,6 +9,7 @@ import { Calendar, ArrowRight, FileText, Clock } from "lucide-react";
 import { Skeleton } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
 import { useLocale } from "@/hooks/useLocale";
+import { getLocalizedField } from "@/lib/localized";
 import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
 import ElectricCard from "@/components/public/ElectricCard";
 import { readingTime } from "@/lib/readingTime";
@@ -71,7 +72,7 @@ export default function BlogSection({ data, compact = false, limit }: BlogSectio
                 <div className="relative w-full h-44 overflow-hidden">
                   <Image
                     src={article.imageUrl}
-                    alt={article.title}
+                    alt={getLocalizedField(article, "title", locale)}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
@@ -94,7 +95,7 @@ export default function BlogSection({ data, compact = false, limit }: BlogSectio
                   </span>
                 </div>
                 <h3 className="text-lg font-semibold text-primary group-hover:text-primary/80 transition-colors mb-2">
-                  {article.title}
+                  {getLocalizedField(article, "title", locale)}
                 </h3>
                 <p className="text-base text-muted-foreground line-clamp-2 mb-3">{article.excerpt}</p>
                 <span className="inline-flex items-center gap-1 text-sm text-secondary font-medium">

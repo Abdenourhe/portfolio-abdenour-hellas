@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Skill } from "@/types";
 import { Plus, Pencil, Trash2, GripVertical, Tag, ChevronDown, ChevronUp, FolderEdit } from "lucide-react";
 import SpellCheck from "@/components/admin/SpellCheck";
+import LangTabs, { AdminLang, fieldKey } from "@/components/admin/LangTabs";
 
 export default function SkillsPage() {
   const [skills, setSkills] = useState<Skill[]>([]);
@@ -12,6 +13,7 @@ export default function SkillsPage() {
   const [editing, setEditing] = useState<Skill | null>(null);
   const [form, setForm] = useState<Partial<Skill>>({});
   const [adding, setAdding] = useState(false);
+  const [activeLang, setActiveLang] = useState<AdminLang>("fr");
   const [newCategory, setNewCategory] = useState("");
   const [renamingCategory, setRenamingCategory] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
@@ -125,17 +127,26 @@ export default function SkillsPage() {
       {(editing || adding) && (
         <form onSubmit={handleSubmit} className="mb-8 p-6 rounded-xl bg-card border border-border space-y-4">
           <h2 className="text-lg font-semibold">{editing ? "Modifier" : "Nouvelle compétence"}</h2>
+
+          <div>
+            <span className="block text-sm font-medium mb-1">Langue (Nom)</span>
+            <LangTabs value={activeLang} onChange={setActiveLang} />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
               <input
                 type="text"
-                placeholder="Nom"
-                value={form.name || ""}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                placeholder={`Nom (${activeLang.toUpperCase()})`}
+                value={(form as any)[fieldKey("name", activeLang)] || ""}
+                onChange={(e) => setForm({ ...form, [fieldKey("name", activeLang)]: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
-                required
+                required={activeLang === "fr"}
               />
-              <SpellCheck text={form.name || ""} onApply={(v) => setForm({ ...form, name: v })} />
+              <SpellCheck
+                text={(form as any)[fieldKey("name", activeLang)] || ""}
+                onApply={(v) => setForm({ ...form, [fieldKey("name", activeLang)]: v })}
+              />
             </div>
             <div className="space-y-1">
               <select

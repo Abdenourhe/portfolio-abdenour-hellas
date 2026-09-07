@@ -6,6 +6,8 @@ import { Experience } from "@/types";
 import { Briefcase, ExternalLink, ImageIcon } from "lucide-react";
 import { SkeletonList } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
+import { useLocale } from "@/hooks/useLocale";
+import { getLocalizedField } from "@/lib/localized";
 import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
 import ElectricCard from "@/components/public/ElectricCard";
 import ImageLightbox from "@/components/public/ImageLightbox";
@@ -24,6 +26,7 @@ interface ExperienceSectionProps {
 
 export default function ExperienceSection({ data, compact = false, limit }: ExperienceSectionProps) {
   const t = useT();
+  const locale = useLocale();
   const [experiences, setExperiences] = useState<Experience[]>(data || []);
   const [loading, setLoading] = useState(!data);
   const [error, setError] = useState(false);
@@ -104,10 +107,10 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
                       </span>
                     )}
                   </div>
-                  <h3 className="text-base md:text-lg font-semibold text-primary">{exp.title}</h3>
+                  <h3 className="text-base md:text-lg font-semibold text-primary">{getLocalizedField(exp, "title", locale)}</h3>
                   <p className="text-sm md:text-base text-muted-foreground">{exp.company} · {exp.location}</p>
                   <p className={`text-muted-foreground leading-relaxed mt-2 ${compact ? "text-sm line-clamp-2" : "text-sm md:text-base"}`}>
-                    {exp.description}
+                    {getLocalizedField(exp, "description", locale)}
                   </p>
                   <div className="flex flex-wrap gap-2 mt-3">
                     {exp.url && (

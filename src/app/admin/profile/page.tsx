@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Save, Upload, FileText, X } from "lucide-react";
 import SpellCheck from "@/components/admin/SpellCheck";
 import { DEFAULT_CV_PAGE_RANGES } from "@/lib/cvPages";
+import LangTabs, { AdminLang, fieldKey } from "@/components/admin/LangTabs";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<any>({});
@@ -13,6 +14,7 @@ export default function ProfilePage() {
   const [message, setMessage] = useState("");
   const [loadingPhoto, setLoadingPhoto] = useState(false);
   const [loadingCV, setLoadingCV] = useState(false);
+  const [activeLang, setActiveLang] = useState<AdminLang>("fr");
 
   useEffect(() => {
     fetch("/api/profile")
@@ -158,6 +160,11 @@ export default function ProfilePage() {
           </div>
         </div>
 
+        <div>
+          <span className="block text-sm font-medium mb-1">Langue des champs traduisibles (Titre, Bio)</span>
+          <LangTabs value={activeLang} onChange={setActiveLang} />
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-2">Nom complet</label>
@@ -165,9 +172,17 @@ export default function ProfilePage() {
             <SpellCheck text={profile.fullName || ""} onApply={(v) => setProfile({ ...profile, fullName: v })} />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Titre</label>
-            <input type="text" value={profile.title || ""} onChange={(e) => setProfile({ ...profile, title: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" />
-            <SpellCheck text={profile.title || ""} onApply={(v) => setProfile({ ...profile, title: v })} />
+            <label className="block text-sm font-medium mb-2">Titre ({activeLang.toUpperCase()})</label>
+            <input
+              type="text"
+              value={profile[fieldKey("title", activeLang)] || ""}
+              onChange={(e) => setProfile({ ...profile, [fieldKey("title", activeLang)]: e.target.value })}
+              className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+            />
+            <SpellCheck
+              text={profile[fieldKey("title", activeLang)] || ""}
+              onApply={(v) => setProfile({ ...profile, [fieldKey("title", activeLang)]: v })}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-2">Email</label>
@@ -185,9 +200,17 @@ export default function ProfilePage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Bio</label>
-          <textarea rows={4} value={profile.bio || ""} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" />
-          <SpellCheck text={profile.bio || ""} onApply={(v) => setProfile({ ...profile, bio: v })} />
+          <label className="block text-sm font-medium mb-2">Bio ({activeLang.toUpperCase()})</label>
+          <textarea
+            rows={4}
+            value={profile[fieldKey("bio", activeLang)] || ""}
+            onChange={(e) => setProfile({ ...profile, [fieldKey("bio", activeLang)]: e.target.value })}
+            className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
+          />
+          <SpellCheck
+            text={profile[fieldKey("bio", activeLang)] || ""}
+            onApply={(v) => setProfile({ ...profile, [fieldKey("bio", activeLang)]: v })}
+          />
         </div>
 
         <div>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Plus, Pencil, Trash2, Eye } from "lucide-react";
 import SpellCheck from "@/components/admin/SpellCheck";
+import LangTabs, { AdminLang, fieldKey } from "@/components/admin/LangTabs";
 
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<any[]>([]);
@@ -11,6 +12,7 @@ export default function ArticlesPage() {
   const [editing, setEditing] = useState<any>(null);
   const [form, setForm] = useState<any>({});
   const [adding, setAdding] = useState(false);
+  const [activeLang, setActiveLang] = useState<AdminLang>("fr");
 
   useEffect(() => {
     fetchArticles();
@@ -82,10 +84,16 @@ export default function ArticlesPage() {
       {(editing || adding) && (
         <form onSubmit={handleSubmit} className="mb-8 p-6 rounded-xl bg-card border border-border space-y-4">
           <h2 className="text-lg font-semibold">{editing ? "Modifier" : "Nouvel article"}</h2>
+
+          <div>
+            <span className="block text-sm font-medium mb-1">Langue (Titre)</span>
+            <LangTabs value={activeLang} onChange={setActiveLang} />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
-            <input type="text" placeholder="Titre" value={form.title || ""} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
-            <SpellCheck text={form.title || ""} onApply={(v) => setForm({ ...form, title: v })} />
+            <input type="text" placeholder={`Titre (${activeLang.toUpperCase()})`} value={form[fieldKey("title", activeLang)] || ""} onChange={(e) => setForm({ ...form, [fieldKey("title", activeLang)]: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required={activeLang === "fr"} />
+            <SpellCheck text={form[fieldKey("title", activeLang)] || ""} onApply={(v) => setForm({ ...form, [fieldKey("title", activeLang)]: v })} />
           </div>
             <input type="text" placeholder="Slug (unique)" value={form.slug || ""} onChange={(e) => setForm({ ...form, slug: e.target.value })} className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" required />
             <input type="text" placeholder="Image URL (optionnel)" value={form.imageUrl || ""} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} className="px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none" />

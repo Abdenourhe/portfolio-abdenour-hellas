@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Project } from "@/types";
 import { Plus, Pencil, Trash2, GripVertical, Star } from "lucide-react";
 import SpellCheck from "@/components/admin/SpellCheck";
+import LangTabs, { AdminLang, fieldKey } from "@/components/admin/LangTabs";
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -12,6 +13,7 @@ export default function ProjectsPage() {
   const [editing, setEditing] = useState<Project | null>(null);
   const [form, setForm] = useState<Partial<Project>>({});
   const [adding, setAdding] = useState(false);
+  const [activeLang, setActiveLang] = useState<AdminLang>("fr");
 
   useEffect(() => {
     fetchProjects();
@@ -88,17 +90,26 @@ export default function ProjectsPage() {
       {(editing || adding) && (
         <form onSubmit={handleSubmit} className="mb-8 p-6 rounded-xl bg-card border border-border space-y-4">
           <h2 className="text-lg font-semibold">{editing ? "Modifier" : "Nouveau projet"}</h2>
+
+          <div>
+            <span className="block text-sm font-medium mb-1">Langue (Titre, Description)</span>
+            <LangTabs value={activeLang} onChange={setActiveLang} />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
               <input
                 type="text"
-                placeholder="Titre"
-                value={form.title || ""}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                placeholder={`Titre (${activeLang.toUpperCase()})`}
+                value={(form as any)[fieldKey("title", activeLang)] || ""}
+                onChange={(e) => setForm({ ...form, [fieldKey("title", activeLang)]: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
-                required
+                required={activeLang === "fr"}
               />
-              <SpellCheck text={form.title || ""} onApply={(v) => setForm({ ...form, title: v })} />
+              <SpellCheck
+                text={(form as any)[fieldKey("title", activeLang)] || ""}
+                onApply={(v) => setForm({ ...form, [fieldKey("title", activeLang)]: v })}
+              />
             </div>
             <input
               type="text"
@@ -143,14 +154,17 @@ export default function ProjectsPage() {
           </div>
           <div className="space-y-1">
             <textarea
-              placeholder="Description"
+              placeholder={`Description (${activeLang.toUpperCase()})`}
               rows={3}
-              value={form.description || ""}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              value={(form as any)[fieldKey("description", activeLang)] || ""}
+              onChange={(e) => setForm({ ...form, [fieldKey("description", activeLang)]: e.target.value })}
               className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-primary focus:outline-none"
-              required
+              required={activeLang === "fr"}
             />
-            <SpellCheck text={form.description || ""} onApply={(v) => setForm({ ...form, description: v })} />
+            <SpellCheck
+              text={(form as any)[fieldKey("description", activeLang)] || ""}
+              onApply={(v) => setForm({ ...form, [fieldKey("description", activeLang)]: v })}
+            />
           </div>
           <div className="flex gap-2">
             <button type="submit" className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">

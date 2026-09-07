@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { Skill } from "@/types";
 import { SkeletonCard } from "@/components/public/Skeleton";
 import { useT } from "@/components/public/I18nProvider";
+import { useLocale } from "@/hooks/useLocale";
+import { getLocalizedField } from "@/lib/localized";
 import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection";
 
 const categoryLabels: Record<string, string> = {
@@ -21,6 +23,7 @@ interface SkillsSectionProps {
 
 export default function SkillsSection({ data, limit }: SkillsSectionProps) {
   const t = useT();
+  const locale = useLocale();
   const [skills, setSkills] = useState<Skill[]>(data || []);
   const [loading, setLoading] = useState(!data);
   const [error, setError] = useState(false);
@@ -85,7 +88,7 @@ export default function SkillsSection({ data, limit }: SkillsSectionProps) {
               {displaySkills.map((skill) => (
                 <motion.div key={skill.id} variants={fadeUpItem}>
                   <div className="flex justify-between items-center mb-1.5">
-                    <span className="text-base font-medium text-foreground">{skill.name}</span>
+                    <span className="text-base font-medium text-foreground">{getLocalizedField(skill, "name", locale)}</span>
                     <span className="text-sm text-secondary font-medium tabular-nums">{skill.level}%</span>
                   </div>
                   <div className="h-2 bg-muted-foreground/20 rounded-full overflow-hidden">

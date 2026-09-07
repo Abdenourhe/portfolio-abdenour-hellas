@@ -11,6 +11,7 @@ import AnimatedSection, { fadeUpItem } from "@/components/public/AnimatedSection
 import ElectricCard from "@/components/public/ElectricCard";
 import ShareButtons from "@/components/public/ShareButtons";
 import { useLocale } from "@/hooks/useLocale";
+import { getLocalizedField } from "@/lib/localized";
 
 function ProjectPlaceholder({ title }: { title: string }) {
   return (
@@ -126,7 +127,10 @@ export default function ProjectsSection({ data, compact = false, limit, featured
 
       <AnimatedSection stagger={0.1} className="grid grid-cols-1 md:grid-cols-2 gap-5">
       <AnimatePresence mode="popLayout">
-      {displayProjects.map((project) => (
+      {displayProjects.map((project) => {
+        const localizedTitle = getLocalizedField(project, "title", locale);
+        const localizedDescription = getLocalizedField(project, "description", locale);
+        return (
         <motion.div
           key={project.id}
           variants={fadeUpItem}
@@ -141,26 +145,26 @@ export default function ProjectsSection({ data, compact = false, limit, featured
                 <div className="relative w-full h-44 md:h-52 overflow-hidden">
                   <Image
                     src={project.imageUrl}
-                    alt={project.title}
+                    alt={localizedTitle}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                   />
                 </div>
               ) : (
-                <ProjectPlaceholder title={project.title} />
+                <ProjectPlaceholder title={localizedTitle} />
               )}
               <div className={compact ? "p-4" : "p-5"}>
             <div className="flex items-start justify-between mb-2">
               <h3 className="text-lg font-semibold text-primary group-hover:text-primary/80 transition-colors">
-                {project.title}
+                {localizedTitle}
               </h3>
               {(project.featured || featuredIds?.includes(project.id)) && (
                 <Star className="w-3.5 h-3.5 text-secondary fill-secondary flex-shrink-0 ml-2 mt-0.5" />
               )}
             </div>
             <p className="text-base text-muted-foreground leading-relaxed line-clamp-3 mb-4">
-              {project.description}
+              {localizedDescription}
             </p>
             <div className="flex flex-wrap gap-1.5 mb-4">
               {project.technologies.slice(0, 4).map((tech) => (
@@ -204,15 +208,16 @@ export default function ProjectsSection({ data, compact = false, limit, featured
               </div>
               <ShareButtons
                 url={`${getBaseUrl()}/${locale}/projects`}
-                title={project.title}
-                description={project.description}
+                title={localizedTitle}
+                description={localizedDescription}
               />
             </div>
               </div>
             </div>
           </ElectricCard>
         </motion.div>
-      ))}
+        );
+      })}
       </AnimatePresence>
     </AnimatedSection>
   </div>
