@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/pageMetadata";
 
 const titles: Record<string, string> = {
   fr: "À propos | Abdenour Hellas",
@@ -14,10 +15,7 @@ const descriptions: Record<string, string> = {
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  return {
-    title: titles[locale] || titles.fr,
-    description: descriptions[locale] || descriptions.fr,
-  };
+  return buildPageMetadata({ locale, path: "/about", titles, descriptions });
 }
 
 export default function AboutLayout({ children }: { children: React.ReactNode }) {
