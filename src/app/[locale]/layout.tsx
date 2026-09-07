@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Playfair_Display, Amiri } from "next/font/google";
 import { isValidLocale, Locale } from "@/i18n/config";
 import { prisma } from "@/lib/prisma";
@@ -38,6 +38,19 @@ async function getProfile() {
     return await prisma.profile.findFirst();
   } catch {
     return null;
+  }
+}
+
+async function getEnabledLocales(): Promise<Locale[]> {
+  try {
+    const settings = await prisma.homepageSettings.findFirst();
+    const enabled = settings?.enabledLocales;
+    if (Array.isArray(enabled) && enabled.length > 0 && enabled.includes("fr")) {
+      return enabled.filter(isValidLocale) as Locale[];
+    }
+    return ["fr", "en", "ar"];
+  } catch {
+    return ["fr", "en", "ar"];
   }
 }
 
@@ -139,6 +152,11 @@ export default async function LocaleLayout({
 
   if (!isValidLocale(locale)) {
     notFound();
+  }
+
+  const enabledLocales = await getEnabledLocales();
+  if (!enabledLocales.includes(locale as Locale)) {
+    redirect(`/${enabledLocales[0] || "fr"}`);
   }
 
   let messages;
@@ -249,7 +267,7 @@ export default async function LocaleLayout({
             <ReadingProgress />
             <CustomCursor />
             <div className="print:hidden">
-              <Header locale={locale as Locale} messages={messages} />
+              <Header locale={locale as Locale} messages={messages} enabledLocales={enabledLocales} />
             </div>
             <main id="main-content" className="flex-1" tabIndex={-1}>
               {children}

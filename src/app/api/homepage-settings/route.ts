@@ -6,6 +6,7 @@ import {
   DEFAULT_SECTIONS_ORDER,
   DEFAULT_SECTIONS_VISIBILITY,
   DEFAULT_VISIBLE_STATS,
+  DEFAULT_ENABLED_LOCALES,
   getDefaultHomepageSettings,
 } from "@/lib/homepageDefaults";
 
@@ -58,6 +59,12 @@ export async function PUT(request: NextRequest) {
       visibleStatsTypes: Array.isArray(data.visibleStatsTypes)
         ? data.visibleStatsTypes
         : DEFAULT_VISIBLE_STATS,
+      enabledLocales:
+        Array.isArray(data.enabledLocales) &&
+        data.enabledLocales.includes("fr") &&
+        data.enabledLocales.every((l: string) => DEFAULT_ENABLED_LOCALES.includes(l))
+          ? Array.from(new Set(["fr", ...data.enabledLocales]))
+          : DEFAULT_ENABLED_LOCALES,
     };
 
     if (settings) {

@@ -3,18 +3,27 @@
 import { useRouter, usePathname } from "next/navigation";
 import { locales, Locale } from "@/i18n/config";
 
-export default function LanguageSwitcher({ locale }: { locale: Locale }) {
+export default function LanguageSwitcher({
+  locale,
+  enabledLocales,
+}: {
+  locale: Locale;
+  enabledLocales?: Locale[];
+}) {
   const router = useRouter();
   const pathname = usePathname();
+  const visibleLocales = enabledLocales && enabledLocales.length > 0 ? enabledLocales : locales;
 
   const switchLocale = (newLocale: Locale) => {
     const newPath = pathname.replace(`/${locale}`, `/${newLocale}`);
     router.push(newPath);
   };
 
+  if (visibleLocales.length < 2) return null;
+
   return (
     <div className="flex items-center gap-1 bg-muted-foreground/15 rounded-lg p-1">
-      {locales.map((l) => (
+      {visibleLocales.map((l) => (
         <button
           key={l}
           onClick={() => switchLocale(l)}

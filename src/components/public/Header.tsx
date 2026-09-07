@@ -8,7 +8,15 @@ import ThemeSelector from "./ThemeSelector";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { Locale } from "@/i18n/config";
 
-export default function Header({ locale, messages }: { locale: Locale; messages: any }) {
+export default function Header({
+  locale,
+  messages,
+  enabledLocales,
+}: {
+  locale: Locale;
+  messages: any;
+  enabledLocales?: Locale[];
+}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -91,7 +99,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
         </nav>
 
         <div className="hidden lg:flex items-center gap-3">
-          <LanguageSwitcher locale={locale} />
+          <LanguageSwitcher locale={locale} enabledLocales={enabledLocales} />
           <ThemeSelector />
         </div>
 
@@ -132,7 +140,7 @@ export default function Header({ locale, messages }: { locale: Locale; messages:
               );
             })}
             <div className="flex items-center gap-2 pt-3 mt-2 border-t border-border/40">
-              <LanguageSwitcher locale={locale} />
+              <LanguageSwitcher locale={locale} enabledLocales={enabledLocales} />
               <ThemeSelector />
             </div>
           </div>

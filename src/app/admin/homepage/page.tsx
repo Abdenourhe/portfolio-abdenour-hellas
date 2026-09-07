@@ -33,6 +33,7 @@ import {
   FolderOpen,
   MessageSquareQuote,
   FileText,
+  Languages,
 } from "lucide-react";
 
 const SECTIONS = [
@@ -59,6 +60,14 @@ const DEFAULT_VISIBILITY: Record<string, boolean> = {
 
 const DEFAULT_VISIBLE_STATS = ["visit", "cv_download"];
 
+const LANGUAGES = [
+  { code: "fr" as const, label: "Français" },
+  { code: "en" as const, label: "English" },
+  { code: "ar" as const, label: "العربية" },
+];
+
+const DEFAULT_ENABLED_LOCALES = ["fr", "en", "ar"];
+
 const STAT_TYPES = [
   { key: "years_exp", label: "Années d'expérience" },
   { key: "projects", label: "Projets" },
@@ -83,6 +92,7 @@ interface HomepageSettings {
   sectionsVisibility?: Record<string, boolean>;
   featuredProjectIds?: string[];
   visibleStatsTypes?: string[];
+  enabledLocales?: string[];
 }
 
 function SortableSectionItem({
@@ -213,6 +223,7 @@ export default function HomepageSettingsPage() {
           typewriterPhrasesFr: settingsData.typewriterPhrasesFr || [],
           typewriterPhrasesEn: settingsData.typewriterPhrasesEn || [],
           typewriterPhrasesAr: settingsData.typewriterPhrasesAr || [],
+          enabledLocales: settingsData.enabledLocales?.length ? settingsData.enabledLocales : DEFAULT_ENABLED_LOCALES,
         });
         setProjects(projectsData || []);
         setLoading(false);
@@ -249,6 +260,15 @@ export default function HomepageSettingsPage() {
     } else {
       setSettings({ ...settings, featuredProjectIds: [...current, projectId] });
     }
+  };
+
+  const toggleLocale = (code: string) => {
+    if (code === "fr") return; // Le français reste toujours actif
+    const current = settings.enabledLocales || DEFAULT_ENABLED_LOCALES;
+    const next = current.includes(code)
+      ? current.filter((l) => l !== code)
+      : [...current, code];
+    setSettings({ ...settings, enabledLocales: next });
   };
 
   const toggleVisibleStat = (statType: string) => {
@@ -374,6 +394,40 @@ export default function HomepageSettingsPage() {
               }
               placeholder={`Ajouter une phrase en ${activeTab.toUpperCase()}...`}
             />
+          </div>
+        </section>
+
+        {/* Languages */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold border-b border-border pb-2 flex items-center gap-2">
+            <Languages size={20} className="text-primary" />
+            Langues du site
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Choisissez les langues accessibles aux visiteurs. Le français reste toujours actif. Une langue désactivée disparaît du sélecteur et redirige automatiquement vers le français.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {LANGUAGES.map((lang) => {
+              const isEnabled = (settings.enabledLocales || DEFAULT_ENABLED_LOCALES).includes(lang.code);
+              const isFrench = lang.code === "fr";
+              return (
+                <label
+                  key={lang.code}
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card ${
+                    isFrench ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isEnabled}
+                    disabled={isFrench}
+                    onChange={() => toggleLocale(lang.code)}
+                    className="rounded border-border text-primary focus:ring-primary"
+                  />
+                  <span className="text-sm">{lang.label}</span>
+                </label>
+              );
+            })}
           </div>
         </section>
 

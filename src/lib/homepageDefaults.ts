@@ -20,6 +20,8 @@ export const DEFAULT_SECTIONS_VISIBILITY: Record<string, boolean> = {
 
 export const DEFAULT_VISIBLE_STATS = ["years_exp", "projects", "education", "skills"];
 
+export const DEFAULT_ENABLED_LOCALES = ["fr", "en", "ar"];
+
 export function getDefaultHomepageSettings() {
   return {
     id: "1",
@@ -36,6 +38,7 @@ export function getDefaultHomepageSettings() {
     heroSubtitle: null,
     heroSubtitleEn: null,
     heroSubtitleAr: null,
+    enabledLocales: DEFAULT_ENABLED_LOCALES,
     updatedAt: new Date(),
   };
 }

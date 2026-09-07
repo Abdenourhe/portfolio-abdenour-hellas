@@ -202,6 +202,8 @@ model HomepageSettings {
   featuredProjectIds  String[]
   visibleStatsTypes   String[]
 
+  enabledLocales      String[] @default(["fr", "en", "ar"])
+
   updatedAt           DateTime @updatedAt
 }
 
