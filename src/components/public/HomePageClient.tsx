@@ -332,10 +332,17 @@ export default function HomePageClient({ data }: HomePageClientProps) {
               animate="visible"
               className="text-center lg:text-left max-w-xl"
             >
-              {/* Badge de statut - sobre et professionnel */}
+              {/* Badge de statut - sobre et professionnel, pulsation douce */}
               <motion.div variants={heroItem} className="mb-4">
                 <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/25 bg-primary/5 text-primary text-xs tracking-wide">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                  <span className="relative flex h-1.5 w-1.5">
+                    <motion.span
+                      className="absolute inline-flex h-full w-full rounded-full bg-primary"
+                      animate={{ scale: [1, 2.2, 1], opacity: [0.6, 0, 0.6] }}
+                      transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+                  </span>
                   {locale === "fr" ? "Ouvert aux opportunités professionnelles" : locale === "ar" ? "متاح للفرص المهنية" : "Open to professional opportunities"}
                 </span>
               </motion.div>
