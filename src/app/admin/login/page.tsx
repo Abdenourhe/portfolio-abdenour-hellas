@@ -25,7 +25,11 @@ export default function LoginPage() {
     });
 
     if (result?.error) {
-      setError("Email ou mot de passe incorrect");
+      setError(
+        result.error === "ACCOUNT_LOCKED"
+          ? "Trop de tentatives échouées. Compte temporairement bloqué, réessayez dans 15 minutes."
+          : "Email ou mot de passe incorrect"
+      );
       setLoading(false);
     } else {
       router.push("/admin/dashboard");
