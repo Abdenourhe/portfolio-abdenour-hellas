@@ -332,14 +332,11 @@ export default function HomePageClient({ data }: HomePageClientProps) {
               animate="visible"
               className="text-center lg:text-left max-w-xl"
             >
-              {/* BADGE VERT DISCRET - seul élément vert vif */}
+              {/* Badge de statut - sobre et professionnel */}
               <motion.div variants={heroItem} className="mb-4">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#059669]/30 bg-[#ECFDF5]/60 text-[#065F46] dark:text-[#34D399] text-xs tracking-wide">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#059669] opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#059669]" />
-                  </span>
-                  {locale === "fr" ? "Disponible pour de nouvelles opportunités" : locale === "ar" ? "متاح لفرص جديدة" : "Open to new opportunities"}
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/25 bg-primary/5 text-primary text-xs tracking-wide">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                  {locale === "fr" ? "Ouvert aux opportunités professionnelles" : locale === "ar" ? "متاح للفرص المهنية" : "Open to professional opportunities"}
                 </span>
               </motion.div>
 
