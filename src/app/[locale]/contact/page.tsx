@@ -117,7 +117,14 @@ export default function ContactPage() {
           </div>
 
           <h2 className="text-base font-semibold text-primary mt-8 mb-4">{t("contact.social")}</h2>
-          <SocialIcons />
+          <SocialIcons
+            linkedin={profile?.linkedin}
+            github={profile?.github}
+            twitter={profile?.twitter}
+            facebook={profile?.facebook}
+            instagram={profile?.instagram}
+            whatsapp={profile?.whatsapp}
+          />
 
           <a
             href={cvPath}

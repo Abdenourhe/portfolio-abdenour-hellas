@@ -1,10 +1,19 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import SocialIcons from "./SocialIcons";
 
 export default function Footer({ locale, messages }: { locale: string; messages: any }) {
   const year = new Date().getFullYear();
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    fetch("/api/profile")
+      .then((r) => r.json())
+      .then(setProfile)
+      .catch(() => {});
+  }, []);
 
   return (
     <footer className="border-t border-border bg-background">
@@ -20,8 +29,12 @@ export default function Footer({ locale, messages }: { locale: string; messages:
           </div>
 
           <SocialIcons
-            linkedin="https://linkedin.com/in/abdenour-hellas"
-            github="https://github.com/Abdenourhe"
+            linkedin={profile?.linkedin}
+            github={profile?.github}
+            twitter={profile?.twitter}
+            facebook={profile?.facebook}
+            instagram={profile?.instagram}
+            whatsapp={profile?.whatsapp}
           />
 
           <div className="flex items-center gap-4">
