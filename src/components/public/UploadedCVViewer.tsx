@@ -12,6 +12,9 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 interface UploadedCVViewerProps {
   cvUrl: string;
   fileName?: string;
+  /** 1-indexed, inclusive page range to display for the active language */
+  startPage?: number;
+  endPage?: number;
 }
 
 const A4_WIDTH = 794; // px at ~96dpi
@@ -20,14 +23,16 @@ const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 2.5;
 const ZOOM_STEP = 0.25;
 
-export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerProps) {
+export default function UploadedCVViewer({ cvUrl, fileName, startPage = 1, endPage }: UploadedCVViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [numPages, setNumPages] = useState<number>(0);
   const [baseWidth, setBaseWidth] = useState<number>(A4_WIDTH);
   const [zoom, setZoom] = useState<number>(1);
-  const [activePage, setActivePage] = useState<number>(1);
+  const [activePage, setActivePage] = useState<number>(startPage);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  const rangeEnd = Math.max(startPage, Math.min(endPage ?? startPage, numPages || (endPage ?? startPage)));
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -40,11 +45,11 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
   }, []);
 
   useEffect(() => {
-    setActivePage(1);
+    setActivePage(startPage);
     setNumPages(0);
     setLoading(true);
     setError(false);
-  }, [cvUrl]);
+  }, [cvUrl, startPage, endPage]);
 
   const pageWidth = Math.round(baseWidth * zoom);
 
@@ -67,27 +72,27 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Page navigation */}
-          {numPages > 1 && (
+          {/* Page navigation (confined to the active language's page range) */}
+          {rangeEnd > startPage && (
             <div className="inline-flex items-center gap-1 bg-muted rounded-lg p-1">
               <motion.button
                 type="button"
                 whileTap={{ scale: 0.92 }}
-                onClick={() => setActivePage((p) => Math.max(1, p - 1))}
-                disabled={activePage <= 1}
+                onClick={() => setActivePage((p) => Math.max(startPage, p - 1))}
+                disabled={activePage <= startPage}
                 aria-label="Page précédente"
                 className="p-1.5 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
               >
                 <ChevronLeft size={16} />
               </motion.button>
               <span className="min-w-[3.5rem] px-1.5 text-xs font-medium text-center">
-                {activePage} / {numPages}
+                {activePage - startPage + 1} / {rangeEnd - startPage + 1}
               </span>
               <motion.button
                 type="button"
                 whileTap={{ scale: 0.92 }}
-                onClick={() => setActivePage((p) => Math.min(numPages, p + 1))}
-                disabled={activePage >= numPages}
+                onClick={() => setActivePage((p) => Math.min(rangeEnd, p + 1))}
+                disabled={activePage >= rangeEnd}
                 aria-label="Page suivante"
                 className="p-1.5 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
               >
@@ -171,6 +176,7 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
                 file={cvUrl}
                 onLoadSuccess={({ numPages }) => {
                   setNumPages(numPages);
+                  setActivePage((p) => Math.min(p, numPages));
                   setLoading(false);
                 }}
                 onLoadError={() => {

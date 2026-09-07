@@ -21,6 +21,7 @@ import SkillsSection from "@/components/public/sections/SkillsSection";
 import ProjectsSection from "@/components/public/sections/ProjectsSection";
 import TestimonialsSection from "@/components/public/sections/TestimonialsSection";
 import BlogSection from "@/components/public/sections/BlogSection";
+import { getCvPageRange, downloadCvPageRange } from "@/lib/cvPages";
 
 interface HomePageClientProps {
   data: {
@@ -73,18 +74,10 @@ export default function HomePageClient({ data }: HomePageClientProps) {
   const homepageSettings = data.homepageSettings || null;
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
-  const cvUrl =
-    (locale === "en"
-      ? profile?.cvUrlEn || profile?.cvUrl
-      : locale === "ar"
-      ? profile?.cvUrlAr || profile?.cvUrl
-      : profile?.cvUrl) || "/cv/Abdenour_Hellas_CV.pdf";
-  const cvFileName =
-    (locale === "en"
-      ? profile?.cvFileNameEn || profile?.cvFileName
-      : locale === "ar"
-      ? profile?.cvFileNameAr || profile?.cvFileName
-      : profile?.cvFileName) || "Abdenour_Hellas_CV.pdf";
+  const displayLocale: "fr" | "en" | "ar" = locale === "en" || locale === "ar" ? locale : "fr";
+  const cvUrl = profile?.cvUrl || "/cv/Abdenour_Hellas_CV.pdf";
+  const baseCvName = (profile?.cvFileName || "Abdenour_Hellas_CV.pdf").replace(/\.pdf$/i, "");
+  const cvFileName = `${baseCvName}_${displayLocale.toUpperCase()}.pdf`;
 
   const handleDownloadCV = async () => {
     await fetch("/api/stats", {
@@ -92,12 +85,28 @@ export default function HomePageClient({ data }: HomePageClientProps) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type: "cv_download" }),
     });
-    const link = document.createElement("a");
-    link.href = cvUrl;
-    link.download = cvFileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+
+    if (!profile?.cvUrl) {
+      const link = document.createElement("a");
+      link.href = cvUrl;
+      link.download = cvFileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      return;
+    }
+
+    try {
+      const [start, end] = getCvPageRange(profile?.cvPageRanges, displayLocale);
+      await downloadCvPageRange(cvUrl, cvFileName, start, end);
+    } catch {
+      const link = document.createElement("a");
+      link.href = cvUrl;
+      link.download = cvFileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   const getBio = useCallback(() => {

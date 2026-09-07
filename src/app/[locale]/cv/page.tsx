@@ -7,6 +7,7 @@ import { useT } from "@/components/public/I18nProvider";
 import { useLocale } from "@/hooks/useLocale";
 import dynamic from "next/dynamic";
 import CVPrintTemplate from "@/components/public/CVPrintTemplate";
+import { getCvPageRange, downloadCvPageRange } from "@/lib/cvPages";
 
 const UploadedCVViewer = dynamic(
   () => import("@/components/public/UploadedCVViewer"),
@@ -99,27 +100,28 @@ export default function CVPage() {
     }
   };
 
-  const handleDownloadUploaded = async (cvUrl: string, fileName?: string) => {
+  const [downloadingUploaded, setDownloadingUploaded] = useState(false);
+
+  const handleDownloadUploaded = async (
+    cvUrl: string,
+    fileName: string,
+    startPage: number,
+    endPage: number
+  ) => {
+    setDownloadingUploaded(true);
     await trackDownload();
     try {
-      const res = await fetch(cvUrl);
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = fileName || "CV.pdf";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      await downloadCvPageRange(cvUrl, fileName, startPage, endPage);
     } catch {
-      // Fallback for very large data URLs or unsupported environments
+      // Fallback: download the full original file if extraction fails
       const link = document.createElement("a");
       link.href = cvUrl;
-      link.download = fileName || "CV.pdf";
+      link.download = fileName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    } finally {
+      setDownloadingUploaded(false);
     }
   };
 
@@ -143,18 +145,10 @@ export default function CVPage() {
 
   const { profile, experiences, education, certifications, skills, projects } = data;
   const displayLocale: "fr" | "en" | "ar" = (locale === "en" || locale === "ar") ? locale : "fr";
-  const cvUrl =
-    displayLocale === "en"
-      ? profile?.cvUrlEn || profile?.cvUrl
-      : displayLocale === "ar"
-      ? profile?.cvUrlAr || profile?.cvUrl
-      : profile?.cvUrl;
-  const cvFileName =
-    displayLocale === "en"
-      ? profile?.cvFileNameEn || profile?.cvFileName
-      : displayLocale === "ar"
-      ? profile?.cvFileNameAr || profile?.cvFileName
-      : profile?.cvFileName;
+  const cvUrl = profile?.cvUrl;
+  const [pageStart, pageEnd] = getCvPageRange(profile?.cvPageRanges, displayLocale);
+  const baseCvName = (profile?.cvFileName || "CV.pdf").replace(/\.pdf$/i, "");
+  const cvFileName = `${baseCvName}_${displayLocale.toUpperCase()}.pdf`;
 
   return (
     <>
@@ -171,10 +165,11 @@ export default function CVPage() {
         <div className="max-w-[210mm] mx-auto mb-8 flex flex-wrap justify-center gap-3 no-print">
           {cvUrl ? (
             <button
-              onClick={() => handleDownloadUploaded(cvUrl, cvFileName)}
-              className="inline-flex items-center gap-2 px-5 py-3 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors min-h-[48px]"
+              onClick={() => handleDownloadUploaded(cvUrl, cvFileName, pageStart, pageEnd)}
+              disabled={downloadingUploaded}
+              className="inline-flex items-center gap-2 px-5 py-3 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 min-h-[48px]"
             >
-              <Download size={16} />
+              {downloadingUploaded ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
               {t("contact.downloadCv")}
             </button>
           ) : (
@@ -198,7 +193,7 @@ export default function CVPage() {
         >
           {cvUrl ? (
             <div className="w-full no-print">
-              <UploadedCVViewer cvUrl={cvUrl} fileName={cvFileName} />
+              <UploadedCVViewer cvUrl={cvUrl} fileName={cvFileName} startPage={pageStart} endPage={pageEnd} />
             </div>
           ) : (
             <div ref={cvRef} className="shadow-lg print:shadow-none">

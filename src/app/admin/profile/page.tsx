@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Save, Upload, FileText, X } from "lucide-react";
 import SpellCheck from "@/components/admin/SpellCheck";
+import { DEFAULT_CV_PAGE_RANGES } from "@/lib/cvPages";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<any>({});
@@ -11,7 +12,7 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [loadingPhoto, setLoadingPhoto] = useState(false);
-  const [loadingCV, setLoadingCV] = useState<string | null>(null);
+  const [loadingCV, setLoadingCV] = useState(false);
 
   useEffect(() => {
     fetch("/api/profile")
@@ -48,10 +49,7 @@ export default function ProfilePage() {
       photoUrl: profile.photoUrl,
       cvUrl: profile.cvUrl,
       cvFileName: profile.cvFileName,
-      cvUrlEn: profile.cvUrlEn,
-      cvFileNameEn: profile.cvFileNameEn,
-      cvUrlAr: profile.cvUrlAr,
-      cvFileNameAr: profile.cvFileNameAr,
+      cvPageRanges: profile.cvPageRanges,
     };
 
     const res = await fetch("/api/profile", {
@@ -89,31 +87,41 @@ export default function ProfilePage() {
     reader.readAsDataURL(file);
   };
 
-  const CV_LANG_FIELDS: Record<string, { url: string; fileName: string; label: string }> = {
-    fr: { url: "cvUrl", fileName: "cvFileName", label: "Français" },
-    en: { url: "cvUrlEn", fileName: "cvFileNameEn", label: "English" },
-    ar: { url: "cvUrlAr", fileName: "cvFileNameAr", label: "العربية" },
-  };
-
-  const handleCVUpload = async (lang: string, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCVUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { url, fileName } = CV_LANG_FIELDS[lang];
 
-    setLoadingCV(lang);
+    setLoadingCV(true);
     setMessage("");
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64 = reader.result as string;
-      setProfile({ ...profile, [url]: base64, [fileName]: file.name });
+      setProfile({ ...profile, cvUrl: base64, cvFileName: file.name });
       setMessage("CV prêt — clique sur Enregistrer pour sauvegarder");
-      setLoadingCV(null);
+      setLoadingCV(false);
     };
     reader.onerror = () => {
       setMessage("Erreur lors de la lecture du CV");
-      setLoadingCV(null);
+      setLoadingCV(false);
     };
     reader.readAsDataURL(file);
+  };
+
+  const getPageRange = (lang: "fr" | "en" | "ar"): [number, number] => {
+    const ranges = profile.cvPageRanges || DEFAULT_CV_PAGE_RANGES;
+    const range = ranges?.[lang] || DEFAULT_CV_PAGE_RANGES[lang];
+    return [range[0], range[1]];
+  };
+
+  const setPageRange = (lang: "fr" | "en" | "ar", index: 0 | 1, value: number) => {
+    const current = profile.cvPageRanges || DEFAULT_CV_PAGE_RANGES;
+    const currentRange = current[lang] || DEFAULT_CV_PAGE_RANGES[lang];
+    const nextRange = [...currentRange];
+    nextRange[index] = value;
+    setProfile({
+      ...profile,
+      cvPageRanges: { ...current, [lang]: nextRange },
+    });
   };
 
   if (loading) {
@@ -183,38 +191,67 @@ export default function ProfilePage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">CV PDF (par langue)</label>
-          <div className="space-y-3">
-            {Object.entries(CV_LANG_FIELDS).map(([lang, { url, fileName, label }]) => (
-              <div key={lang} className="flex items-center gap-4">
-                <span className="text-sm text-muted-foreground w-20 shrink-0">{label}</span>
-                {profile[url] && (
-                  <>
-                    <a href={profile[url]} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline truncate max-w-[160px]">
-                      <FileText size={16} className="inline mr-1" />
-                      {profile[fileName] || "cv.pdf"}
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => setProfile({ ...profile, [url]: null, [fileName]: null })}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 text-xs text-destructive border border-destructive/30 rounded-lg hover:bg-destructive/10 transition-colors"
-                    >
-                      <X size={14} />
-                      Retirer
-                    </button>
-                  </>
-                )}
-                <label className="inline-flex items-center gap-2 px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors cursor-pointer">
-                  <Upload size={16} />
-                  {loadingCV === lang ? "Chargement..." : (profile[url] ? "Changer" : "Uploader")}
-                  <input type="file" accept=".pdf" className="hidden" onChange={(e) => handleCVUpload(lang, e)} />
-                </label>
-              </div>
-            ))}
+          <label className="block text-sm font-medium mb-2">CV PDF (un seul fichier, multilingue)</label>
+          <div className="flex items-center gap-4">
+            {profile.cvUrl && (
+              <>
+                <a href={profile.cvUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
+                  <FileText size={16} className="inline mr-1" />
+                  {profile.cvFileName || "cv.pdf"}
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setProfile({ ...profile, cvUrl: null, cvFileName: null })}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 text-xs text-destructive border border-destructive/30 rounded-lg hover:bg-destructive/10 transition-colors"
+                >
+                  <X size={14} />
+                  Retirer
+                </button>
+              </>
+            )}
+            <label className="inline-flex items-center gap-2 px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors cursor-pointer">
+              <Upload size={16} />
+              {loadingCV ? "Chargement..." : (profile.cvUrl ? "Changer le CV" : "Uploader un CV")}
+              <input type="file" accept=".pdf" className="hidden" onChange={handleCVUpload} />
+            </label>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Le CV français sert de repli si une langue n&apos;a pas de fichier dédié.
-          </p>
+
+          {profile.cvUrl && (
+            <div className="mt-4 p-4 rounded-lg border border-border bg-background/50">
+              <p className="text-sm font-medium mb-3">Pages par langue</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {(["fr", "en", "ar"] as const).map((lang) => {
+                  const [start, end] = getPageRange(lang);
+                  const langLabel = lang === "fr" ? "Français" : lang === "en" ? "English" : "العربية";
+                  return (
+                    <div key={lang}>
+                      <span className="block text-xs text-muted-foreground mb-1">{langLabel}</span>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min={1}
+                          value={start}
+                          onChange={(e) => setPageRange(lang, 0, Number(e.target.value))}
+                          className="w-16 px-2 py-1.5 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm"
+                        />
+                        <span className="text-muted-foreground text-sm">à</span>
+                        <input
+                          type="number"
+                          min={1}
+                          value={end}
+                          onChange={(e) => setPageRange(lang, 1, Number(e.target.value))}
+                          className="w-16 px-2 py-1.5 rounded-lg bg-background border border-border focus:border-primary focus:outline-none text-sm"
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">
+                Indique les pages du PDF correspondant à chaque langue (ex : 1 à 2 pour le français). L&apos;affichage et le téléchargement s&apos;adaptent automatiquement à la langue du site.
+              </p>
+            </div>
+          )}
         </div>
 
         {message && (
