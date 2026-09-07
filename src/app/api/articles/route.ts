@@ -10,6 +10,10 @@ export async function GET(request: NextRequest) {
 
     if (slug) {
       const article = await prisma.article.findUnique({ where: { slug } });
+      if (article && !article.published) {
+        const session = await getServerSession(authOptions);
+        if (!session) return NextResponse.json(null);
+      }
       return NextResponse.json(article);
     }
 
@@ -17,6 +21,11 @@ export async function GET(request: NextRequest) {
     const where: any = {};
     if (publishedParam !== null) {
       where.published = publishedParam === "true";
+    } else {
+      const session = await getServerSession(authOptions);
+      if (!session) {
+        where.published = true;
+      }
     }
     const articles = await prisma.article.findMany({
       where,
