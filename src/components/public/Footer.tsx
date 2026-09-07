@@ -53,14 +53,6 @@ export default function Footer({ locale, messages }: { locale: string; messages:
             >
               {messages.nav?.contact || "Contact"}
             </Link>
-            <span className="text-border">·</span>
-            <Link
-              href="/admin/login"
-              prefetch={false}
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Admin
-            </Link>
           </div>
         </div>
       </div>
