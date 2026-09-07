@@ -11,7 +11,7 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [loadingPhoto, setLoadingPhoto] = useState(false);
-  const [loadingCV, setLoadingCV] = useState(false);
+  const [loadingCV, setLoadingCV] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/profile")
@@ -48,6 +48,10 @@ export default function ProfilePage() {
       photoUrl: profile.photoUrl,
       cvUrl: profile.cvUrl,
       cvFileName: profile.cvFileName,
+      cvUrlEn: profile.cvUrlEn,
+      cvFileNameEn: profile.cvFileNameEn,
+      cvUrlAr: profile.cvUrlAr,
+      cvFileNameAr: profile.cvFileNameAr,
     };
 
     const res = await fetch("/api/profile", {
@@ -85,22 +89,29 @@ export default function ProfilePage() {
     reader.readAsDataURL(file);
   };
 
-  const handleCVUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const CV_LANG_FIELDS: Record<string, { url: string; fileName: string; label: string }> = {
+    fr: { url: "cvUrl", fileName: "cvFileName", label: "Français" },
+    en: { url: "cvUrlEn", fileName: "cvFileNameEn", label: "English" },
+    ar: { url: "cvUrlAr", fileName: "cvFileNameAr", label: "العربية" },
+  };
+
+  const handleCVUpload = async (lang: string, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const { url, fileName } = CV_LANG_FIELDS[lang];
 
-    setLoadingCV(true);
+    setLoadingCV(lang);
     setMessage("");
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64 = reader.result as string;
-      setProfile({ ...profile, cvUrl: base64, cvFileName: file.name });
+      setProfile({ ...profile, [url]: base64, [fileName]: file.name });
       setMessage("CV prêt — clique sur Enregistrer pour sauvegarder");
-      setLoadingCV(false);
+      setLoadingCV(null);
     };
     reader.onerror = () => {
       setMessage("Erreur lors de la lecture du CV");
-      setLoadingCV(false);
+      setLoadingCV(null);
     };
     reader.readAsDataURL(file);
   };
@@ -172,30 +183,38 @@ export default function ProfilePage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">CV PDF</label>
-          <div className="flex items-center gap-4">
-            {profile.cvUrl && (
-              <>
-                <a href={profile.cvUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
-                  <FileText size={16} className="inline mr-1" />
-                  {profile.cvFileName || "cv.pdf"}
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setProfile({ ...profile, cvUrl: null, cvFileName: null })}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 text-xs text-destructive border border-destructive/30 rounded-lg hover:bg-destructive/10 transition-colors"
-                >
-                  <X size={14} />
-                  Retirer
-                </button>
-              </>
-            )}
-            <label className="inline-flex items-center gap-2 px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors cursor-pointer">
-              <Upload size={16} />
-              {loadingCV ? "Chargement..." : (profile.cvUrl ? "Changer le CV" : "Uploader un CV")}
-              <input type="file" accept=".pdf" className="hidden" onChange={handleCVUpload} />
-            </label>
+          <label className="block text-sm font-medium mb-2">CV PDF (par langue)</label>
+          <div className="space-y-3">
+            {Object.entries(CV_LANG_FIELDS).map(([lang, { url, fileName, label }]) => (
+              <div key={lang} className="flex items-center gap-4">
+                <span className="text-sm text-muted-foreground w-20 shrink-0">{label}</span>
+                {profile[url] && (
+                  <>
+                    <a href={profile[url]} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline truncate max-w-[160px]">
+                      <FileText size={16} className="inline mr-1" />
+                      {profile[fileName] || "cv.pdf"}
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setProfile({ ...profile, [url]: null, [fileName]: null })}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 text-xs text-destructive border border-destructive/30 rounded-lg hover:bg-destructive/10 transition-colors"
+                    >
+                      <X size={14} />
+                      Retirer
+                    </button>
+                  </>
+                )}
+                <label className="inline-flex items-center gap-2 px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors cursor-pointer">
+                  <Upload size={16} />
+                  {loadingCV === lang ? "Chargement..." : (profile[url] ? "Changer" : "Uploader")}
+                  <input type="file" accept=".pdf" className="hidden" onChange={(e) => handleCVUpload(lang, e)} />
+                </label>
+              </div>
+            ))}
           </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Le CV français sert de repli si une langue n&apos;a pas de fichier dédié.
+          </p>
         </div>
 
         {message && (

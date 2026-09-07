@@ -73,7 +73,18 @@ export default function HomePageClient({ data }: HomePageClientProps) {
   const homepageSettings = data.homepageSettings || null;
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
-  const cvUrl = profile?.cvUrl || "/cv/Abdenour_Hellas_CV.pdf";
+  const cvUrl =
+    (locale === "en"
+      ? profile?.cvUrlEn || profile?.cvUrl
+      : locale === "ar"
+      ? profile?.cvUrlAr || profile?.cvUrl
+      : profile?.cvUrl) || "/cv/Abdenour_Hellas_CV.pdf";
+  const cvFileName =
+    (locale === "en"
+      ? profile?.cvFileNameEn || profile?.cvFileName
+      : locale === "ar"
+      ? profile?.cvFileNameAr || profile?.cvFileName
+      : profile?.cvFileName) || "Abdenour_Hellas_CV.pdf";
 
   const handleDownloadCV = async () => {
     await fetch("/api/stats", {
@@ -83,7 +94,7 @@ export default function HomePageClient({ data }: HomePageClientProps) {
     });
     const link = document.createElement("a");
     link.href = cvUrl;
-    link.download = profile?.cvFileName || "Abdenour_Hellas_CV.pdf";
+    link.download = cvFileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

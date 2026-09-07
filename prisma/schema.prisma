@@ -36,6 +36,10 @@ model Profile {
   photoUrl          String?
   cvUrl             String?
   cvFileName        String?
+  cvUrlEn           String?
+  cvFileNameEn      String?
+  cvUrlAr           String?
+  cvFileNameAr      String?
 
   linkedin          String?
   github       String?

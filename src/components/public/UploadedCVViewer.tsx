@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-import { FileText, Loader2, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { FileText, Loader2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight } from "lucide-react";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
 
@@ -14,10 +14,6 @@ interface UploadedCVViewerProps {
   fileName?: string;
 }
 
-const TABS = [
-  { label: "Français", code: "fr" },
-  { label: "English", code: "en" },
-];
 const A4_WIDTH = 794; // px at ~96dpi
 const MAX_PAGE_WIDTH = 1100;
 const MIN_ZOOM = 0.5;
@@ -43,6 +39,13 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
     return () => obs.disconnect();
   }, []);
 
+  useEffect(() => {
+    setActivePage(1);
+    setNumPages(0);
+    setLoading(true);
+    setError(false);
+  }, [cvUrl]);
+
   const pageWidth = Math.round(baseWidth * zoom);
 
   const handleZoomIn = () => setZoom((z) => Math.min(MAX_ZOOM, Math.round((z + ZOOM_STEP) * 100) / 100));
@@ -64,26 +67,34 @@ export default function UploadedCVViewer({ cvUrl, fileName }: UploadedCVViewerPr
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Language tabs */}
-          <div className="inline-flex items-center bg-muted rounded-lg p-1">
-            {TABS.map((tab, index) => {
-              const isActive = activePage === index + 1;
-              return (
-                <button
-                  key={tab.code}
-                  type="button"
-                  onClick={() => setActivePage(index + 1)}
-                  className={`px-3 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-colors ${
-                    isActive
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground hover:bg-background"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
+          {/* Page navigation */}
+          {numPages > 1 && (
+            <div className="inline-flex items-center gap-1 bg-muted rounded-lg p-1">
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.92 }}
+                onClick={() => setActivePage((p) => Math.max(1, p - 1))}
+                disabled={activePage <= 1}
+                aria-label="Page précédente"
+                className="p-1.5 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+              >
+                <ChevronLeft size={16} />
+              </motion.button>
+              <span className="min-w-[3.5rem] px-1.5 text-xs font-medium text-center">
+                {activePage} / {numPages}
+              </span>
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.92 }}
+                onClick={() => setActivePage((p) => Math.min(numPages, p + 1))}
+                disabled={activePage >= numPages}
+                aria-label="Page suivante"
+                className="p-1.5 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+              >
+                <ChevronRight size={16} />
+              </motion.button>
+            </div>
+          )}
 
           {/* Zoom controls */}
           <div className="flex items-center gap-1 bg-muted rounded-lg p-1">

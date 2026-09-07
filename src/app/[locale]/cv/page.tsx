@@ -142,8 +142,19 @@ export default function CVPage() {
   }
 
   const { profile, experiences, education, certifications, skills, projects } = data;
-  const cvUrl = profile?.cvUrl;
   const displayLocale: "fr" | "en" | "ar" = (locale === "en" || locale === "ar") ? locale : "fr";
+  const cvUrl =
+    displayLocale === "en"
+      ? profile?.cvUrlEn || profile?.cvUrl
+      : displayLocale === "ar"
+      ? profile?.cvUrlAr || profile?.cvUrl
+      : profile?.cvUrl;
+  const cvFileName =
+    displayLocale === "en"
+      ? profile?.cvFileNameEn || profile?.cvFileName
+      : displayLocale === "ar"
+      ? profile?.cvFileNameAr || profile?.cvFileName
+      : profile?.cvFileName;
 
   return (
     <>
@@ -160,7 +171,7 @@ export default function CVPage() {
         <div className="max-w-[210mm] mx-auto mb-8 flex flex-wrap justify-center gap-3 no-print">
           {cvUrl ? (
             <button
-              onClick={() => handleDownloadUploaded(cvUrl, profile?.cvFileName)}
+              onClick={() => handleDownloadUploaded(cvUrl, cvFileName)}
               className="inline-flex items-center gap-2 px-5 py-3 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors min-h-[48px]"
             >
               <Download size={16} />
@@ -187,7 +198,7 @@ export default function CVPage() {
         >
           {cvUrl ? (
             <div className="w-full no-print">
-              <UploadedCVViewer cvUrl={cvUrl} fileName={profile?.cvFileName} />
+              <UploadedCVViewer cvUrl={cvUrl} fileName={cvFileName} />
             </div>
           ) : (
             <div ref={cvRef} className="shadow-lg print:shadow-none">
