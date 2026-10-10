@@ -211,3 +211,68 @@ html.no-transition *::after {
     stroke-dashoffset: -22;
   }
 }
+
+/* Mobile menu animations */
+@keyframes mobileMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes mobileMenuOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+@keyframes mobileMenuItemIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes burgerIconIn {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+.mobile-menu-panel {
+  animation: mobileMenuIn 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+.mobile-menu-panel.closing {
+  animation: mobileMenuOut 0.2s ease-in both;
+}
+.mobile-menu-item {
+  animation: mobileMenuItemIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--item-delay, 0ms);
+}
+.burger-icon {
+  animation: burgerIconIn 0.25s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu-panel,
+  .mobile-menu-panel.closing,
+  .mobile-menu-item,
+  .burger-icon {
+    animation: none;
+  }
+}

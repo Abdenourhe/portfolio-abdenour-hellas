@@ -1,13 +1,29 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronUp } from "lucide-react";
+import {
+  Menu,
+  X,
+  ChevronUp,
+  ChevronRight,
+  Home,
+  User,
+  GraduationCap,
+  Briefcase,
+  Wrench,
+  FolderGit2,
+  MessagesSquare,
+  Newspaper,
+  Mail,
+} from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { Locale } from "@/i18n/config";
+
+const MENU_CLOSE_MS = 200;
 
 export default function Header({
   locale,
@@ -19,8 +35,33 @@ export default function Header({
   enabledLocales?: Locale[];
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuClosing, setMenuClosing] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
+
+  const openMobileMenu = useCallback(() => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+    setMenuClosing(false);
+    setMobileMenuOpen(true);
+  }, []);
+
+  const closeMobileMenu = useCallback(() => {
+    setMenuClosing(true);
+    closeTimer.current = setTimeout(() => {
+      setMobileMenuOpen(false);
+      setMenuClosing(false);
+    }, MENU_CLOSE_MS);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,16 +83,25 @@ export default function Header({
     };
   }, [mobileMenuOpen]);
 
+  useEffect(() => {
+    if (!mobileMenuOpen || menuClosing) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeMobileMenu();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [mobileMenuOpen, menuClosing, closeMobileMenu]);
+
   const navItems = [
-    { href: `/${locale}`, label: messages.nav.home, prefetch: true },
-    { href: `/${locale}/about`, label: messages.nav.about, prefetch: true },
-    { href: `/${locale}/education`, label: messages.nav.education, prefetch: false },
-    { href: `/${locale}/experience`, label: messages.nav.experience, prefetch: false },
-    { href: `/${locale}/skills`, label: messages.nav.skills, prefetch: false },
-    { href: `/${locale}/projects`, label: messages.nav.projects, prefetch: false },
-    { href: `/${locale}/testimonials`, label: messages.nav.testimonials, prefetch: false },
-    { href: `/${locale}/blog`, label: messages.nav.blog, prefetch: false },
-    { href: `/${locale}/contact`, label: messages.nav.contact, prefetch: true },
+    { href: `/${locale}`, label: messages.nav.home, icon: Home, prefetch: true },
+    { href: `/${locale}/about`, label: messages.nav.about, icon: User, prefetch: true },
+    { href: `/${locale}/education`, label: messages.nav.education, icon: GraduationCap, prefetch: false },
+    { href: `/${locale}/experience`, label: messages.nav.experience, icon: Briefcase, prefetch: false },
+    { href: `/${locale}/skills`, label: messages.nav.skills, icon: Wrench, prefetch: false },
+    { href: `/${locale}/projects`, label: messages.nav.projects, icon: FolderGit2, prefetch: false },
+    { href: `/${locale}/testimonials`, label: messages.nav.testimonials, icon: MessagesSquare, prefetch: false },
+    { href: `/${locale}/blog`, label: messages.nav.blog, icon: Newspaper, prefetch: false },
+    { href: `/${locale}/contact`, label: messages.nav.contact, icon: Mail, prefetch: true },
   ];
 
   const isActive = (href: string) => {
@@ -106,42 +156,59 @@ export default function Header({
 
         <button
           className="lg:hidden p-2.5 text-muted-foreground hover:text-foreground transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md hover:bg-muted"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          onClick={() => (mobileMenuOpen && !menuClosing ? closeMobileMenu() : openMobileMenu())}
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-menu"
           aria-label={mobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
         >
-          {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          <span
+            key={mobileMenuOpen && !menuClosing ? "close" : "open"}
+            className="burger-icon inline-flex"
+          >
+            {mobileMenuOpen && !menuClosing ? <X size={22} /> : <Menu size={22} />}
+          </span>
         </button>
       </div>
 
-      {mobileMenuOpen &&
+      {(mobileMenuOpen || menuClosing) &&
         createPortal(
           <div
             id="mobile-menu"
-            className="lg:hidden fixed inset-x-0 top-16 bottom-0 z-50 bg-background/98 backdrop-blur-xl border-t border-border/40 overflow-y-auto"
+            className={`mobile-menu-panel lg:hidden fixed inset-x-0 top-16 bottom-0 z-50 bg-background/98 backdrop-blur-xl border-t border-border/40 overflow-y-auto ${
+              menuClosing ? "closing" : ""
+            }`}
           >
             <div className="container mx-auto px-4 py-5 flex flex-col gap-1">
-              {navItems.map((item) => {
+              {navItems.map((item, i) => {
                 const active = isActive(item.href);
+                const Icon = item.icon;
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     prefetch={item.prefetch}
                     aria-current={active ? "page" : undefined}
-                    className={`px-3 py-3 text-sm tracking-wide transition-colors min-h-[44px] flex items-center rounded-md ${
+                    className={`mobile-menu-item px-3 py-3 text-sm tracking-wide transition-colors min-h-[44px] flex items-center gap-3 rounded-md ${
                       active
-                        ? "text-foreground bg-muted"
+                        ? "text-foreground bg-muted font-medium"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                     }`}
-                    onClick={() => setMobileMenuOpen(false)}
+                    style={{ "--item-delay": `${70 + i * 35}ms` } as React.CSSProperties}
+                    onClick={closeMobileMenu}
                   >
-                    {item.label}
+                    <Icon size={17} className="shrink-0 opacity-80" />
+                    <span className="flex-1">{item.label}</span>
+                    <ChevronRight
+                      size={16}
+                      className="shrink-0 opacity-40 rtl:rotate-180"
+                    />
                   </Link>
                 );
               })}
-              <div className="flex items-center gap-2 pt-3 mt-2 border-t border-border/40">
+              <div
+                className="mobile-menu-item flex items-center gap-2 pt-3 mt-2 border-t border-border/40"
+                style={{ "--item-delay": `${70 + navItems.length * 35}ms` } as React.CSSProperties}
+              >
                 <LanguageSwitcher locale={locale} enabledLocales={enabledLocales} />
                 <ThemeSelector />
               </div>
