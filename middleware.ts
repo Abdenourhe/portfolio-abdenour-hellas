@@ -29,6 +29,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Skip static files with extension (sw.js, manifest.json, icons, og images...)
+  if (/\.[a-zA-Z0-9]+$/.test(pathname)) {
+    return NextResponse.next();
+  }
+
   // Protect admin routes (with or without locale prefix like /fr/admin)
   if (pathname.includes("/admin")) {
     const token = request.cookies.get("next-auth.session-token")?.value ||

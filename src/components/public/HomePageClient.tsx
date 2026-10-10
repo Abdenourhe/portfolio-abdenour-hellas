@@ -139,12 +139,12 @@ export default function HomePageClient({ data }: HomePageClientProps) {
     ? Math.max(
         0,
         ...experiences.map((e) => {
-          const start = new Date(e.startDate).getFullYear();
+          const start = new Date(e.startDate).getUTCFullYear();
           const end = e.current
-            ? new Date().getFullYear()
+            ? new Date().getUTCFullYear()
             : e.endDate
-            ? new Date(e.endDate).getFullYear()
-            : new Date().getFullYear();
+            ? new Date(e.endDate).getUTCFullYear()
+            : new Date().getUTCFullYear();
           return end - start;
         })
       )

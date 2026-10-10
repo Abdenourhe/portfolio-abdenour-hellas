@@ -93,11 +93,11 @@ export default function EducationSection({ data, compact = false, limit }: Educa
                     <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-2 text-xs text-muted-foreground">
                       <span className="inline-flex items-center gap-1">
                         <Calendar size={10} />
-                        {new Date(edu.startDate).toLocaleDateString("fr-CA", { year: "numeric", month: "short" })} —{" "}
+                        {new Date(edu.startDate).toLocaleDateString("fr-CA", { year: "numeric", month: "short", timeZone: "UTC" })} —{" "}
                         {edu.current
                           ? t("experience.present")
                           : edu.endDate
-                          ? new Date(edu.endDate).toLocaleDateString("fr-CA", { year: "numeric", month: "short" })
+                          ? new Date(edu.endDate).toLocaleDateString("fr-CA", { year: "numeric", month: "short", timeZone: "UTC" })
                           : ""}
                       </span>
                       <span className="inline-flex items-center gap-1">

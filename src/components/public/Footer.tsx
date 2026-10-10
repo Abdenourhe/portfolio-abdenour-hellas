@@ -5,7 +5,7 @@ import Link from "next/link";
 import SocialIcons from "./SocialIcons";
 
 export default function Footer({ locale, messages }: { locale: string; messages: any }) {
-  const year = new Date().getFullYear();
+  const year = new Date().getUTCFullYear();
   const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {

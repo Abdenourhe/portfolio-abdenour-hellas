@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { notFound, redirect } from "next/navigation";
 import { Playfair_Display, Amiri } from "next/font/google";
 import { isValidLocale, Locale } from "@/i18n/config";
@@ -32,6 +32,10 @@ const amiri = Amiri({
 export function generateStaticParams() {
   return [{ locale: "fr" }, { locale: "en" }, { locale: "ar" }];
 }
+
+export const viewport: Viewport = {
+  themeColor: "#1E3A5F",
+};
 
 async function getProfile() {
   try {
@@ -130,7 +134,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       },
     },
     manifest: `${baseUrl}/manifest.json`,
-    themeColor: "#1E3A5F",
     icons: {
       icon: [
         { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
@@ -245,9 +248,15 @@ export default async function LocaleLayout({
       <script
         dangerouslySetInnerHTML={{
           __html: `
+            // Nettoyage des anciens service workers et caches (SW retire du site)
             if ('serviceWorker' in navigator) {
-              window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js');
+              navigator.serviceWorker.getRegistrations().then(function(regs) {
+                regs.forEach(function(r) { r.unregister(); });
+              });
+            }
+            if ('caches' in window) {
+              caches.keys().then(function(keys) {
+                keys.forEach(function(k) { caches.delete(k); });
               });
             }
           `,

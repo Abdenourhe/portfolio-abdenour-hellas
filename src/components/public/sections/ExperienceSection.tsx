@@ -98,8 +98,8 @@ export default function ExperienceSection({ data, compact = false, limit }: Expe
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary bg-primary/15 px-2 py-0.5 rounded-md">
                       <Briefcase size={11} />
-                      {new Date(exp.startDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" })} —{" "}
-                      {exp.current ? t("experience.present") : exp.endDate ? new Date(exp.endDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric" }) : ""}
+                      {new Date(exp.startDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric", timeZone: "UTC" })} —{" "}
+                      {exp.current ? t("experience.present") : exp.endDate ? new Date(exp.endDate).toLocaleDateString("fr-CA", { month: "short", year: "numeric", timeZone: "UTC" }) : ""}
                     </span>
                     {exp.category && (
                       <span className="text-xs px-1.5 py-0.5 rounded-md bg-secondary/10 dark:bg-secondary/15 text-[#8B6914] dark:text-secondary font-medium">

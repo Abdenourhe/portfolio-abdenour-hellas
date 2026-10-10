@@ -87,7 +87,7 @@ export default function BlogSection({ data, compact = false, limit }: BlogSectio
                 <div className="flex items-center gap-3 text-sm text-muted-foreground mb-2">
                   <span className="inline-flex items-center gap-1.5">
                     <Calendar size={11} />
-                    {new Date(article.createdAt).toLocaleDateString(locale === "fr" ? "fr-CA" : locale === "ar" ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric" })}
+                    {new Date(article.createdAt).toLocaleDateString(locale === "fr" ? "fr-CA" : locale === "ar" ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}
                   </span>
                   <span className="inline-flex items-center gap-1.5">
                     <Clock size={11} />
