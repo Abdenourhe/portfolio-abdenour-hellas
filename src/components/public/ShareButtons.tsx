@@ -85,7 +85,7 @@ export default function ShareButtons({ url, title, description = "", className =
     <div className={`relative ${className}`}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+        className="inline-flex items-center gap-1.5 p-2 text-sm text-muted-foreground hover:text-primary transition-colors"
         aria-label="Partager"
         aria-expanded={open}
       >

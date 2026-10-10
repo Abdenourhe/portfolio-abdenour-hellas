@@ -17,7 +17,7 @@ export default function Footer({ locale, messages }: { locale: string; messages:
 
   return (
     <footer className="border-t border-border bg-background">
-      <div className="container mx-auto px-4 lg:px-8 py-6">
+      <div className="container mx-auto px-4 lg:px-8 py-6 pb-20 lg:pb-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-center sm:text-left">
             <p className="text-sm font-medium text-foreground">
@@ -41,7 +41,7 @@ export default function Footer({ locale, messages }: { locale: string; messages:
             <Link
               href={`/${locale}/cv`}
               prefetch={false}
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors py-2"
             >
               CV
             </Link>
@@ -49,7 +49,7 @@ export default function Footer({ locale, messages }: { locale: string; messages:
             <Link
               href={`/${locale}/contact`}
               prefetch={false}
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors py-2"
             >
               {messages.nav?.contact || "Contact"}
             </Link>

@@ -151,7 +151,7 @@ export default function ContactPage() {
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 aria-invalid={!!errors.name}
                 aria-describedby={errors.name ? "name-error" : undefined}
-                className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm transition-colors placeholder:text-muted-foreground/60 ${
+                className={`w-full px-3 py-2.5 rounded-lg bg-card border text-base md:text-sm transition-colors placeholder:text-muted-foreground/60 ${
                   errors.name ? "border-destructive" : "border-border hover:border-primary/30 focus:border-primary focus:outline-none"
                 }`}
               />
@@ -165,7 +165,7 @@ export default function ContactPage() {
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? "email-error" : undefined}
-                className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm transition-colors placeholder:text-muted-foreground/60 ${
+                className={`w-full px-3 py-2.5 rounded-lg bg-card border text-base md:text-sm transition-colors placeholder:text-muted-foreground/60 ${
                   errors.email ? "border-destructive" : "border-border hover:border-primary/30 focus:border-primary focus:outline-none"
                 }`}
               />
@@ -179,7 +179,7 @@ export default function ContactPage() {
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                 aria-invalid={!!errors.subject}
                 aria-describedby={errors.subject ? "subject-error" : undefined}
-                className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm transition-colors placeholder:text-muted-foreground/60 ${
+                className={`w-full px-3 py-2.5 rounded-lg bg-card border text-base md:text-sm transition-colors placeholder:text-muted-foreground/60 ${
                   errors.subject ? "border-destructive" : "border-border hover:border-primary/30 focus:border-primary focus:outline-none"
                 }`}
               />
@@ -193,7 +193,7 @@ export default function ContactPage() {
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                 aria-invalid={!!errors.content}
                 aria-describedby={errors.content ? "content-error" : undefined}
-                className={`w-full px-3 py-2.5 rounded-lg bg-card border text-sm resize-none transition-colors placeholder:text-muted-foreground/60 ${
+                className={`w-full px-3 py-2.5 rounded-lg bg-card border text-base md:text-sm resize-none transition-colors placeholder:text-muted-foreground/60 ${
                   errors.content ? "border-destructive" : "border-border hover:border-primary/30 focus:border-primary focus:outline-none"
                 }`}
               />

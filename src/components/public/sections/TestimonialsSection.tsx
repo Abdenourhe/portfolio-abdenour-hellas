@@ -166,11 +166,15 @@ export default function TestimonialsSection({ data, compact = false, limit }: Te
                 const cardWidth = el.firstElementChild?.clientWidth || el.clientWidth;
                 el.scrollTo({ left: i * cardWidth, behavior: "smooth" });
               }}
-              className={`h-1.5 rounded-full transition-all ${
-                i === activeIndex ? "w-8 bg-primary" : "w-2 bg-primary/20 hover:bg-primary/40"
-              }`}
+              className="p-2 flex items-center justify-center"
               aria-label={`Go to slide ${i + 1}`}
-            />
+            >
+              <span
+                className={`h-1.5 rounded-full transition-all ${
+                  i === activeIndex ? "w-8 bg-primary" : "w-2 bg-primary/20 hover:bg-primary/40"
+                }`}
+              />
+            </button>
           ))}
         </div>
       )}

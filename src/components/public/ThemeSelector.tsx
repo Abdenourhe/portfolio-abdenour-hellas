@@ -40,7 +40,7 @@ export default function ThemeSelector() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted"
+        className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted"
         aria-label="Choisir le thème"
         aria-expanded={open}
         aria-haspopup="listbox"

@@ -20,6 +20,9 @@ export default function NetworkCanvas() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Skip animation and mouse tracking on touch devices
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+
     let width = window.innerWidth;
     let height = window.innerHeight;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -56,7 +59,9 @@ export default function NetworkCanvas() {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
     };
-    window.addEventListener("mousemove", handleMouseMove);
+    if (!coarsePointer) {
+      window.addEventListener("mousemove", handleMouseMove);
+    }
 
     let rafId: number;
     const connectDist = 130;
@@ -136,7 +141,9 @@ export default function NetworkCanvas() {
       rafId = requestAnimationFrame(draw);
     };
 
-    draw();
+    if (!coarsePointer) {
+      draw();
+    }
 
     return () => {
       window.removeEventListener("resize", resize);

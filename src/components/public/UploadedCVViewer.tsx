@@ -81,7 +81,7 @@ export default function UploadedCVViewer({ cvUrl, fileName, startPage = 1, endPa
                 onClick={() => setActivePage((p) => Math.max(startPage, p - 1))}
                 disabled={activePage <= startPage}
                 aria-label="Page précédente"
-                className="p-1.5 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+                className="p-2 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
               >
                 <ChevronLeft size={16} />
               </motion.button>
@@ -94,7 +94,7 @@ export default function UploadedCVViewer({ cvUrl, fileName, startPage = 1, endPa
                 onClick={() => setActivePage((p) => Math.min(rangeEnd, p + 1))}
                 disabled={activePage >= rangeEnd}
                 aria-label="Page suivante"
-                className="p-1.5 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+                className="p-2 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
               >
                 <ChevronRight size={16} />
               </motion.button>
@@ -109,7 +109,7 @@ export default function UploadedCVViewer({ cvUrl, fileName, startPage = 1, endPa
               onClick={handleZoomOut}
               disabled={zoom <= MIN_ZOOM}
               aria-label="Zoom arrière"
-              className="p-1.5 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+              className="p-2 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
             >
               <ZoomOut size={16} />
             </motion.button>
@@ -128,7 +128,7 @@ export default function UploadedCVViewer({ cvUrl, fileName, startPage = 1, endPa
               onClick={handleZoomIn}
               disabled={zoom >= MAX_ZOOM}
               aria-label="Zoom avant"
-              className="p-1.5 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+              className="p-2 rounded-md hover:bg-background disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
             >
               <ZoomIn size={16} />
             </motion.button>

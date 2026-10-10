@@ -44,7 +44,7 @@ export default function TypeWriter({ text, speed = 55, className = "", delay = 0
     <span className={className}>
       {displayed}
       {!done && (
-        <span className="inline-block w-[2px] h-[0.9em] bg-secondary ml-0.5 align-middle animate-cursor-blink" />
+        <span className="inline-block w-[2px] h-[0.9em] bg-secondary ms-0.5 align-middle animate-cursor-blink" />
       )}
     </span>
   );

@@ -37,14 +37,14 @@ export default function StickyMobileCTA() {
         <div className="flex items-center gap-2 px-4 py-3 bg-background/95 backdrop-blur-xl border-t border-border/60 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
           <Link
             href={cvPath}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
           >
             <FileText size={16} />
             {t.cv}
           </Link>
           <Link
             href={contactPath}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-lg text-sm font-medium hover:border-primary/30 hover:bg-primary/[0.06] transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 border border-border text-foreground rounded-lg text-sm font-medium hover:border-primary/30 hover:bg-primary/[0.06] transition-colors"
           >
             <Send size={16} />
             {t.contact}
