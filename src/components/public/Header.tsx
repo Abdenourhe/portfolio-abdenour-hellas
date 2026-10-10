@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ChevronUp } from "lucide-react";
@@ -114,38 +115,40 @@ export default function Header({
         </button>
       </div>
 
-      {mobileMenuOpen && (
-        <div
-          id="mobile-menu"
-          className="lg:hidden fixed inset-x-0 top-16 bottom-0 bg-background/98 backdrop-blur-xl border-t border-border/40 overflow-y-auto"
-        >
-          <div className="container mx-auto px-4 py-5 flex flex-col gap-1">
-            {navItems.map((item) => {
-              const active = isActive(item.href);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  prefetch={item.prefetch}
-                  aria-current={active ? "page" : undefined}
-                  className={`px-3 py-3 text-sm tracking-wide transition-colors min-h-[44px] flex items-center rounded-md ${
-                    active
-                      ? "text-foreground bg-muted"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                  }`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-            <div className="flex items-center gap-2 pt-3 mt-2 border-t border-border/40">
-              <LanguageSwitcher locale={locale} enabledLocales={enabledLocales} />
-              <ThemeSelector />
+      {mobileMenuOpen &&
+        createPortal(
+          <div
+            id="mobile-menu"
+            className="lg:hidden fixed inset-x-0 top-16 bottom-0 z-50 bg-background/98 backdrop-blur-xl border-t border-border/40 overflow-y-auto"
+          >
+            <div className="container mx-auto px-4 py-5 flex flex-col gap-1">
+              {navItems.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    prefetch={item.prefetch}
+                    aria-current={active ? "page" : undefined}
+                    className={`px-3 py-3 text-sm tracking-wide transition-colors min-h-[44px] flex items-center rounded-md ${
+                      active
+                        ? "text-foreground bg-muted"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+              <div className="flex items-center gap-2 pt-3 mt-2 border-t border-border/40">
+                <LanguageSwitcher locale={locale} enabledLocales={enabledLocales} />
+                <ThemeSelector />
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </header>
   );
 }
