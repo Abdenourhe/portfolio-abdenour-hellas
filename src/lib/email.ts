@@ -1,7 +1,54 @@
-import sgMail from "@sendgrid/mail";
+const BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
 
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+type EmailResult = { success: boolean; error?: string };
+
+async function sendBrevoEmail({
+  to,
+  subject,
+  html,
+  fromName,
+}: {
+  to: string;
+  subject: string;
+  html: string;
+  fromName: string;
+}): Promise<EmailResult> {
+  const apiKey = process.env.BREVO_API_KEY;
+  if (!apiKey) {
+    return { success: false, error: "BREVO_API_KEY non configuré" };
+  }
+
+  const from = process.env.FROM_EMAIL;
+  if (!from) {
+    return { success: false, error: "FROM_EMAIL non configuré" };
+  }
+
+  try {
+    const res = await fetch(BREVO_API_URL, {
+      method: "POST",
+      headers: {
+        "api-key": apiKey,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        sender: { name: fromName, email: from },
+        to: [{ email: to }],
+        subject,
+        htmlContent: html,
+      }),
+    });
+
+    if (res.ok) {
+      return { success: true };
+    }
+
+    const body = await res.json().catch(() => null);
+    const message = body?.message || `Erreur Brevo (HTTP ${res.status})`;
+    return { success: false, error: friendlyEmailError(message) };
+  } catch (err) {
+    return { success: false, error: String(err) };
+  }
 }
 
 export async function sendReplyEmail({
@@ -16,13 +63,7 @@ export async function sendReplyEmail({
   reply: string;
   originalContent: string;
   name: string;
-}) {
-  if (!process.env.SENDGRID_API_KEY) {
-    return { success: false, error: "SENDGRID_API_KEY non configuré" };
-  }
-
-  const from = process.env.FROM_EMAIL || "noreply@portfolio-abdenour-hellas.vercel.app";
-
+}): Promise<EmailResult> {
   const html = `
     <div style="font-family: Inter, system-ui, sans-serif; max-width: 600px; margin: 0 auto; color: #2D2D2D;">
       <div style="background: #1E3A5F; padding: 32px 24px; text-align: center;">
@@ -44,25 +85,19 @@ export async function sendReplyEmail({
       </div>
       <div style="padding: 24px; text-align: center; background: #F5F5F0;">
         <p style="margin: 0; font-size: 12px; color: #6B7280;">
-          © ${new Date().getFullYear()} Abdenour Hellas · 
-          <a href="https://portfolio-abdenour-hellas.vercel.app" style="color: #1E3A5F; text-decoration: none;">portfolio-abdenour-hellas.vercel.app</a>
+          © ${new Date().getFullYear()} Abdenour Hellas ·
+          <a href="https://abdenour-hellas.online" style="color: #1E3A5F; text-decoration: none;">abdenour-hellas.online</a>
         </p>
       </div>
     </div>
   `;
 
-  try {
-    await sgMail.send({
-      from: `Abdenour Hellas <${from}>`,
-      to,
-      subject: `Re: ${subject}`,
-      html,
-    });
-    return { success: true };
-  } catch (err: any) {
-    const message = err?.response?.body?.errors?.[0]?.message || err?.message || String(err);
-    return { success: false, error: friendlyEmailError(message) };
-  }
+  return sendBrevoEmail({
+    to,
+    subject: `Re: ${subject}`,
+    html,
+    fromName: "Abdenour Hellas",
+  });
 }
 
 export async function sendNewMessageNotification({
@@ -75,13 +110,8 @@ export async function sendNewMessageNotification({
   email: string;
   subject: string;
   content: string;
-}) {
-  if (!process.env.SENDGRID_API_KEY) {
-    return { success: false, error: "SENDGRID_API_KEY non configuré" };
-  }
-
+}): Promise<EmailResult> {
   const to = process.env.ADMIN_EMAIL || "abdenour.hellas@uqat.ca";
-  const from = process.env.FROM_EMAIL || "noreply@portfolio-abdenour-hellas.vercel.app";
 
   const html = `
     <div style="font-family: Inter, system-ui, sans-serif; max-width: 600px; margin: 0 auto; color: #2D2D2D;">
@@ -98,29 +128,26 @@ export async function sendNewMessageNotification({
       <div style="padding: 24px; text-align: center; background: #F5F5F0;">
         <p style="margin: 0; font-size: 12px; color: #6B7280;">
           Connectez-vous à l'admin pour répondre :
-          <a href="https://portfolio-abdenour-hellas.vercel.app/admin/messages" style="color: #1E3A5F; text-decoration: none;">Admin Messages</a>
+          <a href="https://abdenour-hellas.online/admin/messages" style="color: #1E3A5F; text-decoration: none;">Admin Messages</a>
         </p>
       </div>
     </div>
   `;
 
-  try {
-    await sgMail.send({
-      from: `Portfolio <${from}>`,
-      to,
-      subject: `Nouveau message : ${subject}`,
-      html,
-    });
-    return { success: true };
-  } catch (err: any) {
-    const message = err?.response?.body?.errors?.[0]?.message || err?.message || String(err);
-    return { success: false, error: friendlyEmailError(message) };
-  }
+  return sendBrevoEmail({
+    to,
+    subject: `Nouveau message : ${subject}`,
+    html,
+    fromName: "Portfolio",
+  });
 }
 
 function friendlyEmailError(message: string): string {
-  if (/maximum credits exceeded/i.test(message)) {
-    return "Quota SendGrid gratuit épuisé (100 emails/jour). Le quota se réinitialise chaque jour, ou passez à un plan payant sur sendgrid.com.";
+  if (/daily (sending )?limit|quota|exceeded/i.test(message)) {
+    return "Quota quotidien Brevo atteint (300 emails/jour en offre gratuite). Le quota se réinitialise chaque jour.";
+  }
+  if (/not verified|unverified|invalid sender/i.test(message)) {
+    return "Expéditeur non vérifié dans Brevo : ajoutez et vérifiez l'adresse FROM_EMAIL dans Brevo > Paramètres > Expéditeurs et IP.";
   }
   return message;
 }
