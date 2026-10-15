@@ -61,7 +61,7 @@ export async function sendReplyEmail({
     return { success: true };
   } catch (err: any) {
     const message = err?.response?.body?.errors?.[0]?.message || err?.message || String(err);
-    return { success: false, error: message };
+    return { success: false, error: friendlyEmailError(message) };
   }
 }
 
@@ -114,8 +114,15 @@ export async function sendNewMessageNotification({
     return { success: true };
   } catch (err: any) {
     const message = err?.response?.body?.errors?.[0]?.message || err?.message || String(err);
-    return { success: false, error: message };
+    return { success: false, error: friendlyEmailError(message) };
   }
+}
+
+function friendlyEmailError(message: string): string {
+  if (/maximum credits exceeded/i.test(message)) {
+    return "Quota SendGrid gratuit épuisé (100 emails/jour). Le quota se réinitialise chaque jour, ou passez à un plan payant sur sendgrid.com.";
+  }
+  return message;
 }
 
 function escapeHtml(text: string): string {

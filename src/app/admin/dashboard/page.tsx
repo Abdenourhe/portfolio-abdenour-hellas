@@ -19,8 +19,8 @@ export default function DashboardPage() {
   }, []);
 
   const cards = [
-    { label: "Visites", value: stats.visits, icon: Eye },
-    { label: "Téléchargements", value: stats.downloads, icon: Download },
+    { label: "Visites uniques", value: stats.visits, icon: Eye },
+    { label: "Téléchargements uniques", value: stats.downloads, icon: Download },
     { label: "Messages", value: stats.messages, icon: MessageSquare },
     { label: "Non lus", value: stats.unreadMessages, icon: TrendingUp },
   ];

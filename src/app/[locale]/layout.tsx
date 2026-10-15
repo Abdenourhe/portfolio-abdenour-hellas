@@ -14,6 +14,7 @@ import ReadingProgress from "@/components/public/ReadingProgress";
 import CustomCursor from "@/components/public/CustomCursor";
 import BreadcrumbSchema from "@/components/public/BreadcrumbSchema";
 import StickyMobileCTA from "@/components/public/StickyMobileCTA";
+import VisitTracker from "@/components/public/VisitTracker";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -285,6 +286,7 @@ export default async function LocaleLayout({
               <Footer locale={locale} messages={messages} />
             </div>
             <StickyMobileCTA />
+            <VisitTracker />
             <ScrollToTop />
           </div>
         </I18nProvider>
